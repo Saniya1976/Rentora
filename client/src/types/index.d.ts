@@ -8,6 +8,7 @@ declare module "framer-motion" {
     className?: string;
   }
 }
+declare module "tailwindcss-animate";
 
 declare global {
   enum AmenityEnum {
@@ -136,5 +137,6 @@ declare global {
     userRole: JsonObject | JsonPrimitive | JsonArray;
   }
 }
+declare module "tailwindcss-animate";
 
 export {};
