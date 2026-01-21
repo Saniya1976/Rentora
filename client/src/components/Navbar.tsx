@@ -2,26 +2,53 @@ import React from 'react'
 import { NAVBAR_HEIGHT } from '@/lib/constants'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Button } from './ui/button'
 
 const Navbar = () => {
   return(
-    <div className='fixed top-0 left-0 w-full z-50 shadow-xl'
+    <div className='fixed top-0 left-0 w-full z-50 '
     style={{height:`${NAVBAR_HEIGHT}px`}}
     >
-        <div className='flex justify-between items-center w-full py-3 px-8 bg-primary-700 text-white'>Navbar</div>
-    <div className="flex items-center gap-4 md:gap-6 ">
-        <Link href="/"
-        className="cursor-pointer hover:!text-primary-300"
-         scroll={false}>
-           <div className="flex items-center gap-3">
-               <Image
-                src="/logo.png"
-                alt="Rentora Logo" 
-                width={30} height={30}
-                 />
-            </div>
+        <div
+  className="fixed top-0 left-0 w-full z-50 "
+  style={{ height: `${NAVBAR_HEIGHT}px` }}
+>
+  <div className="flex justify-between items-center w-full h-full px-10 bg-white text-black">
+    <Link href="/" scroll={false}>
+      <Image
+        src="/mylogorentora.png"
+        alt="Rentora Logo"
+        width={180}
+        height={60}
+        priority
+      />
+    </Link> 
+    <p className='text-primary-200 hidden md:block'>
+        Discover your perfect rental apartment with Rentora - where comfort meets convenience.
+    </p>
+    <div className='flex items-center gap-4'>
+        <Link href="/signin">
+        <Button
+            className="px-8 py-3 rounded-full bg-teal-400 text-white text-lg
+             font-medium hover:bg-teal-500 transition-colors duration-200"
+    >
+        Sign In
+        </Button>
         </Link>
+        <Link href="/signup">
+        <Button
+         className="px-8 py-3 rounded-full
+             bg-white text-teal-500 font-medium
+             shadow-sm text-lg hover:bg-teal-50
+             transition-colors duration-200"
+        >Sign Up
+        </Button>
+
+        </Link>
+        </div>
     </div>
+</div>
+
     </div>
   )
 }
