@@ -6,9 +6,6 @@ import { Button } from './ui/button'
 
 const Navbar = () => {
   return(
-    <div className='fixed top-0 left-0 w-full z-50 '
-    style={{height:`${NAVBAR_HEIGHT}px`}}
-    >
         <div
   className="fixed top-0 left-0 w-full z-50 "
   style={{ height: `${NAVBAR_HEIGHT}px` }}
@@ -23,9 +20,6 @@ const Navbar = () => {
         priority
       />
     </Link> 
-    <p className='text-primary-200 hidden md:block'>
-        Discover your perfect rental apartment with Rentora - where comfort meets convenience.
-    </p>
     <div className='flex items-center gap-4'>
         <Link href="/signin">
         <Button
@@ -49,7 +43,6 @@ const Navbar = () => {
     </div>
 </div>
 
-    </div>
   )
 }
 
