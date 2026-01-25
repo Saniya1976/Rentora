@@ -1,140 +1,82 @@
 'use client'
 
-import { useState } from 'react'
 import Image from 'next/image'
 import { MapPin, Home, Search } from 'lucide-react'
 
-type TabType = 'buy' | 'sell' | 'rent'
-
-export default function HeroSection(){
-  const [activeTab, setActiveTab] = useState<TabType>('buy')
-
+export default function HeroSection() {
   return (
-    <section className="bg-gray-50 py-20">
+    <section className="bg-gray-50 py-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-          
+
           {/* LEFT CONTENT */}
-<div className="space-y-12 max-w-xl">
+          <div className="space-y-12 max-w-xl">
 
-  {/* Heading */}
-  <div className="space-y-4">
-    <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 leading-snug">
-      Let’s Find a Home <br />
-      That’s Perfect for you
-    </h1>
+            {/* Heading Group */}
+            <div className="space-y-6">
+              <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight leading-[1.05]">
+                Let’s find a home <br />
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-[#07c2c5] to-[#06bcc0]">
+                  that’s perfect for you
+                </span>
+              </h1>
 
-    <p className="text-gray-500 text-sm leading-relaxed max-w-md">
-      Each property design has its own meaning and we are ready to help you get a
-      property according to your taste.
-    </p>
+              <p className="text-slate-700 text-lg md:text-xl leading-relaxed max-w-md font-medium">
+                Every home tells a story.
+                With Rentora, finding the right rental becomes simple and stress-free.
+Explore homes that match your taste, comfort, and everyday needs.
+              </p>
+            </div>
 
-    <p className="text-sm text-gray-700 font-medium cursor-pointer">
-      Let’s discuss soon.
-    </p>
+            {/* ENHANCED SEARCH BAR */}
+  <div className="w-full max-w-lg">
+ 
+  {/* Unified Search Input - PILL SHAPE */}
+  <div className="relative flex items-center group">
+    <div className="absolute left-6 text-slate-400 group-focus-within:text-[#009698] transition-colors">
+      <Search className="w-6 h-6" />
+    </div>
+    
+    <input 
+      type="text"
+      placeholder="Search by location, type..."
+      className="w-full pl-16 pr-40 py-5 bg-white rounded-full shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] border-none focus:ring-2 focus:ring-[#009698]/20 text-slate-700 placeholder:text-slate-400 text-base outline-none transition-all"
+    />
+
+    <button className="absolute right-2 px-8 py-3.5 bg-[#04bbbe] text-white rounded-full font-bold text-sm hover:bg-[#02a2a5] transition-all active:scale-95 shadow-md shadow-[#009698]/20">
+      Search
+    </button>
   </div>
 
-  {/* SEARCH CARD */}
-  <div className="space-y-4">
 
-    {/* Tabs */}
-    <div className="grid grid-cols-3 bg-gray-100 rounded-lg overflow-hidden text-sm font-medium">
-      {(['buy', 'sell', 'rent'] as TabType[]).map((tab) => (
-        <button
-          key={tab}
-          onClick={() => setActiveTab(tab)}
-          className={`py-3 uppercase transition
-            ${
-              activeTab === tab
-                ? 'bg-blue-100 text-blue-600'
-                : 'text-gray-600 hover:bg-gray-200'
-            }`}
-        >
-          {tab}
-        </button>
-      ))}
-    </div>
-
-    {/* Inputs */}
-    <div className="bg-white rounded-lg shadow-md grid grid-cols-3 divide-x">
-
-      <div className="p-4 flex items-center gap-3">
-        <MapPin className="w-4 h-4 text-gray-400" />
-        <div>
-          <p className="text-xs text-gray-400">Location</p>
-          <p className="text-sm text-gray-700 font-medium">
-            Semarang, Indonesia
-          </p>
-        </div>
-      </div>
-
-      <div className="p-4 flex items-center gap-3">
-        <Home className="w-4 h-4 text-gray-400" />
-        <div>
-          <p className="text-xs text-gray-400">Type</p>
-          <p className="text-sm text-gray-700 font-medium">
-            Modern, Minimalist
-          </p>
-        </div>
-      </div>
-
-      <button className="bg-blue-600 text-white flex items-center justify-center gap-2 font-medium text-sm hover:bg-blue-700 transition">
-        <Search className="w-4 h-4" />
-        Search
-      </button>
-    </div>
-  </div>
-
-  {/* STATS */}
-  <div className="grid grid-cols-3 gap-4 pt-6">
-    <div className="bg-blue-50 rounded-lg py-6 text-center">
-      <p className="text-2xl font-semibold text-blue-600">9K+</p>
-      <p className="text-sm text-gray-600">Premium Properties</p>
-    </div>
-
-    <div className="bg-blue-100 rounded-lg py-6 text-center">
-      <p className="text-2xl font-semibold text-blue-600">5K+</p>
-      <p className="text-sm text-gray-600">Happy Customers</p>
-    </div>
-
-    <div className="bg-blue-50 rounded-lg py-6 text-center">
-      <p className="text-2xl font-semibold text-blue-600">58+</p>
-      <p className="text-sm text-gray-600">Awards Winning</p>
-    </div>
-  </div>
-</div>
+              {/* Quick Info Tags */}
+              <div className="flex gap-6 mt-5 ml-4">
+                <div className="flex items-center gap-1.5 text-[12px] font-bold text-slate-400 uppercase tracking-tight">
+                  <MapPin className="w-3.5 h-3.5 text-[#009698]" />
+                  Semarang, Indonesia
+                </div>
+                <div className="flex items-center gap-1.5 text-[12px] font-bold text-slate-400 uppercase tracking-tight">
+                  <Home className="w-3.5 h-3.5 text-[#009698]" />
+                  Modern Minimalist
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* RIGHT IMAGE */}
           <div className="hidden lg:flex justify-center">
-  <div className="relative w-[460px] h-[580px] overflow-hidden shadow-xl 
-                  rounded-t-[220px] rounded-b-none">
-    <Image
-      src="/mylandingpage.jpg"
-      alt="Modern apartment"
-      fill
-      priority
-      className="object-cover"
-    />
-  </div>
-</div>
-
-        </div>
-
-        {/* STATS */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-20">
-          {[
-            { value: '9K+', label: 'Premium Properties' },
-            { value: '5K+', label: 'Happy Customers' },
-            { value: '58+', label: 'Awards Winning' },
-          ].map(({ value, label }) => (
-            <div
-              key={label}
-              className="bg-white rounded-xl p-6 shadow-md text-center"
-            >
-              <p className="text-4xl font-bold text-blue-600 mb-1">{value}</p>
-              <p className="text-gray-700 font-medium">{label}</p>
+            <div className="relative w-[460px] h-[560px] overflow-hidden shadow-2xl 
+                  rounded-t-[240px] rounded-b-none border-[12px] border-white">
+              <Image
+                src="/mylandingpage.jpg"
+                alt="Modern apartment"
+                fill
+                priority
+                className="object-cover"
+              />
             </div>
-          ))}
+          </div>
+
         </div>
       </div>
     </section>

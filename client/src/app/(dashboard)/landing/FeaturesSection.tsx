@@ -29,15 +29,19 @@ const FeaturesSection = () => {
       whileInView="visible"
       viewport={{ once: true }}
       variants={containerVariants}
-      className="py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-gradient-to-b from-gray-50 to-white"
+      className="py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-linear-to-b from-gray-50 to-white"
     >
       <div className="max-w-4xl xl:max-w-6xl mx-auto">
         <motion.div variants={itemVariants} className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-gray-900">
-            Quickly find the home you want
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Use our effective search filters to discover your perfect rental
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 text-slate-900 tracking-tighter leading-[1.1]">
+  Quickly find the <br />
+  <span className="text-transparent bg-clip-text bg-linear-to-r from-[#04c5c9] to-[#04b6b9]">
+    home you want
+  </span>
+</h2>
+          <p className="text-lg text-gray-500 font-medium max-w-2xl mx-auto">
+            Rentora brings together carefully selected apartments tailored to your lifestyle.
+Discover spaces where comfort, design, and convenience come together.
           </p>
         </motion.div>
         
@@ -103,7 +107,7 @@ const FeatureCard = ({
     <p className="mb-6 text-gray-600 leading-relaxed">{description}</p>
     <Link
       href={linkHref}
-      className="inline-block bg-teal-500 text-white font-medium rounded-lg px-6 py-3 hover:bg-teal-600 transition-colors duration-300 shadow-md hover:shadow-lg"
+      className="inline-block bg-[#0dbabd] text-white font-medium rounded-lg px-6 py-3 hover:bg-[#35c5c0] transition-colors duration-300 shadow-md hover:shadow-lg"
       scroll={false}
     >
       {linkText} →
