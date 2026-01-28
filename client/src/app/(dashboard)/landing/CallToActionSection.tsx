@@ -1,53 +1,102 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
-import { motion } from "framer-motion";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  FaInstagram,
+  FaTwitter,
+  FaYoutube,
+  FaLinkedin,
+} from "react-icons/fa";
 
 const CallToActionSection = () => {
   return (
-    <div className="relative py-24">
+    <div className="relative py-24 overflow-hidden">
+      {/* Background Image */}
       <Image
-        src="/landing-call-to-action.jpg"
+        src="/landing-cta.png"
         alt="Rentiful Search Section Background"
         fill
-        className="object-cover object-center"
+        priority
+        className="object-cover object-center z-0"
       />
-      <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+
+      {/* Dark overlay for contrast */}
+      <div className="absolute inset-0 bg-black/45 z-10" />
+
+      {/* Content */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="relative max-w-4xl xl:max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 py-12"
+        className="relative z-20 max-w-4xl xl:max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 py-12"
       >
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-6 md:mb-0 md:mr-10">
-            <h2 className="text-2xl font-bold text-white">
-              Find Your Dream Rental Property
+        <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-8">
+          
+          {/* Text */}
+          <div className="max-w-xl">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight drop-shadow-xl">
+              Find Homes That Actually Fit Your Life
             </h2>
-          </div>
-          <div>
-            <p className="text-white mb-3">
-              Discover a wide range of rental properties in your desired
-              location.
+            <p className="text-white text-lg drop-shadow-md">
+              Discover hand-picked rental homes in locations that actually fit your life.
             </p>
-            <div className="flex justify-center md:justify-start gap-4">
-              <button
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                className="inline-block text-primary-700 bg-white rounded-lg px-6 py-3 font-semibold hover:bg-primary-500 hover:text-primary-50"
-              >
-                Search
-              </button>
-              <Link
-                href="/signup"
-                className="inline-block text-white bg-secondary-500 rounded-lg px-6 py-3 font-semibold hover:bg-secondary-600"
-                scroll={false}
-              >
-                Sign Up
-              </Link>
-            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-center md:justify-start gap-4">
+            <button
+              onClick={() =>
+                window.scrollTo({ top: 0, behavior: "smooth" })
+              }
+              className="px-7 py-3 rounded-xl font-semibold bg-white text-[#04aaac] shadow-lg hover:bg-[#038f90] hover:text-white transition"
+            >
+              Search Homes
+            </button>
+
+            <Link
+              href="/signup"
+              scroll={false}
+              className="px-7 py-3 rounded-xl font-semibold bg-[#04aaac] text-white shadow-lg hover:bg-[#038f90] transition"
+            >
+              Sign Up
+            </Link>
+          </div>
+        </div>
+      <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-white">
+          
+          {/* Footer links */}
+          <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm font-medium">
+            <Link href="/about" className="hover:underline">
+              About
+            </Link>
+            <Link href="/contact" className="hover:underline">
+              Contact
+            </Link>
+            <Link href="/faqs" className="hover:underline">
+              FAQs
+            </Link>
+            <Link href="/privacy" className="hover:underline">
+              Privacy Policy
+            </Link>
+          </div>
+
+          {/* Social Icons */}
+          <div className="flex gap-5 text-xl">
+            <a href="#" aria-label="Instagram" className="hover:text-[#04aaac] transition">
+              <FaInstagram />
+            </a>
+            <a href="#" aria-label="Twitter" className="hover:text-[#04aaac] transition">
+              <FaTwitter />
+            </a>
+            <a href="#" aria-label="YouTube" className="hover:text-[#04aaac] transition">
+              <FaYoutube />
+            </a>
+            <a href="#" aria-label="LinkedIn" className="hover:text-[#04aaac] transition">
+              <FaLinkedin />
+            </a>
           </div>
         </div>
       </motion.div>
