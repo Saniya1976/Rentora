@@ -1,4 +1,3 @@
-import React from 'react'
 import { NAVBAR_HEIGHT } from '@/lib/constants'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -6,11 +5,12 @@ import { Button } from './ui/button'
 
 const Navbar = () => {
   return (
+    
     <div
       className="fixed top-0 left-0 w-full z-50 "
       style={{ height: `${NAVBAR_HEIGHT}px` }}
     >
-      <div className="flex justify-between items-center w-full h-full px-10 bg-gray-50 text-black">
+      <div className="flex justify-between items-center w-full h-full px-10 bg-[#f9f8f8] text-black">
         <Link href="/" scroll={false}>
           <Image
             src="/mylogorentora.png"
