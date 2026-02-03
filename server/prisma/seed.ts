@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { PrismaClient, Prisma } from "@prisma/client";
 import fs from "fs";
 import path from "path";
