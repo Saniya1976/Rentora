@@ -15,12 +15,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.send("This is home route");
 });
 
 
-const port = Number(process.env.PORT) || 3002;
-app.listen(port, "0.0.0.0", () => {
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
