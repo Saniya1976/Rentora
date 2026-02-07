@@ -6,10 +6,13 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 
+type UserRole = 'tenant' | 'manager'
+
 export default function SignUpForm() {
   const { signUp, isLoaded } = useSignUp()
   const router = useRouter()
 
+  const [role, setRole] = useState<UserRole>('tenant')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [showPassword, setShowPassword] = useState<boolean>(false)
@@ -22,6 +25,9 @@ export default function SignUpForm() {
       await signUp.create({
         emailAddress: email,
         password,
+        unsafeMetadata: {
+          role,
+        },
       })
 
       await signUp.prepareEmailAddressVerification({
@@ -42,17 +48,20 @@ export default function SignUpForm() {
       strategy: 'oauth_google',
       redirectUrl: '/sso-callback',
       redirectUrlComplete: '/',
+      unsafeMetadata: {
+        role,
+      },
     })
   }
 
   return (
     <div className="w-full max-w-xl bg-white rounded-xl p-8 shadow-lg">
       <div className="flex justify-center mb-4">
-        <Image 
-          src="/mylogorentora.png" 
-          alt="RENTORA" 
-          width={140} 
-          height={50} 
+        <Image
+          src="/mylogorentora.png"
+          alt="RENTORA"
+          width={140}
+          height={50}
           className="text-2xl font-bold"
         />
       </div>
@@ -61,6 +70,31 @@ export default function SignUpForm() {
       <p className="text-center text-gray-500 text-base mb-6">
         Start your journey with Rentora
       </p>
+
+      {/* Role Selection */}
+      <div className="mb-6">
+        <p className="text-sm font-medium text-gray-700 mb-3">I am a:</p>
+        <div className="flex gap-6">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={role === 'tenant'}
+              onChange={() => setRole('tenant')}
+              className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer accent-blue-600"
+            />
+            <span className="text-gray-700 font-medium">Tenant</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={role === 'manager'}
+              onChange={() => setRole('manager')}
+              className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer accent-blue-600"
+            />
+            <span className="text-gray-700 font-medium">Manager</span>
+          </label>
+        </div>
+      </div>
 
       <div className="space-y-4 mb-6">
         <input
