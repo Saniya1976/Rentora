@@ -2,13 +2,6 @@ import { NAVBAR_HEIGHT } from '@/lib/constants'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from './ui/button'
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from '@clerk/nextjs'
 
 const Navbar = () => {
   return (
@@ -28,32 +21,17 @@ const Navbar = () => {
         </Link>
 
         <div className="flex items-center gap-4">
-          {/* When user is NOT signed in */}
-          <SignedOut>
-            <SignInButton mode="modal">
-              <Button
-                className="px-8 py-3 rounded-full bg-[#1acec8] text-white text-lg
-                font-medium hover:bg-[#10b9bc] transition-colors duration-200"
-              >
-                Sign In
-              </Button>
-            </SignInButton>
+          <Link href="/signin">
+            <Button className="px-8 py-3 rounded-full bg-[#1acec8] text-white text-lg font-medium hover:bg-[#10b9bc] transition-colors">
+              Sign In
+            </Button>
+          </Link>
 
-            <SignUpButton mode="modal">
-              <Button
-                className="px-8 py-3 rounded-full bg-white text-[#02c1c5]
-                font-medium shadow-sm text-lg hover:bg-[#e0f7f7]
-                transition-colors duration-200"
-              >
-                Sign Up
-              </Button>
-            </SignUpButton>
-          </SignedOut>
-
-          {/* When user IS signed in */}
-          <SignedIn>
-            <UserButton afterSignOutUrl="/" />
-          </SignedIn>
+          <Link href="/signup">
+            <Button className="px-8 py-3 rounded-full bg-white text-[#02c1c5] font-medium shadow-sm text-lg hover:bg-[#e0f7f7] transition-colors">
+              Sign Up
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

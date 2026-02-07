@@ -4,7 +4,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
         <Navbar/>
-        <main className={'h-full w-full flex-col flex pt-[${NAVBAR_HEIGHT}px]'}>
+        <main className={'h-full w-full bg-gray-50 flex-col flex pt-[${NAVBAR_HEIGHT}px]'}>
          {children}
          </main>
     </div>
