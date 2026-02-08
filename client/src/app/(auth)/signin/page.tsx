@@ -3,14 +3,12 @@ import SignInForm from '@/components/auth/SignInForm'
 export default function SignInPage() {
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center bg-center bg-cover relative"
-      style={{ backgroundImage: "url('/landing-i2.png')" }}
+      className="min-h-screen w-full flex items-center justify-center bg-center bg-cover relative p-4"
+      style={{ backgroundImage: "url('/auth_bg.png')" }}
     >
-      {/* black overlay */}
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
 
-      {/* content */}
-      <div className="relative z-20">
+      <div className="relative z-20 w-full flex justify-center">
         <SignInForm />
       </div>
     </div>
