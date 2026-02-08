@@ -7,28 +7,54 @@ import { useRouter } from 'next/navigation'
 import { Eye, EyeOff } from 'lucide-react'
 
 export default function SignInForm() {
-  const { signIn, isLoaded } = useSignIn()
+  const { signIn, isLoaded, setActive } = useSignIn()
   const router = useRouter()
 
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
+  const [isSigningIn, setIsSigningIn] = useState<boolean>(false)
 
   if (!isLoaded || !signIn) return null
 
   const handleSignIn = async (): Promise<void> => {
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter both email and password')
+      return
+    }
+
+    setIsSigningIn(true)
+    setError('')
+
     try {
-      await signIn.create({
+      const result = await signIn.create({
         identifier: email,
         password,
       })
-      router.push('/')
+
+      if (result.status === 'complete') {
+        // Set the session as active
+        await setActive({ session: result.createdSessionId })
+        router.push('/dashboard')
+      } else if (result.status === 'needs_first_factor') {
+        // Handle cases where additional verification is needed
+        setError('Additional verification required')
+      } else if (result.status === 'needs_second_factor') {
+        // Handle 2FA if enabled
+        setError('Two-factor authentication required')
+      } else {
+        setError('Sign in incomplete. Please try again.')
+      }
     } catch (err: unknown) {
       if (typeof err === 'object' && err && 'errors' in err) {
-        const clerkErr = err as { errors?: { message: string }[] }
-        setError(clerkErr.errors?.[0]?.message ?? 'Sign in failed')
+        const clerkErr = err as { errors?: { message: string; longMessage?: string }[] }
+        setError(clerkErr.errors?.[0]?.longMessage || clerkErr.errors?.[0]?.message || 'Sign in failed')
+      } else {
+        setError('An unexpected error occurred. Please try again.')
       }
+    } finally {
+      setIsSigningIn(false)
     }
   }
 
@@ -36,18 +62,24 @@ export default function SignInForm() {
     signIn.authenticateWithRedirect({
       strategy: 'oauth_google',
       redirectUrl: '/sso-callback',
-      redirectUrlComplete: '/',
+      redirectUrlComplete: '/dashboard',
     })
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
+    if (e.key === 'Enter' && !isSigningIn) {
+      handleSignIn()
+    }
   }
 
   return (
     <div className="w-full max-w-xl bg-white rounded-xl p-6 shadow-lg">
       <div className="flex justify-center mb-4">
-        <Image 
-          src="/mylogorentora.png" 
-          alt="RENTORA" 
-          width={140} 
-          height={50} 
+        <Image
+          src="/mylogorentora.png"
+          alt="RENTORA"
+          width={140}
+          height={50}
           className="text-2xl font-bold"
         />
       </div>
@@ -73,6 +105,7 @@ export default function SignInForm() {
             className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1acec8] focus:border-[#1acec8] pr-12"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <button
             type="button"
@@ -92,9 +125,17 @@ export default function SignInForm() {
 
       <button
         onClick={handleSignIn}
-        className="w-full py-3 text-base rounded-lg bg-[#1acec8] text-white font-semibold mb-4 hover:bg-[#15b8b3] transition-colors"
+        disabled={isSigningIn}
+        className="w-full py-3 text-base rounded-lg bg-[#1acec8] text-white font-semibold mb-4 hover:bg-[#15b8b3] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
       >
-        Sign In
+        {isSigningIn ? (
+          <>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
+            Signing In...
+          </>
+        ) : (
+          'Sign In'
+        )}
       </button>
 
       <button

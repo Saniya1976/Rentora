@@ -11,7 +11,7 @@ export default function GoogleAuthButton() {
   const signInWithGoogle = async () => {
     await signIn.authenticateWithRedirect({
       strategy: 'oauth_google',
-      redirectUrl: '/dashboard',
+      redirectUrl: '/sso-callback',
       redirectUrlComplete: '/dashboard',
     })
   }

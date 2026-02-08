@@ -17,10 +17,19 @@ export default function SignUpForm() {
   const [password, setPassword] = useState<string>('')
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
+  const [isSigningUp, setIsSigningUp] = useState<boolean>(false)
 
   if (!isLoaded || !signUp) return null
 
   const handleSignUp = async (): Promise<void> => {
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter both email and password')
+      return
+    }
+
+    setIsSigningUp(true)
+    setError('')
+
     try {
       await signUp.create({
         emailAddress: email,
@@ -37,9 +46,13 @@ export default function SignUpForm() {
       router.push('/verify-email')
     } catch (err: unknown) {
       if (typeof err === 'object' && err && 'errors' in err) {
-        const clerkErr = err as { errors?: { message: string }[] }
-        setError(clerkErr.errors?.[0]?.message ?? 'Sign up failed')
+        const clerkErr = err as { errors?: { message: string; longMessage?: string }[] }
+        setError(clerkErr.errors?.[0]?.longMessage || clerkErr.errors?.[0]?.message || 'Sign up failed')
+      } else {
+        setError('An unexpected error occurred. Please try again.')
       }
+    } finally {
+      setIsSigningUp(false)
     }
   }
 
@@ -47,11 +60,17 @@ export default function SignUpForm() {
     signUp.authenticateWithRedirect({
       strategy: 'oauth_google',
       redirectUrl: '/sso-callback',
-      redirectUrlComplete: '/',
+      redirectUrlComplete: '/dashboard',
       unsafeMetadata: {
         role,
       },
     })
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
+    if (e.key === 'Enter' && !isSigningUp) {
+      handleSignUp()
+    }
   }
 
   return (
@@ -112,6 +131,7 @@ export default function SignUpForm() {
             className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1acec8] focus:border-[#1acec8] pr-12"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <button
             type="button"
@@ -138,9 +158,17 @@ export default function SignUpForm() {
 
       <button
         onClick={handleSignUp}
-        className="w-full py-3 text-base rounded-lg bg-[#1acec8] text-white font-semibold mb-6 hover:bg-[#15b8b3] transition-colors"
+        disabled={isSigningUp}
+        className="w-full py-3 text-base rounded-lg bg-[#1acec8] text-white font-semibold mb-6 hover:bg-[#15b8b3] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
       >
-        Sign Up
+        {isSigningUp ? (
+          <>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
+            Creating Account...
+          </>
+        ) : (
+          'Sign Up'
+        )}
       </button>
 
       <p className="text-center text-sm text-gray-600">
