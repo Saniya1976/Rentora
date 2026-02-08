@@ -158,14 +158,14 @@ export default function SignUpForm() {
 
   return (
     <div className="w-full max-w-[340px] backdrop-blur-3xl bg-white/70 rounded-[28px] p-6 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border border-white/40 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
-      <div className="absolute -top-16 -right-16 w-32 h-32 bg-[#1acec8]/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute -top-16 -right-16 w-32 h-32 bg-[#1acec8]/10 rounded-full blur-xl pointer-events-none" />
 
       <div className="relative z-10">
         <div className="text-center mb-6">
           <h2 className="text-xl font-black tracking-tighter text-gray-900 mb-0.5">
-            RENT<span className="text-[#1acec8]">ORA</span>
+            RENT<span className="text-[#17B9B4]">ORA</span>
           </h2>
-          <div className="h-0.5 w-6 bg-[#1acec8] rounded-full mx-auto" />
+          <div className="h-0.5 w-6 bg-[#17B9B4] rounded-full mx-auto" />
         </div>
 
         <div className="space-y-1 mb-5 text-center">
@@ -181,11 +181,11 @@ export default function SignUpForm() {
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl border-2 transition-all duration-300",
                 role === 'tenant'
-                  ? "border-[#1acec8] bg-[#1acec8]/10 text-[#1acec8]"
+                  ? "border-[#17B9B4] bg-[#17B9B4]/10 text-[#17B9B4]"
                   : "border-gray-50 bg-gray-50 text-gray-400 hover:border-gray-100"
               )}
             >
-              <User size={14} className={role === 'tenant' ? "text-[#1acec8]" : "text-gray-400"} />
+              <User size={14} className={role === 'tenant' ? "text-[#17B9B4]" : "text-gray-400"} />
               <span className="font-bold text-[12px]">Tenant</span>
             </button>
 
@@ -194,11 +194,11 @@ export default function SignUpForm() {
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl border-2 transition-all duration-300",
                 role === 'manager'
-                  ? "border-[#1acec8] bg-[#1acec8]/10 text-[#1acec8]"
+                  ? "border-[#17B9B4] bg-[#17B9B4]/10 text-[#17B9B4]"
                   : "border-gray-50 bg-gray-50 text-gray-400 hover:border-gray-100"
               )}
             >
-              <Building2 size={14} className={role === 'manager' ? "text-[#1acec8]" : "text-gray-400"} />
+              <Building2 size={14} className={role === 'manager' ? "text-[#17B9B4]" : "text-gray-400"} />
               <span className="font-bold text-[12px]">Manager</span>
             </button>
           </div>
@@ -208,7 +208,7 @@ export default function SignUpForm() {
           <div className="animate-in fade-in duration-500">
             <div className="space-y-3 mb-4">
               <div className="text-center mb-3">
-                <div className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-[#1acec8]/10 text-[#1acec8] mb-2">
+                <div className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-[#17B9B4]/10 text-[#17B9B4] mb-2">
                   <Mail size={16} />
                 </div>
                 <h2 className="text-md font-bold text-gray-900">Verify</h2>
@@ -219,7 +219,7 @@ export default function SignUpForm() {
                 type="text"
                 maxLength={6}
                 placeholder="000000"
-                className="w-full text-center text-xl tracking-[0.2em] font-bold py-2.5 bg-gray-50/50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] focus:bg-white transition-all text-gray-900"
+                className="w-full text-center text-xl tracking-[0.2em] font-bold py-2.5 bg-gray-50/50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#17B9B4]/20 focus:border-[#17B9B4] focus:bg-white transition-all text-gray-900"
                 value={code}
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 onKeyDown={handleKeyDown}
@@ -237,7 +237,7 @@ export default function SignUpForm() {
               <button
                 onClick={handleVerify}
                 disabled={isVerifying || code.length !== 6}
-                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1acec8] to-[#15b8b3] text-white text-[13px] font-bold shadow-lg shadow-[#1acec8]/10 hover:shadow-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#17B9B4] to-[#15b8b3] text-white text-[13px] font-bold shadow-lg shadow-[#17B9B4]/10 hover:shadow-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-1.5"
               >
                 {isVerifying ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white" />
@@ -252,7 +252,7 @@ export default function SignUpForm() {
           <>
             <div className="space-y-2 mb-5">
               <div className="group relative">
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#1acec8] transition-colors">
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#17B9B4] transition-colors">
                   <UserCircle size={15} />
                 </div>
                 <input
@@ -265,7 +265,7 @@ export default function SignUpForm() {
               </div>
 
               <div className="group relative">
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#1acec8] transition-colors">
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#17B9B4] transition-colors">
                   <Mail size={15} />
                 </div>
                 <input
@@ -278,7 +278,7 @@ export default function SignUpForm() {
               </div>
 
               <div className="group relative">
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#1acec8] transition-colors">
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#17B9B4] transition-colors">
                   <Lock size={15} />
                 </div>
                 <input
@@ -299,7 +299,7 @@ export default function SignUpForm() {
               </div>
 
               <div className="group relative">
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#1acec8] transition-colors">
+                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#17B9B4] transition-colors">
                   <ShieldCheck size={15} />
                 </div>
                 <input
@@ -354,7 +354,7 @@ export default function SignUpForm() {
 
         <p className="mt-6 text-center text-gray-500 text-[12px] font-medium">
           Have an account?{' '}
-          <a href="/signin" className="text-[#1acec8] font-bold hover:underline decoration-1 underline-offset-2 transition-all">
+          <a href="/signin" className="text-[#17B9B4] font-bold hover:underline decoration-1 underline-offset-2 transition-all">
             Sign In
           </a>
         </p>

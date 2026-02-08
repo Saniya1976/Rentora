@@ -195,9 +195,9 @@ export default function SignInForm() {
       <div className="relative z-10">
         <div className="text-center mb-6">
           <h2 className="text-xl font-black tracking-tighter text-gray-900 mb-0.5">
-            RENT<span className="text-[#1acec8]">ORA</span>
+            RENT<span className="text-[#17B9B4]">ORA</span>
           </h2>
-          <div className="h-0.5 w-6 bg-[#1acec8] rounded-full mx-auto" />
+          <div className="h-0.5 w-6 bg-[#17B9B4] rounded-full mx-auto" />
         </div>
 
         <div className="space-y-1 mb-5 text-center">
@@ -209,7 +209,7 @@ export default function SignInForm() {
           <div className="animate-in fade-in duration-500">
             <div className="space-y-3 mb-4">
               <div className="text-center mb-3">
-                <div className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-[#1acec8]/10 text-[#1acec8] mb-2">
+                <div className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-[#17B9B4]/10 text-[#17B9B4] mb-2">
                   <Mail size={16} />
                 </div>
                 <h2 className="text-md font-bold text-gray-900">Verify</h2>
@@ -301,7 +301,7 @@ export default function SignInForm() {
               </div>
 
               <div className="flex justify-end p-0.5">
-                <button className="text-[11px] font-bold text-[#1acec8] hover:text-[#15b8b3] transition-colors">
+                <button className="text-[11px] font-bold text-[#17B9B4] hover:text-[#15b8b3] transition-colors">
                   Forgot?
                 </button>
               </div>
@@ -348,7 +348,7 @@ export default function SignInForm() {
 
         <p className="mt-6 text-center text-gray-500 text-[12px] font-medium">
           New?{' '}
-          <a href="/signup" className="text-[#1acec8] font-bold hover:underline decoration-1 underline-offset-2 transition-all">
+          <a href="/signup" className="text-[#17B9B4] font-bold hover:underline decoration-1 underline-offset-2 transition-all">
             Join Rentora <ArrowRight size={12} className="inline" />
           </a>
         </p>
