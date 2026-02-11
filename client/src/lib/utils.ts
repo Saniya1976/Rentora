@@ -58,7 +58,7 @@ export const withToast = async <T>(
 
 export const createNewUserInDatabase = async (
   user: any,
-  idToken: any,
+  idToken: any, // kept for signature compatibility but not used for Clerk
   userRole: string,
   fetchWithBQ: any
 ) => {
@@ -69,10 +69,10 @@ export const createNewUserInDatabase = async (
     url: createEndpoint,
     method: "POST",
     body: {
-      cognitoId: user.userId,
-      name: user.username,
-      email: idToken?.payload?.email || "",
-      phoneNumber: "",
+      cognitoId: user.id,
+      name: user.username || user.fullName || "Unknown User",
+      email: user.primaryEmailAddress?.emailAddress || "",
+      phoneNumber: user.primaryPhoneNumber?.phoneNumber || "",
     },
   });
 

@@ -1,5 +1,5 @@
 import { LucideIcon } from "lucide-react";
-import { AuthUser } from "aws-amplify/auth";
+// Removed Amplify import to use Clerk instead.
 import { Manager, Tenant, Property, Application } from "./prismaTypes";
 import { MotionProps as OriginalMotionProps } from "framer-motion";
 
@@ -11,6 +11,9 @@ declare module "framer-motion" {
 declare module "tailwindcss-animate";
 
 declare global {
+  interface Window {
+    Clerk: any;
+  }
   enum AmenityEnum {
     WasherDryer = "WasherDryer",
     AirConditioning = "AirConditioning",
@@ -132,11 +135,11 @@ declare global {
   }
 
   interface User {
-    cognitoInfo: AuthUser;
+    cognitoInfo: any;
     userInfo: Tenant | Manager;
-    userRole: JsonObject | JsonPrimitive | JsonArray;
+    userRole: string;
   }
 }
 declare module "tailwindcss-animate";
 
-export {};
+export { };
