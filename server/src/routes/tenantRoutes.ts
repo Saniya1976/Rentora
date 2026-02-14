@@ -1,10 +1,9 @@
 import express from "express";
-import { createTenant, getTenantById } from "../controllers/tenantController";
+import { createTenant, getTenantById } from "../controllers/tenantController.js";
 
-const router=express.Router();
+const router = express.Router();
 
-
-router.get('/:clerkId',getTenantById);
-router.post('/',createTenant);
+router.get("/:clerkId", getTenantById);
+router.post("/", createTenant);
 
 export default router;
