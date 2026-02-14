@@ -1,5 +1,5 @@
 import express from "express";
-import { createTenant, getTenantById } from "../controllers/tenantController.js";
+import { createTenant, getTenantById } from "../controllers/tenantController";
 
 const router = express.Router();
 

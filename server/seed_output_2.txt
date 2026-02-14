@@ -1,0 +1,34 @@
+
+> server@1.0.0 seed
+> ts-node prisma/seed.ts
+
+Cleared data from Payment
+Cleared data from Application
+Cleared data from Lease
+Cleared data from Tenant
+Cleared data from Property
+Cleared data from Manager
+Cleared data from Location
+Inserted location for Pasadena
+Inserted location for Santa Monica
+Inserted location for Burbank
+Inserted location for Long Beach
+Inserted location for New York
+Inserted location for Malibu
+Inserted location for Glendale
+Inserted location for Torrance
+Inserted location for Miami
+Inserted location for Beverly Hills
+Reset sequence for Location to 11
+Seeded Manager with data from manager.json
+Reset sequence for Manager to 11
+Seeded Property with data from property.json
+Reset sequence for Property to 11
+Seeded Tenant with data from tenant.json
+Reset sequence for Tenant to 16
+Seeded Lease with data from lease.json
+Reset sequence for Lease to 16
+Seeded Application with data from application.json
+Reset sequence for Application to 16
+Seeded Payment with data from payment.json
+Reset sequence for Payment to 106

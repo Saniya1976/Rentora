@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: 'Rental platform',
 }
 
+import StoreProvider from '@/state/redux'
+
 export default function RootLayout({
   children,
 }: {
@@ -32,7 +34,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          {children}
+          <StoreProvider>{children}</StoreProvider>
         </body>
       </html>
     </ClerkProvider>

@@ -1,0 +1,224 @@
+
+> server@1.0.0 seed
+> ts-node prisma/seed.ts
+
+Cleared data from Payment
+Cleared data from Application
+Cleared data from Lease
+Cleared data from Tenant
+Cleared data from Property
+Cleared data from Manager
+Cleared data from Location
+Inserted location for Pasadena
+Inserted location for Santa Monica
+Inserted location for Burbank
+Inserted location for Long Beach
+Inserted location for New York
+Inserted location for Malibu
+Inserted location for Glendale
+Inserted location for Torrance
+Inserted location for Miami
+Inserted location for Beverly Hills
+Reset sequence for Location to 11
+Error seeding data for Manager: PrismaClientValidationError: 
+Invalid `model.create()` invocation in
+/home/sassysanya/rentora/server/prisma/seed.ts:111:23
+
+  108 const model = (prisma as any)[modelNameCamel];
+  109 try {
+  110   for (const item of jsonData) {
+→ 111     await model.create({
+            data: {
+              id: 1,
+              cognitoId: "010be580-60a1-70ae-780e-18a6fd94ad32",
+              name: "John Smith",
+              email: "john.smith@example.com",
+              phoneNumber: "+1 (555) 123-4567",
+          +   clerkId: String
+            }
+          })
+
+Argument `clerkId` is missing.
+    at wn (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at $n.handleRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6958)
+    at $n.handleAndLogRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:130:9633) {
+  clientVersion: '5.22.0'
+}
+Error seeding data for Property: PrismaClientValidationError: 
+Invalid `model.create()` invocation in
+/home/sassysanya/rentora/server/prisma/seed.ts:111:23
+
+  108 const model = (prisma as any)[modelNameCamel];
+  109 try {
+  110   for (const item of jsonData) {
+→ 111     await model.create({
+            data: {
+              id: 1,
+              name: "Sunny Downtown Apartment",
+              description: "A beautiful apartment in the heart of downtown with plenty of natural light.",
+              pricePerMonth: 1500,
+              securityDeposit: 1500,
+              applicationFee: 50,
+              photoUrls: [
+                "https://example.com/apartment1_1.jpg",
+                "https://example.com/apartment1_2.jpg"
+              ],
+              amenities: [
+                "AirConditioning",
+                "WasherDryer",
+                "Parking"
+              ],
+              highlights: [
+                "HighSpeedInternetAccess",
+                "CloseToTransit"
+              ],
+              isPetsAllowed: true,
+              isParkingIncluded: false,
+              beds: 2,
+              baths: 1,
+              squareFeet: 800,
+              propertyType: "Apartment",
+              postedDate: "2023-05-15T00:00:00Z",
+              averageRating: 4.5,
+              numberOfReviews: 10,
+              locationId: 1,
+              managerCognitoId: "010be580-60a1-70ae-780e-18a6fd94ad32",
+          +   location: {
+          +     connect: LocationWhereUniqueInput
+          +   }
+            }
+          })
+
+Argument `location` is missing.
+    at wn (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at $n.handleRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6958)
+    at $n.handleAndLogRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:130:9633) {
+  clientVersion: '5.22.0'
+}
+Error seeding data for Tenant: PrismaClientValidationError: 
+Invalid `model.create()` invocation in
+/home/sassysanya/rentora/server/prisma/seed.ts:111:23
+
+  108 const model = (prisma as any)[modelNameCamel];
+  109 try {
+  110   for (const item of jsonData) {
+→ 111     await model.create({
+            data: {
+              id: 1,
+              cognitoId: "817b3540-a061-707b-742a-a28391181149",
+              name: "Carol White",
+              email: "carol.white@example.com",
+              phoneNumber: "+1 (555) 555-6666",
+              properties: {
+                connect: [
+                  {
+                    id: 5
+                  },
+                  {
+                    id: 6
+                  }
+                ]
+              },
+          +   clerkId: String
+            }
+          })
+
+Argument `clerkId` is missing.
+    at wn (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at $n.handleRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6958)
+    at $n.handleAndLogRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:130:9633) {
+  clientVersion: '5.22.0'
+}
+Error seeding data for Lease: PrismaClientValidationError: 
+Invalid `model.create()` invocation in
+/home/sassysanya/rentora/server/prisma/seed.ts:111:23
+
+  108 const model = (prisma as any)[modelNameCamel];
+  109 try {
+  110   for (const item of jsonData) {
+→ 111     await model.create({
+            data: {
+              id: 1,
+              startDate: "2023-07-01T00:00:00Z",
+              endDate: "2024-06-30T00:00:00Z",
+              rent: 1500,
+              deposit: 1500,
+              propertyId: 1,
+              tenantCognitoId: "us-east-2:98765432-90ab-cdef-1234-567890abcdef",
+          +   property: {
+          +     create: PropertyCreateWithoutLeasesInput | PropertyUncheckedCreateWithoutLeasesInput,
+          +     connectOrCreate: PropertyCreateOrConnectWithoutLeasesInput,
+          +     connect: PropertyWhereUniqueInput
+          +   }
+            }
+          })
+
+Argument `property` is missing.
+    at wn (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at $n.handleRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6958)
+    at $n.handleAndLogRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:130:9633) {
+  clientVersion: '5.22.0'
+}
+Error seeding data for Application: PrismaClientValidationError: 
+Invalid `model.create()` invocation in
+/home/sassysanya/rentora/server/prisma/seed.ts:111:23
+
+  108 const model = (prisma as any)[modelNameCamel];
+  109 try {
+  110   for (const item of jsonData) {
+→ 111     await model.create({
+            data: {
+              id: 1,
+              applicationDate: "2023-05-20T00:00:00Z",
+              status: "Approved",
+              propertyId: 1,
+              tenantCognitoId: "us-east-2:98765432-90ab-cdef-1234-567890abcdef",
+              name: "Alice Brown",
+              email: "alice.brown@example.com",
+              phoneNumber: "+1 (555) 111-2222",
+              message: "I am interested in this property.",
+              leaseId: 1,
+          +   property: {
+          +     create: PropertyCreateWithoutApplicationsInput | PropertyUncheckedCreateWithoutApplicationsInput,
+          +     connectOrCreate: PropertyCreateOrConnectWithoutApplicationsInput,
+          +     connect: PropertyWhereUniqueInput
+          +   }
+            }
+          })
+
+Argument `property` is missing.
+    at wn (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at $n.handleRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6958)
+    at $n.handleAndLogRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:130:9633) {
+  clientVersion: '5.22.0'
+}
+Error seeding data for Payment: PrismaClientKnownRequestError: 
+Invalid `model.create()` invocation in
+/home/sassysanya/rentora/server/prisma/seed.ts:111:23
+
+  108 const model = (prisma as any)[modelNameCamel];
+  109 try {
+  110   for (const item of jsonData) {
+→ 111     await model.create(
+An operation failed because it depends on one or more records that were required but not found. No 'Lease' record(s) (needed to inline the relation on 'Payment' record(s)) was found for a nested connect on one-to-many relation 'LeaseToPayment'.
+    at $n.handleRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:7315)
+    at $n.handleAndLogRequestError (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6623)
+    at $n.request (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:121:6307)
+    at async l (/home/sassysanya/rentora/server/node_modules/@prisma/client/runtime/library.js:130:9633) {
+  code: 'P2025',
+  clientVersion: '5.22.0',
+  meta: {
+    modelName: 'Payment',
+    cause: "No 'Lease' record(s) (needed to inline the relation on 'Payment' record(s)) was found for a nested connect on one-to-many relation 'LeaseToPayment'."
+  }
+}
