@@ -2,24 +2,25 @@ import { Request, Response } from "express";
 import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export const createTenant=async(req: Request,res: Response):Promise<void>=>{
-    try {
-        const {clerkId,name,email,phoneNumber}=req.body;
-        const tenant=await prisma.tenant.create({
-           data:{
+export const createManager=async(req: Request , res: Response):Promise<void>=>{
+   try {const {clerkId,name,email,phoneNumber}=req.body;
+    const manager=await prisma.manager.create({
+        data:{
             clerkId,
             name,
             email,
             phoneNumber
-           } 
-            })
-            res.status(201).json(tenant);
-    } catch (error:any) {
-        console.error("Error creating tenant:", error);
-        res.status(500).json({ message: "Internal server error", error: error.message });
-    }
+        }
+    })
+    res.status(201).json(manager);
 }
-export const getTenantById = async (req: Request, res: Response): Promise<void> => {
+catch (error:any) {
+    console.error("Error creating manager:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+}
+}
+
+export const getManagerById = async (req: Request, res: Response): Promise<void> => {
     try {
         const { clerkId } = req.params;
 
@@ -30,19 +31,17 @@ export const getTenantById = async (req: Request, res: Response): Promise<void> 
             return;
         }
 
-        const tenant = await prisma.tenant.findUnique({
+        const manager = await prisma.manager.findUnique({
             where: { clerkId: clerkId as string },
             include: {
-                favorites: true,
                 properties: true,
-                applications: true,
             },
         });
 
-        if (tenant) {
-            res.status(200).json(tenant);
+        if (manager) {
+            res.status(200).json(manager);
         } else {
-            res.status(404).json({ message: "Tenant not found" });
+            res.status(404).json({ message: "Manager not found" });
         }
     } catch (error: any) {
         console.error("Error fetching tenant:", error);
