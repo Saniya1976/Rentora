@@ -85,10 +85,10 @@ model Property {
   averageRating     Float?       @default(0)
   numberOfReviews   Int?         @default(0)
   locationId        Int
-  managerCognitoId  String
+  managerClerkId    String
 
   location     Location      @relation(fields: [locationId], references: [id])
-  manager      Manager       @relation(fields: [managerCognitoId], references: [cognitoId])
+  manager      Manager       @relation(fields: [managerClerkId], references: [clerkId])
   leases       Lease[]
   applications Application[]
   favoritedBy  Tenant[]      @relation("TenantFavorites")
@@ -97,7 +97,7 @@ model Property {
 
 model Manager {
   id          Int    @id @default(autoincrement())
-  cognitoId   String @unique
+  clerkId     String @unique
   name        String
   email       String
   phoneNumber String
@@ -107,7 +107,7 @@ model Manager {
 
 model Tenant {
   id          Int    @id @default(autoincrement())
-  cognitoId   String @unique
+  clerkId     String @unique
   name        String
   email       String
   phoneNumber String
@@ -135,7 +135,7 @@ model Application {
   applicationDate DateTime
   status          ApplicationStatus
   propertyId      Int
-  tenantCognitoId String
+  tenantClerkId String
   name            String
   email           String
   phoneNumber     String
@@ -143,7 +143,7 @@ model Application {
   leaseId         Int?              @unique
 
   property Property @relation(fields: [propertyId], references: [id])
-  tenant   Tenant   @relation(fields: [tenantCognitoId], references: [cognitoId])
+  tenant   Tenant   @relation(fields: [tenantClerkId], references: [clerkId])
   lease    Lease?   @relation(fields: [leaseId], references: [id])
 }
 
@@ -154,10 +154,10 @@ model Lease {
   rent            Float
   deposit         Float
   propertyId      Int
-  tenantCognitoId String
+  tenantClerkId String
 
   property    Property     @relation(fields: [propertyId], references: [id])
-  tenant      Tenant       @relation(fields: [tenantCognitoId], references: [cognitoId])
+  tenant      Tenant       @relation(fields: [tenantClerkId], references: [clerkId])
   application Application?
   payments    Payment[]
 }
