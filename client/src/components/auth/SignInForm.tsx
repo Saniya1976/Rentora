@@ -40,48 +40,23 @@ export default function SignInForm() {
     setError('')
 
     try {
-      // Check if there is an existing sign-in attempt and clear it if necessary
-      // This helps avoid some rate limit issues with "stale" attempts
-      const attempt = await signIn.create({
-        identifier: email,
+      // Direct sign-in with password in one step is more robust
+      const result = await signIn.create({
+        identifier: email.trim(),
+        password,
       })
 
-      const supportsPassword = attempt.supportedFirstFactors?.some(
-        (f) => f.strategy === 'password'
-      )
+      if (result.status === 'complete') {
+        await setActive({ session: result.createdSessionId })
+        router.push('/dashboard')
+        return
+      }
 
-      if (supportsPassword) {
-        const result = await attempt.attemptFirstFactor({
-          strategy: 'password',
-          password,
-        })
-
-        if (result.status === 'complete') {
-          await setActive({ session: result.createdSessionId })
-          router.push('/dashboard')
-        } else if (result.status === 'needs_first_factor') {
-          const emailCodeFactor = result.supportedFirstFactors?.find(
-            (f: any) => f.strategy === 'email_code'
-          ) as any
-          if (emailCodeFactor) {
-            await signIn.prepareFirstFactor({
-              strategy: 'email_code',
-              emailAddressId: emailCodeFactor.emailAddressId
-            })
-            setVerifying(true)
-          } else {
-            setError('Verification required. Check email.')
-          }
-        } else if (result.status === 'needs_second_factor') {
-          setError('2FA required.')
-        } else {
-          setError(`Status: ${result.status}`)
-        }
-      } else {
-        const emailCodeFactor = attempt.supportedFirstFactors?.find(
+      // If it status is not complete, it might need additional factors
+      if (result.status === 'needs_first_factor') {
+        const emailCodeFactor = result.supportedFirstFactors?.find(
           (f: any) => f.strategy === 'email_code'
         ) as any
-
         if (emailCodeFactor) {
           await signIn.prepareFirstFactor({
             strategy: 'email_code',
@@ -89,8 +64,12 @@ export default function SignInForm() {
           })
           setVerifying(true)
         } else {
-          setError('Password not supported. Use Google.')
+          setError('Verification required. Check email.')
         }
+      } else if (result.status === 'needs_second_factor') {
+        setError('2FA required.')
+      } else {
+        setError(`Status: ${result.status}`)
       }
     } catch (err: unknown) {
       console.error('Sign in error:', err)

@@ -57,8 +57,8 @@ export default function SignUpForm() {
 
     try {
       await signUp.create({
-        username,
-        emailAddress: email,
+        username: username.trim(),
+        emailAddress: email.trim(),
         password,
         unsafeMetadata: {
           role,
