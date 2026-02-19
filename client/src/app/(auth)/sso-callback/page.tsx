@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useClerk } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -8,8 +8,12 @@ import Image from 'next/image'
 export default function SSOCallbackPage() {
     const { handleRedirectCallback } = useClerk()
     const router = useRouter()
+    const called = useRef(false)
 
     useEffect(() => {
+        if (called.current) return
+        called.current = true
+
         const handleCallback = async () => {
             try {
                 await handleRedirectCallback({
@@ -18,7 +22,6 @@ export default function SSOCallbackPage() {
                 })
             } catch (err) {
                 console.error('SSO callback error:', err)
-                // Redirect to signin on error
                 router.push('/signin')
             }
         }

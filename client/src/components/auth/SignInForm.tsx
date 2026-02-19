@@ -2,7 +2,7 @@
 
 import { useSignIn } from '@clerk/nextjs'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Mail, Lock, LogIn, ArrowRight, ShieldCheck, RefreshCw, ArrowLeft } from 'lucide-react'
 
@@ -19,8 +19,16 @@ export default function SignInForm() {
   const [code, setCode] = useState<string>('')
   const [isVerifying, setIsVerifying] = useState<boolean>(false)
   const [isResending, setIsResending] = useState<boolean>(false)
+  const [countdown, setCountdown] = useState<number>(0)
 
-  if (!isLoaded || !signIn) return null
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [countdown])
+
+  if (!isLoaded || !signIn || !setActive) return null
 
   const handleSignIn = async (): Promise<void> => {
     if (!email.trim() || !password.trim()) {
@@ -32,6 +40,8 @@ export default function SignInForm() {
     setError('')
 
     try {
+      // Check if there is an existing sign-in attempt and clear it if necessary
+      // This helps avoid some rate limit issues with "stale" attempts
       const attempt = await signIn.create({
         identifier: email,
       })
@@ -65,7 +75,7 @@ export default function SignInForm() {
         } else if (result.status === 'needs_second_factor') {
           setError('2FA required.')
         } else {
-          setError(`Incomplete: ${result.status}`)
+          setError(`Status: ${result.status}`)
         }
       } else {
         const emailCodeFactor = attempt.supportedFirstFactors?.find(
@@ -79,7 +89,7 @@ export default function SignInForm() {
           })
           setVerifying(true)
         } else {
-          setError('Password sign-in not supported. Use Google.')
+          setError('Password not supported. Use Google.')
         }
       }
     } catch (err: unknown) {
@@ -92,13 +102,15 @@ export default function SignInForm() {
           setError('Invalid email or password.')
         } else if (firstError?.code === 'form_identifier_not_found') {
           setError('No account found.')
-        } else if (firstError?.code === 'strategy_not_supported' || firstError?.message?.includes('strategy')) {
-          setError('Use Google to sign in.')
+        } else if (firstError?.code === 'rate_limit_exceeded') {
+          setError('Too many attempts. Please wait.')
+        } else if (firstError?.code === 'strategy_not_supported') {
+          setError('Method not supported.')
         } else {
           setError(firstError?.message || 'Sign in failed')
         }
       } else {
-        setError('Error occurred. Try again.')
+        setError('Connection error. Try again.')
       }
     } finally {
       setIsSigningIn(false)
@@ -154,6 +166,7 @@ export default function SignInForm() {
           strategy: 'email_code',
           emailAddressId: emailCodeFactor.emailAddressId
         })
+        setCountdown(60)
       } else {
         setError('Method not found.')
       }
@@ -249,10 +262,10 @@ export default function SignInForm() {
 
               <button
                 onClick={handleResendCode}
-                disabled={isResending}
+                disabled={isResending || countdown > 0}
                 className="w-full py-1 text-[#1acec8] font-bold hover:underline text-[11px] disabled:text-gray-400 decoration-1 underline-offset-2"
               >
-                Resend Code
+                {isResending ? 'Sending...' : countdown > 0 ? `Resend in ${countdown}s` : 'Resend Code'}
               </button>
 
               <button

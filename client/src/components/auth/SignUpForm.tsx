@@ -2,7 +2,7 @@
 
 import { useSignUp } from '@clerk/nextjs'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, User, Building2, Mail, Lock, ArrowRight, ShieldCheck, RefreshCw, ArrowLeft, UserCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -25,6 +25,14 @@ export default function SignUpForm() {
   const [code, setCode] = useState<string>('')
   const [isVerifying, setIsVerifying] = useState<boolean>(false)
   const [isResending, setIsResending] = useState<boolean>(false)
+  const [countdown, setCountdown] = useState<number>(0)
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [countdown])
 
   if (!isLoaded || !signUp || !setActive) return null
 
@@ -35,12 +43,12 @@ export default function SignUpForm() {
     }
 
     if (password !== confirmPassword) {
-      setError('Mismatch')
+      setError('Passwords do not match')
       return
     }
 
     if (password.length < 8) {
-      setError('Min 8 characters')
+      setError('Password must be at least 8 characters')
       return
     }
 
@@ -67,13 +75,16 @@ export default function SignUpForm() {
       if (typeof err === 'object' && err && 'errors' in err) {
         const clerkErr = err as { errors?: { message: string; longMessage?: string; code?: string }[] }
         const firstError = clerkErr.errors?.[0]
+
         if (firstError?.code === 'form_identifier_exists') {
-          setError('Exists.')
+          setError('Email or username already exists.')
+        } else if (firstError?.code === 'rate_limit_exceeded') {
+          setError('Too many requests. Please wait.')
         } else {
-          setError(firstError?.message || 'Failed')
+          setError(firstError?.message || 'Sign up failed')
         }
       } else {
-        setError('Error occurred.')
+        setError('Connection error. Try again.')
       }
     } finally {
       setIsSigningUp(false)
@@ -98,14 +109,19 @@ export default function SignUpForm() {
         await setActive({ session: result.createdSessionId })
         router.push('/dashboard')
       } else {
-        setError('Incomplete.')
+        setError(`Status: ${result.status}`)
       }
     } catch (err: unknown) {
       console.error('Verification error:', err)
       if (typeof err === 'object' && err && 'errors' in err) {
         const clerkErr = err as { errors?: { message: string; longMessage?: string; code?: string }[] }
         const firstError = clerkErr.errors?.[0]
-        setError(firstError?.message || 'Failed')
+
+        if (firstError?.code === 'rate_limit_exceeded') {
+          setError('Too many attempts. Please wait.')
+        } else {
+          setError(firstError?.message || 'Verification failed')
+        }
       } else {
         setError('Error occurred.')
       }
@@ -122,9 +138,17 @@ export default function SignUpForm() {
       await signUp.prepareEmailAddressVerification({
         strategy: 'email_code',
       })
+      setCountdown(60)
     } catch (err: unknown) {
       console.error('Resend error:', err)
-      setError('Failed.')
+      if (typeof err === 'object' && err && 'errors' in err) {
+        const clerkErr = err as { errors?: { code?: string }[] }
+        if (clerkErr.errors?.[0]?.code === 'rate_limit_exceeded') {
+          setError('Wait before resending.')
+          return
+        }
+      }
+      setError('Resend failed.')
     } finally {
       setIsResending(false)
     }
@@ -245,7 +269,19 @@ export default function SignUpForm() {
                   <>Complete <ShieldCheck size={14} /></>
                 )}
               </button>
-              <button onClick={() => setVerifying(false)} className="w-full text-[11px] text-gray-400 font-medium">Back</button>
+              <button
+                onClick={handleResendCode}
+                disabled={isResending || countdown > 0}
+                className="w-full py-1 text-[#17B9B4] font-bold hover:underline text-[11px] disabled:text-gray-400 decoration-1 underline-offset-2"
+              >
+                {isResending ? 'Sending...' : countdown > 0 ? `Resend in ${countdown}s` : 'Resend Code'}
+              </button>
+              <button
+                onClick={() => setVerifying(false)}
+                className="w-full mt-1 flex items-center justify-center gap-1 text-gray-400 hover:text-gray-600 transition-colors text-[11px] font-medium"
+              >
+                <ArrowLeft size={12} /> Back
+              </button>
             </div>
           </div>
         ) : (
