@@ -69,8 +69,12 @@ export const createNewUserInDatabase = async (
     url: createEndpoint,
     method: "POST",
     body: {
-      cognitoId: user.id,
-      name: user.username || user.fullName || "Unknown User",
+      clerkId: user.id,
+      name: user.fullName ||
+        (user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null) ||
+        user.username ||
+        user.primaryEmailAddress?.emailAddress?.split('@')[0] ||
+        "User",
       email: user.primaryEmailAddress?.emailAddress || "",
       phoneNumber: user.primaryPhoneNumber?.phoneNumber || "",
     },

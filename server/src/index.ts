@@ -21,8 +21,8 @@ import managerRoutes from "./routes/managerRoutes";
 app.get("/", (_req, res) => {
   res.send("This is home route");
 });
-app.use("/tenant", authMiddleware(["tenant"]), tenantRoutes)
-app.use("/manager", authMiddleware(["manager"]), managerRoutes)
+app.use("/tenants", authMiddleware(["tenant", "manager"]), tenantRoutes)
+app.use("/managers", authMiddleware(["manager", "tenant"]), managerRoutes)
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

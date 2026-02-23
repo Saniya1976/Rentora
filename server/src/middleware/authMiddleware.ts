@@ -27,20 +27,40 @@ export const authMiddleware = (allowedRoles: string[]) => {
     }
 
     try {
-      const decoded = jwt.decode(token) as DecodedToken;
-      const userRole = decoded["custom:role"] || "";
+      const decoded = jwt.decode(token) as any;
+      if (!decoded) {
+        console.error("JWT decode returned null for token:", token.substring(0, 10) + "...");
+        res.status(401).json({ message: "Invalid token format" });
+        return;
+      }
+
+      // Check multiple possible locations for the role
+      const userRole =
+        decoded.role ||
+        decoded.metadata?.role ||
+        decoded.publicMetadata?.role ||
+        decoded.unsafeMetadata?.role ||
+        decoded["custom:role"] ||
+        "tenant";
+
+      console.log(`[Auth] User:${decoded.sub} Role:${userRole} Path:${req.path}`);
+
       req.user = {
-        id: decoded.sub,
-        role: userRole,
+        id: decoded.sub || "",
+        role: userRole.toLowerCase(),
       };
 
-      const hasAccess = allowedRoles.includes(userRole.toLowerCase());
+      const hasAccess = allowedRoles.map(r => r.toLowerCase()).includes(userRole.toLowerCase());
       if (!hasAccess) {
-        res.status(403).json({ message: "Access Denied" });
+        console.warn(`[Auth] Access Denied: User has ${userRole} but needs ${allowedRoles}`);
+        res.status(403).json({
+          message: "Forbidden",
+          details: `Role mismatch: User is [${userRole}] but this endpoint requires [${allowedRoles}]`
+        });
         return;
       }
     } catch (err) {
-      console.error("Failed to decode token:", err);
+      console.error("[Auth] Decode Error:", err);
       res.status(400).json({ message: "Invalid token" });
       return;
     }

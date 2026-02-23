@@ -2,19 +2,21 @@ import { Request, Response } from "express";
 import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export const createTenant=async(req: Request,res: Response):Promise<void>=>{
+export const createTenant = async (req: Request, res: Response): Promise<void> => {
     try {
-        const {clerkId,name,email,phoneNumber}=req.body;
-        const tenant=await prisma.tenant.create({
-           data:{
-            clerkId,
-            name,
-            email,
-            phoneNumber
-           } 
-            })
-            res.status(201).json(tenant);
-    } catch (error:any) {
+        const { clerkId, name, email, phoneNumber } = req.body;
+        const tenant = await prisma.tenant.upsert({
+            where: { clerkId },
+            update: {},
+            create: {
+                clerkId,
+                name,
+                email,
+                phoneNumber
+            }
+        })
+        res.status(201).json(tenant);
+    } catch (error: any) {
         console.error("Error creating tenant:", error);
         res.status(500).json({ message: "Internal server error", error: error.message });
     }

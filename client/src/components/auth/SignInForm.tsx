@@ -161,7 +161,7 @@ export default function SignInForm() {
     try {
       signIn.authenticateWithRedirect({
         strategy: 'oauth_google',
-        redirectUrl: '/sso-callback',
+        redirectUrl: '/sso-callback?prompt=select_account',
         redirectUrlComplete: '/dashboard',
       })
     } catch (err) {

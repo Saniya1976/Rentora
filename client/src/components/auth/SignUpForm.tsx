@@ -14,6 +14,8 @@ export default function SignUpForm() {
   const router = useRouter()
 
   const [role, setRole] = useState<UserRole>('tenant')
+  const [firstName, setFirstName] = useState<string>('')
+  const [lastName, setLastName] = useState<string>('')
   const [username, setUsername] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -36,8 +38,16 @@ export default function SignUpForm() {
 
   if (!isLoaded || !signUp || !setActive) return null
 
+  const resetState = () => {
+    setVerifying(false)
+    setIsSigningUp(false)
+    setIsVerifying(false)
+    setError('')
+    setCode('')
+  }
+
   const handleSignUp = async (): Promise<void> => {
-    if (!username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
+    if (!firstName.trim() || !lastName.trim() || !username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
       setError('Fill all fields')
       return
     }
@@ -56,30 +66,46 @@ export default function SignUpForm() {
     setError('')
 
     try {
-      await signUp.create({
-        username: username.trim(),
+      const signUpParams: any = {
         emailAddress: email.trim(),
         password,
+        username: username.trim().toLowerCase(),
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
         unsafeMetadata: {
           role,
         },
-      })
+      }
 
-      await signUp.prepareEmailAddressVerification({
-        strategy: 'email_code',
-      })
+      console.log('Starting sign up with params:', signUpParams)
 
-      setVerifying(true)
+      // If we are already in a signup session, we might need to reset or continue
+      // but for simplicity in custom flows, it's often better to just create
+      const result = await signUp.create(signUpParams)
+
+      if (result.status === 'missing_requirements') {
+        const prepareResult = await signUp.prepareEmailAddressVerification({
+          strategy: 'email_code',
+        })
+        console.log('Prepare verification result:', prepareResult)
+        setVerifying(true)
+      } else if (result.status === 'complete') {
+        await setActive({ session: result.createdSessionId })
+        router.push('/dashboard')
+      }
     } catch (err: unknown) {
       console.error('Sign up error:', err)
+
       if (typeof err === 'object' && err && 'errors' in err) {
-        const clerkErr = err as { errors?: { message: string; longMessage?: string; code?: string }[] }
+        const clerkErr = err as { errors?: { code: string; message: string; meta?: any }[] }
         const firstError = clerkErr.errors?.[0]
 
         if (firstError?.code === 'form_identifier_exists') {
-          setError('Email or username already exists.')
+          setError('Email or username already exists. Try signing in.')
         } else if (firstError?.code === 'rate_limit_exceeded') {
-          setError('Too many requests. Please wait.')
+          setError('Too many attempts. Please wait a few minutes.')
+        } else if (firstError?.code === 'form_parameter_unknown' || firstError?.message?.includes('is unknown')) {
+          setError(`Clerk setting error: The ${firstError?.meta?.name || 'field'} is disabled in your dashboard.`)
         } else {
           setError(firstError?.message || 'Sign up failed')
         }
@@ -105,23 +131,42 @@ export default function SignUpForm() {
         code,
       })
 
+      console.log('Verification result:', result)
+
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
         router.push('/dashboard')
+      } else if (result.status === 'missing_requirements') {
+        const missing = result.missingFields?.join(', ') || 'unknown'
+        const unverified = result.unverifiedFields?.join(', ') || ''
+        setError(`Email verified but missing info: ${missing}${unverified ? ` | Unverified: ${unverified}` : ''}`)
       } else {
         setError(`Status: ${result.status}`)
       }
     } catch (err: unknown) {
       console.error('Verification error:', err)
+
+      // If already verified, try to proceed based on current status
       if (typeof err === 'object' && err && 'errors' in err) {
-        const clerkErr = err as { errors?: { message: string; longMessage?: string; code?: string }[] }
+        const clerkErr = err as { errors?: { code: string; message: string }[] }
         const firstError = clerkErr.errors?.[0]
 
-        if (firstError?.code === 'rate_limit_exceeded') {
-          setError('Too many attempts. Please wait.')
-        } else {
-          setError(firstError?.message || 'Verification failed')
+        const isAlreadyVerified =
+          firstError?.code === 'verification_already_verified' ||
+          firstError?.message?.toLowerCase().includes('already been verified')
+
+        if (isAlreadyVerified) {
+          if (signUp.status === 'complete') {
+            await setActive({ session: signUp.createdSessionId })
+            router.push('/dashboard')
+            return
+          } else if (signUp.status === 'missing_requirements') {
+            const missing = signUp.missingFields?.join(', ') || 'unknown'
+            setError(`Email already verified. Missing: ${missing}`)
+            return
+          }
         }
+        setError(firstError?.message || 'Verification failed')
       } else {
         setError('Error occurred.')
       }
@@ -158,7 +203,7 @@ export default function SignUpForm() {
     try {
       signUp.authenticateWithRedirect({
         strategy: 'oauth_google',
-        redirectUrl: '/sso-callback',
+        redirectUrl: '/sso-callback?prompt=select_account',
         redirectUrlComplete: '/dashboard',
         unsafeMetadata: {
           role,
@@ -182,6 +227,7 @@ export default function SignUpForm() {
 
   return (
     <div className="w-full max-w-[340px] backdrop-blur-3xl bg-white/70 rounded-[28px] p-6 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border border-white/40 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+      <div id="clerk-captcha" className="hidden" />
       <div className="absolute -top-16 -right-16 w-32 h-32 bg-[#1acec8]/10 rounded-full blur-xl pointer-events-none" />
 
       <div className="relative z-10">
@@ -277,16 +323,43 @@ export default function SignUpForm() {
                 {isResending ? 'Sending...' : countdown > 0 ? `Resend in ${countdown}s` : 'Resend Code'}
               </button>
               <button
-                onClick={() => setVerifying(false)}
+                onClick={resetState}
                 className="w-full mt-1 flex items-center justify-center gap-1 text-gray-400 hover:text-gray-600 transition-colors text-[11px] font-medium"
               >
-                <ArrowLeft size={12} /> Back
+                <ArrowLeft size={12} /> Start Over
               </button>
             </div>
           </div>
         ) : (
           <>
-            <div className="space-y-2 mb-5">
+            <div className="space-y-2 mb-5 text-black">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="group relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#17B9B4] transition-colors">
+                    <User size={13} />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="First Name"
+                    className="w-full pl-8 pr-3 py-2 bg-gray-50/50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] focus:bg-white transition-all text-gray-900 text-[13px] font-medium placeholder:text-gray-400"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </div>
+                <div className="group relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#17B9B4] transition-colors">
+                    <User size={13} />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Last Name"
+                    className="w-full pl-8 pr-3 py-2 bg-gray-50/50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] focus:bg-white transition-all text-gray-900 text-[13px] font-medium placeholder:text-gray-400"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </div>
+              </div>
+
               <div className="group relative">
                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#17B9B4] transition-colors">
                   <UserCircle size={15} />

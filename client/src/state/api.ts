@@ -71,11 +71,35 @@ export const api = createApi({
             return { error: { status: 401, data: "User not logged in" } };
           }
 
+          // Pick only serializable fields for Redux
+          const serializedUser = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            username: user.username,
+            imageUrl: user.imageUrl,
+            primaryEmailAddressId: user.primaryEmailAddressId,
+            emailAddresses: user.emailAddresses.map((e: any) => ({
+              emailAddress: e.emailAddress,
+              id: e.id
+            })),
+            publicMetadata: user.publicMetadata,
+            unsafeMetadata: user.unsafeMetadata,
+          };
+
           const userRole =
-            (user.unsafeMetadata?.role as string) || "tenant";
+            (user.publicMetadata?.role as string) ||
+            (user.unsafeMetadata?.role as string) ||
+            "tenant";
+
+          console.log(`[API] Detected Role for ${user.id}:`, {
+            role: userRole,
+            public: user.publicMetadata,
+            unsafe: user.unsafeMetadata
+          });
 
           const endpoint =
-            userRole === "manager"
+            userRole.toLowerCase() === "manager"
               ? `/managers/${user.id}`
               : `/tenants/${user.id}`;
 
@@ -85,17 +109,20 @@ export const api = createApi({
             userDetailsResponse.error &&
             (userDetailsResponse.error as any).status === 404
           ) {
+            console.log(`[API] User not found in ${userRole} table, creating...`);
             userDetailsResponse = await createNewUserInDatabase(
               user,
               null,
               userRole,
               fetchWithBQ
             );
+          } else if (userDetailsResponse.error) {
+            return { error: userDetailsResponse.error as any };
           }
 
           return {
             data: {
-              cognitoInfo: { ...user },
+              cognitoInfo: serializedUser,
               userInfo: userDetailsResponse.data as Tenant | Manager,
               userRole,
             },
@@ -139,12 +166,12 @@ export const api = createApi({
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({
-                type: "Properties" as const,
-                id,
-              })),
-              { type: "Properties", id: "LIST" },
-            ]
+            ...result.map(({ id }) => ({
+              type: "Properties" as const,
+              id,
+            })),
+            { type: "Properties", id: "LIST" },
+          ]
           : [{ type: "Properties", id: "LIST" }],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
@@ -190,12 +217,12 @@ export const api = createApi({
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({
-                type: "Properties" as const,
-                id,
-              })),
-              { type: "Properties", id: "LIST" },
-            ]
+            ...result.map(({ id }) => ({
+              type: "Properties" as const,
+              id,
+            })),
+            { type: "Properties", id: "LIST" },
+          ]
           : [{ type: "Properties", id: "LIST" }],
     }),
 
