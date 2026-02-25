@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from './ui/button'
 import { SignedIn, SignedOut, UserButton, SignOutButton } from '@clerk/nextjs'
-import { LayoutDashboard, Settings, LogOut, Menu, Search } from 'lucide-react'
+import { LayoutDashboard, Settings, LogOut, Menu, Search, Bell, MessageCircle } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import {
   Sheet,
@@ -124,6 +124,21 @@ const Navbar = () => {
                 <SearchBar />
               </div>
             )}
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" className="text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/5 transition-all rounded-xl relative group">
+                <MessageCircle className="w-5 h-5" />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Button>
+              <div className="relative group">
+                <Button variant="ghost" size="icon" className="text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/5 transition-all rounded-xl">
+                  <Bell className="w-5 h-5" />
+                </Button>
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white" />
+              </div>
+            </div>
+
+            <div className="h-6 w-px bg-gray-100 mx-2" />
+
             <NavLinks />
             <UserButton
               afterSignOutUrl="/"
@@ -144,6 +159,14 @@ const Navbar = () => {
                 <SearchBar />
               </div>
             )}
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" className="text-gray-600 hover:text-[#1acec8] transition-all">
+                <MessageCircle className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="icon" className="text-gray-600 hover:text-[#1acec8] transition-all">
+                <Bell className="w-5 h-5" />
+              </Button>
+            </div>
             <UserButton
               afterSignOutUrl="/"
               appearance={{
