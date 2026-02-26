@@ -18,10 +18,10 @@ const containerVariants: Variants = {
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.6, ease: "easeOut" } 
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" }
   },
 };
 
@@ -32,18 +32,18 @@ const DiscoverSection = () => {
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
       variants={containerVariants}
-      className="py-24 bg-white"
+      className="py-24 bg-white dark:bg-neutral-900 transition-colors duration-300"
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tighter leading-[1.1]">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-neutral-100 tracking-tighter leading-[1.1]">
             Discover your <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#14ced2] to-[#08babd]">
               dream rental property
             </span>
           </h2>
-          <p className="text-slate-600 text-lg font-medium opacity-90 leading-relaxed">
-            Searching for your dream rental has never been easier. With our user-friendly 
+          <p className="text-slate-600 dark:text-neutral-400 text-lg font-medium opacity-90 leading-relaxed">
+            Searching for your dream rental has never been easier. With our user-friendly
             feature set, you can find the perfect home that meets all your needs.
           </p>
         </motion.div>
@@ -90,16 +90,16 @@ const DiscoverCard = ({
   description: string;
   action: string;
 }) => (
-  <div className="group relative bg-white p-10 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-50 hover:shadow-[0_30px_60px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-2 text-center flex flex-col items-center h-full">
+  <div className="group relative bg-white dark:bg-neutral-800 p-10 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.04)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] border border-slate-50 dark:border-white/5 hover:shadow-[0_30px_60px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_30px_60px_rgba(0,0,0,0.6)] transition-all duration-500 hover:-translate-y-2 text-center flex flex-col items-center h-full">
     <div className="w-16 h-16 mb-8 rounded-2xl bg-gradient-to-br from-[#0dc1c4] to-[#09c4c7] flex items-center justify-center text-white shadow-lg shadow-[#009698]/20 group-hover:scale-110 transition-transform duration-300">
       {icon}
     </div>
 
-    <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">
+    <h3 className="text-2xl font-bold text-slate-900 dark:text-neutral-100 mb-4 tracking-tight transition-colors">
       {title}
     </h3>
-    
-    <p className="text-slate-500 font-medium leading-relaxed mb-8">
+
+    <p className="text-slate-500 dark:text-neutral-400 font-medium leading-relaxed mb-8 transition-colors">
       {description}
     </p>
 

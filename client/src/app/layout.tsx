@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 }
 
 import StoreProvider from '@/state/redux'
+import { ThemeProvider } from '@/components/providers/ThemeProvider'
 
 export default function RootLayout({
   children,
@@ -30,11 +31,18 @@ export default function RootLayout({
       signInFallbackRedirectUrl="/dashboard"
       signUpFallbackRedirectUrl="/dashboard"
     >
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <StoreProvider>{children}</StoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <StoreProvider>{children}</StoreProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

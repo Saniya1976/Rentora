@@ -6,24 +6,40 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from './ui/button'
 import { SignedIn, SignedOut, UserButton, SignOutButton } from '@clerk/nextjs'
-import { LayoutDashboard, Settings, LogOut, Menu, Search, Bell, MessageCircle } from 'lucide-react'
+import { LayoutDashboard, Settings, LogOut, Menu, Search, Bell, MessageCircle, Sun, Moon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { useTheme } from 'next-themes'
+import { cn } from '@/lib/utils'
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
 
 const Navbar = () => {
   const pathname = usePathname();
+  const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
   const isDashboardPage = pathname.includes('dashboard');
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const ThemeToggle = () => (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="text-gray-700 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11"
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+    >
+      <Sun className="h-7 w-7 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-7 w-7 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span className="sr-only">Toggle theme</span>
+    </Button>
+  );
 
   const SearchBar = () => (
     <div className="relative group max-w-md w-full">
@@ -39,23 +55,36 @@ const Navbar = () => {
   );
 
   const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
-    <div className={mobile ? "flex flex-col gap-4 mt-8" : "flex items-center gap-6"}>
-      <Link
-        href="/dashboard"
-        className="text-gray-600 font-bold hover:text-[#1acec8] transition-all flex items-center gap-2"
-      >
-        <LayoutDashboard className="w-5 h-5" />
-        <span>Dashboard</span>
+    <div className={mobile ? "flex flex-col gap-1 w-full" : "flex items-center gap-6"}>
+      <Link href="/dashboard" className="w-full md:w-auto">
+        <div className={cn(
+          "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold",
+          mobile
+            ? "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
+            : "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
+        )}>
+          <LayoutDashboard className="w-5 h-5" />
+          <span>Dashboard</span>
+        </div>
       </Link>
-      <Link
-        href="/settings"
-        className="text-gray-600 font-bold hover:text-[#1acec8] transition-all flex items-center gap-2"
-      >
-        <Settings className="w-5 h-5" />
-        <span>Settings</span>
+      <Link href="/settings" className="w-full md:w-auto">
+        <div className={cn(
+          "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold",
+          mobile
+            ? "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
+            : "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
+        )}>
+          <Settings className="w-5 h-5" />
+          <span>Settings</span>
+        </div>
       </Link>
       <SignOutButton>
-        <button className="text-gray-600 font-bold hover:text-[#1acec8] transition-all flex items-center gap-2 cursor-pointer w-full text-left">
+        <button className={cn(
+          "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold cursor-pointer text-left",
+          mobile
+            ? "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
+            : "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
+        )}>
           <LogOut className="w-5 h-5" />
           <span>Sign Out</span>
         </button>
@@ -87,10 +116,10 @@ const Navbar = () => {
 
   return (
     <div
-      className="fixed top-0 left-0 w-full z-50 border-b border-gray-100 shadow-sm"
+      className="fixed top-0 left-0 w-full z-50 border-b border-gray-100 dark:border-white/10 shadow-sm transition-colors duration-300"
       style={{ height: `${NAVBAR_HEIGHT}px` }}
     >
-      <div className="flex justify-between items-center w-full h-full px-4 md:px-10 bg-white text-black">
+      <div className="flex justify-between items-center w-full h-full px-4 md:px-10 bg-white dark:bg-neutral-950 text-black dark:text-white transition-colors duration-300">
         <Link href="/" className="flex items-center" scroll={false}>
           <Image
             src="/mylogorentora.png"
@@ -98,7 +127,7 @@ const Navbar = () => {
             width={140}
             height={40}
             priority
-            className="object-contain w-auto h-auto md:w-[160px]"
+            className="object-contain w-auto h-auto md:w-[160px] dark:brightness-110"
           />
         </Link>
 
@@ -106,13 +135,13 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-6">
           <SignedOut>
             <Link href="/signin">
-              <Button variant="ghost" className="px-6 py-2 rounded-xl text-gray-600 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/5 transition-all">
+              <Button variant="ghost" className="px-6 py-2 rounded-xl text-gray-600 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all">
                 Sign In
               </Button>
             </Link>
 
             <Link href="/signup">
-              <Button className="px-6 py-2 rounded-xl bg-[#1acec8] text-white font-bold hover:bg-[#15b8b3] shadow-[0_4px_10px_rgba(26,206,200,0.2)] transition-all">
+              <Button className="px-6 py-2 rounded-xl bg-[#1acec8] text-white font-bold hover:bg-[#15b8b3] hover:shadow-[0_6px_15px_rgba(26,206,200,0.3)] shadow-[0_4px_10px_rgba(26,206,200,0.2)] transition-all">
                 Sign Up
               </Button>
             </Link>
@@ -124,16 +153,16 @@ const Navbar = () => {
                 <SearchBar />
               </div>
             )}
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/5 transition-all rounded-xl relative group">
-                <MessageCircle className="w-5 h-5" />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl relative group w-11 h-11">
+                <MessageCircle className="w-7 h-7" strokeWidth={2.2} />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
               <div className="relative group">
-                <Button variant="ghost" size="icon" className="text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/5 transition-all rounded-xl">
-                  <Bell className="w-5 h-5" />
+                <Button variant="ghost" size="icon" className="text-gray-700 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11">
+                  <Bell className="w-7 h-7" strokeWidth={2.2} />
                 </Button>
-                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white" />
+                <span className="absolute top-3 right-3 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white" />
               </div>
             </div>
 
@@ -149,6 +178,10 @@ const Navbar = () => {
               }}
             />
           </SignedIn>
+
+          <div className="flex items-center ml-2 border-l border-gray-100 pl-4">
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Mobile Nav */}
@@ -160,67 +193,61 @@ const Navbar = () => {
               </div>
             )}
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="text-gray-600 hover:text-[#1acec8] transition-all">
-                <MessageCircle className="w-5 h-5" />
+              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-[#1acec8] hover:bg-[#1acec8]/5 transition-all w-10 h-10 rounded-xl">
+                <MessageCircle className="w-7 h-7" strokeWidth={2.2} />
               </Button>
-              <Button variant="ghost" size="icon" className="text-gray-600 hover:text-[#1acec8] transition-all">
-                <Bell className="w-5 h-5" />
+              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-[#1acec8] hover:bg-[#1acec8]/5 transition-all w-10 h-10 rounded-xl">
+                <Bell className="w-7 h-7" strokeWidth={2.2} />
               </Button>
+              <UserButton
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8 border-2 border-[#1acec8]/20"
+                  }
+                }}
+              />
             </div>
-            <UserButton
-              afterSignOutUrl="/"
-              appearance={{
-                elements: {
-                  avatarBox: "w-8 h-8 border-2 border-[#1acec8]/20"
-                }
-              }}
-            />
           </SignedIn>
 
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
-                <Menu className="w-6 h-6 text-gray-600" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px]">
-              <SheetHeader>
-                <SheetTitle className="text-left">
-                  <Image
-                    src="/mylogorentora.png"
-                    alt="Rentora Logo"
-                    width={120}
-                    height={35}
-                    className="object-contain"
-                  />
-                </SheetTitle>
-              </SheetHeader>
+          <div>
+            <ThemeToggle />
+          </div>
 
-              <div className="mt-8 flex flex-col gap-4">
-                <SignedOut>
-                  <Link href="/signin">
-                    <Button variant="outline" className="w-full justify-start rounded-xl font-bold">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="hover:bg-[#1acec8]/10 hover:text-[#1acec8] rounded-xl transition-all">
+                <Menu className="w-6 h-6" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[280px] p-2 rounded-2xl shadow-xl border-gray-100 dark:border-white/10 bg-white dark:bg-neutral-900 mt-2">
+              <SignedOut>
+                <div className="p-2 flex flex-col gap-2">
+                  <Link href="/signin" className="w-full">
+                    <Button variant="outline" className="w-full justify-center rounded-xl font-bold border-gray-200 dark:border-white/10 dark:text-white hover:bg-[#1acec8]/5 hover:text-[#1acec8] hover:border-[#1acec8]/30 transition-all">
                       Sign In
                     </Button>
                   </Link>
-                  <Link href="/signup">
-                    <Button className="w-full justify-start rounded-xl bg-[#1acec8] text-white font-bold hover:bg-[#15b8b3]">
+                  <Link href="/signup" className="w-full">
+                    <Button className="w-full justify-center rounded-xl bg-[#1acec8] text-white font-bold hover:bg-[#15b8b3] transition-all">
                       Sign Up
                     </Button>
                   </Link>
-                </SignedOut>
+                </div>
+              </SignedOut>
 
-                <SignedIn>
-                  {isDashboardPage && (
-                    <div className="px-1 mb-4">
-                      <SearchBar />
-                    </div>
-                  )}
+              <SignedIn>
+                {isDashboardPage && (
+                  <div className="px-2 py-2 mb-2">
+                    <SearchBar />
+                  </div>
+                )}
+                <div className="p-1">
                   <NavLinks mobile />
-                </SignedIn>
-              </div>
-            </SheetContent>
-          </Sheet>
+                </div>
+              </SignedIn>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>

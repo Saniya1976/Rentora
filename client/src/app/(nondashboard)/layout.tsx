@@ -8,7 +8,7 @@ import { useGetAuthUserQuery } from '@/state/api'
 const layout = ({ children }: { children: React.ReactNode }) => {
   const { data: authUser } = useGetAuthUserQuery();
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-neutral-950 transition-colors duration-300">
       <Navbar />
       <main
         className="flex-grow w-full"

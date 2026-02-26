@@ -226,21 +226,21 @@ export default function SignUpForm() {
   }
 
   return (
-    <div className="w-full max-w-[340px] backdrop-blur-3xl bg-white/70 rounded-[28px] p-6 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border border-white/40 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+    <div className="w-full max-w-[340px] backdrop-blur-3xl bg-white/70 dark:bg-neutral-900/80 rounded-[28px] p-6 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border border-white/40 dark:border-white/5 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500 transition-colors">
       <div id="clerk-captcha" className="hidden" />
       <div className="absolute -top-16 -right-16 w-32 h-32 bg-[#1acec8]/10 rounded-full blur-xl pointer-events-none" />
 
       <div className="relative z-10">
         <div className="text-center mb-6">
-          <h2 className="text-xl font-black tracking-tighter text-gray-900 mb-0.5">
+          <h2 className="text-xl font-black tracking-tighter text-gray-900 dark:text-neutral-100 mb-0.5 transition-colors">
             RENT<span className="text-[#17B9B4]">ORA</span>
           </h2>
           <div className="h-0.5 w-6 bg-[#17B9B4] rounded-full mx-auto" />
         </div>
 
         <div className="space-y-1 mb-5 text-center">
-          <h1 className="text-lg font-bold text-gray-900 tracking-tight">Create Account</h1>
-          <p className="text-[12px] text-gray-500 font-medium">Join Rentora to start</p>
+          <h1 className="text-lg font-bold text-gray-900 dark:text-neutral-100 tracking-tight transition-colors">Create Account</h1>
+          <p className="text-[12px] text-gray-500 dark:text-neutral-400 font-medium transition-colors">Join Rentora to start</p>
         </div>
 
         {/* Role Selection - Side by Side and Small */}
@@ -252,7 +252,7 @@ export default function SignUpForm() {
                 "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl border-2 transition-all duration-300",
                 role === 'tenant'
                   ? "border-[#17B9B4] bg-[#17B9B4]/10 text-[#17B9B4]"
-                  : "border-gray-50 bg-gray-50 text-gray-400 hover:border-gray-100"
+                  : "border-gray-50 bg-gray-50 dark:border-white/5 dark:bg-neutral-800 text-gray-400 hover:border-gray-100 dark:hover:border-white/10"
               )}
             >
               <User size={14} className={role === 'tenant' ? "text-[#17B9B4]" : "text-gray-400"} />
@@ -265,7 +265,7 @@ export default function SignUpForm() {
                 "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl border-2 transition-all duration-300",
                 role === 'manager'
                   ? "border-[#17B9B4] bg-[#17B9B4]/10 text-[#17B9B4]"
-                  : "border-gray-50 bg-gray-50 text-gray-400 hover:border-gray-100"
+                  : "border-gray-50 bg-gray-50 dark:border-white/5 dark:bg-neutral-800 text-gray-400 hover:border-gray-100 dark:hover:border-white/10"
               )}
             >
               <Building2 size={14} className={role === 'manager' ? "text-[#17B9B4]" : "text-gray-400"} />
@@ -281,15 +281,15 @@ export default function SignUpForm() {
                 <div className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-[#17B9B4]/10 text-[#17B9B4] mb-2">
                   <Mail size={16} />
                 </div>
-                <h2 className="text-md font-bold text-gray-900">Verify</h2>
-                <p className="text-[11px] text-gray-500">Code sent to {email}</p>
+                <h2 className="text-md font-bold text-gray-900 dark:text-neutral-100 transition-colors">Verify</h2>
+                <p className="text-[11px] text-gray-500 dark:text-neutral-400 transition-colors">Code sent to {email}</p>
               </div>
 
               <input
                 type="text"
                 maxLength={6}
                 placeholder="000000"
-                className="w-full text-center text-xl tracking-[0.2em] font-bold py-2.5 bg-gray-50/50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#17B9B4]/20 focus:border-[#17B9B4] focus:bg-white transition-all text-gray-900"
+                className="w-full text-center text-xl tracking-[0.2em] font-bold py-2.5 bg-gray-50/50 dark:bg-neutral-800/50 border border-gray-100 dark:border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#17B9B4]/20 focus:border-[#17B9B4] focus:bg-white dark:focus:bg-neutral-800 transition-all text-gray-900 dark:text-neutral-100"
                 value={code}
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 onKeyDown={handleKeyDown}
@@ -452,7 +452,7 @@ export default function SignUpForm() {
 
               <button
                 onClick={googleSignUp}
-                className="w-full py-2.5 bg-white border border-gray-100 rounded-xl font-bold text-gray-700 hover:bg-gray-50 transition-all flex items-center justify-center gap-2 shadow-sm border-b-2 active:border-b-0 active:translate-y-0.5"
+                className="w-full py-2.5 bg-white dark:bg-neutral-800 border border-gray-100 dark:border-white/5 rounded-xl font-bold text-gray-700 dark:text-neutral-200 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-all flex items-center justify-center gap-2 shadow-sm border-b-2 active:border-b-0 active:translate-y-0.5"
               >
                 <Image src="/google.png" alt="Google" width={14} height={14} />
                 <span className="text-[13px]">Google</span>
