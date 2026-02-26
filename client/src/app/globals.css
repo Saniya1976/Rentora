@@ -33,6 +33,8 @@
   --color-primary-700: hsl(221.2 83.2% 30%);
   --color-primary-800: hsl(221.2 83.2% 20%);
   --color-primary-900: hsl(221.2 83.2% 10%);
+
+  --font-cute: var(--font-outfit);
 }
 
 
@@ -50,8 +52,12 @@ body,
   height: 100%;
   width: 100%;
   @apply text-sm;
-  @apply bg-white;
-  @apply dark:bg-black;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
 
 @layer base {

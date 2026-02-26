@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from './ui/button'
 import { SignedIn, SignedOut, UserButton, SignOutButton } from '@clerk/nextjs'
-import { LayoutDashboard, Settings, LogOut, Menu, Search, Bell, MessageCircle, Sun, Moon } from 'lucide-react'
+import { LayoutDashboard, Settings, LogOut, Menu, Search, Bell, MessageCircle, Sun, Moon, HouseHeart } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
@@ -20,7 +20,7 @@ import {
 
 const Navbar = () => {
   const pathname = usePathname();
-  const { setTheme, theme } = useTheme();
+  const { setTheme, theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
   const isDashboardPage = pathname.includes('dashboard');
 
@@ -32,8 +32,8 @@ const Navbar = () => {
     <Button
       variant="ghost"
       size="icon"
-      className="text-gray-700 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11"
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11"
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
     >
       <Sun className="h-7 w-7 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute h-7 w-7 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -99,15 +99,13 @@ const Navbar = () => {
         style={{ height: `${NAVBAR_HEIGHT}px` }}
       >
         <div className="flex justify-between items-center w-full h-full px-4 md:px-10">
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/mylogorentora.png"
-              alt="Rentora Logo"
-              width={140}
-              height={40}
-              priority
-              className="object-contain w-auto h-auto md:w-[160px]"
-            />
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="p-1.5 transition-all">
+              <HouseHeart className="w-6 h-6 text-black dark:text-white" />
+            </div>
+            <span className="text-xl font-bold tracking-wider font-cute text-black dark:text-white">
+              RENTORA
+            </span>
           </Link>
         </div>
       </div>
@@ -120,15 +118,13 @@ const Navbar = () => {
       style={{ height: `${NAVBAR_HEIGHT}px` }}
     >
       <div className="flex justify-between items-center w-full h-full px-4 md:px-10 bg-white dark:bg-neutral-950 text-black dark:text-white transition-colors duration-300">
-        <Link href="/" className="flex items-center" scroll={false}>
-          <Image
-            src="/mylogorentora.png"
-            alt="Rentora Logo"
-            width={140}
-            height={40}
-            priority
-            className="object-contain w-auto h-auto md:w-[160px] dark:brightness-110"
-          />
+        <Link href="/" className="flex items-center gap-2 group" scroll={false}>
+          <div className="p-2 transition-all">
+            <HouseHeart className="w-7 h-7 text-black dark:text-white" />
+          </div>
+          <span className="text-2xl font-bold tracking-wider font-cute text-black dark:text-white">
+            RENTORA
+          </span>
         </Link>
 
         {/* Desktop Nav */}
@@ -192,13 +188,7 @@ const Navbar = () => {
                 <SearchBar />
               </div>
             )}
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-[#1acec8] hover:bg-[#1acec8]/5 transition-all w-10 h-10 rounded-xl">
-                <MessageCircle className="w-7 h-7" strokeWidth={2.2} />
-              </Button>
-              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-[#1acec8] hover:bg-[#1acec8]/5 transition-all w-10 h-10 rounded-xl">
-                <Bell className="w-7 h-7" strokeWidth={2.2} />
-              </Button>
+            <div className="flex items-center">
               <UserButton
                 afterSignOutUrl="/"
                 appearance={{
@@ -210,10 +200,6 @@ const Navbar = () => {
             </div>
           </SignedIn>
 
-          <div>
-            <ThemeToggle />
-          </div>
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="hover:bg-[#1acec8]/10 hover:text-[#1acec8] rounded-xl transition-all">
@@ -221,6 +207,23 @@ const Navbar = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[280px] p-2 rounded-2xl shadow-xl border-gray-100 dark:border-white/10 bg-white dark:bg-neutral-900 mt-2">
+              <div className="p-1">
+                <div className="flex items-center justify-between px-2 py-2 mb-2 bg-gray-50 dark:bg-neutral-800/50 rounded-xl">
+                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-2">App Settings</span>
+                  <div className="flex items-center gap-1">
+                    <SignedIn>
+                      <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-lg h-9 w-9">
+                        <MessageCircle className="w-5 h-5" strokeWidth={2.2} />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-lg h-9 w-9">
+                        <Bell className="w-5 h-5" strokeWidth={2.2} />
+                      </Button>
+                    </SignedIn>
+                    <ThemeToggle />
+                  </div>
+                </div>
+              </div>
+
               <SignedOut>
                 <div className="p-2 flex flex-col gap-2">
                   <Link href="/signin" className="w-full">
