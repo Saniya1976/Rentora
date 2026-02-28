@@ -29,7 +29,7 @@ const FeaturesSection = () => {
       whileInView="visible"
       viewport={{ once: true }}
       variants={containerVariants}
-      className="py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-linear-to-b from-gray-50 to-white dark:from-neutral-950 dark:to-neutral-900 transition-colors duration-300"
+      className="py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-linear-to-b from-gray-50 to-white dark:from-neutral-900 dark:to-neutral-800 transition-colors duration-300"
     >
       <div className="max-w-4xl xl:max-w-6xl mx-auto">
         <motion.div variants={itemVariants} className="text-center mb-16">

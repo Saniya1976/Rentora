@@ -28,18 +28,28 @@ const Navbar = () => {
     setMounted(true);
   }, []);
 
-  const ThemeToggle = () => (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11"
-      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-    >
-      <Sun className="h-7 w-7 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-7 w-7 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      <span className="sr-only">Toggle theme</span>
-    </Button>
-  );
+  const ThemeToggle = () => {
+    const isDark = resolvedTheme === 'dark';
+
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11"
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      >
+        <Sun className={cn(
+          "h-7 w-7 transition-all",
+          isDark ? "-rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"
+        )} />
+        <Moon className={cn(
+          "absolute h-7 w-7 transition-all",
+          isDark ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-0 opacity-0"
+        )} />
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+    );
+  };
 
   const SearchBar = () => (
     <div className="relative group max-w-md w-full">
@@ -49,7 +59,7 @@ const Navbar = () => {
       <input
         type="text"
         placeholder="Search..."
-        className="block w-full pl-10 pr-3 py-2 border border-gray-100 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] transition-all bg-gray-50/50"
+        className="block w-full pl-10 pr-3 py-2 border border-gray-100 dark:border-white/10 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] transition-all bg-gray-50/50 dark:bg-neutral-800/50 text-gray-900 dark:text-gray-100"
       />
     </div>
   );
@@ -60,8 +70,8 @@ const Navbar = () => {
         <div className={cn(
           "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold",
           mobile
-            ? "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
-            : "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
+            ? "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
+            : "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
         )}>
           <LayoutDashboard className="w-5 h-5" />
           <span>Dashboard</span>
@@ -71,8 +81,8 @@ const Navbar = () => {
         <div className={cn(
           "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold",
           mobile
-            ? "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
-            : "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
+            ? "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
+            : "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
         )}>
           <Settings className="w-5 h-5" />
           <span>Settings</span>
@@ -82,8 +92,8 @@ const Navbar = () => {
         <button className={cn(
           "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold cursor-pointer text-left",
           mobile
-            ? "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
-            : "text-gray-600 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
+            ? "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
+            : "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
         )}>
           <LogOut className="w-5 h-5" />
           <span>Sign Out</span>
@@ -117,7 +127,7 @@ const Navbar = () => {
       className="fixed top-0 left-0 w-full z-50 border-b border-gray-100 dark:border-white/10 shadow-sm transition-colors duration-300"
       style={{ height: `${NAVBAR_HEIGHT}px` }}
     >
-      <div className="flex justify-between items-center w-full h-full px-4 md:px-10 bg-white dark:bg-neutral-950 text-black dark:text-white transition-colors duration-300">
+      <div className="flex justify-between items-center w-full h-full px-4 md:px-10 bg-white dark:bg-neutral-900 text-black dark:text-white transition-colors duration-300">
         <Link href="/" className="flex items-center gap-2 group" scroll={false}>
           <div className="p-2 transition-all">
             <HouseHeart className="w-7 h-7 text-black dark:text-white" />
@@ -131,7 +141,7 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-6">
           <SignedOut>
             <Link href="/signin">
-              <Button variant="ghost" className="px-6 py-2 rounded-xl text-gray-600 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all">
+              <Button variant="ghost" className="px-6 py-2 rounded-xl text-gray-600 dark:text-gray-300 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all">
                 Sign In
               </Button>
             </Link>
@@ -150,19 +160,19 @@ const Navbar = () => {
               </div>
             )}
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl relative group w-11 h-11">
+              <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl relative group w-11 h-11">
                 <MessageCircle className="w-7 h-7" strokeWidth={2.2} />
-                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white dark:ring-neutral-950 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
               <div className="relative group">
-                <Button variant="ghost" size="icon" className="text-gray-700 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11">
+                <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11">
                   <Bell className="w-7 h-7" strokeWidth={2.2} />
                 </Button>
-                <span className="absolute top-3 right-3 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white" />
+                <span className="absolute top-3 right-3 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white dark:ring-neutral-950" />
               </div>
             </div>
 
-            <div className="h-6 w-px bg-gray-100 mx-2" />
+            <div className="h-6 w-px bg-gray-100 dark:bg-white/10 mx-2" />
 
             <NavLinks />
             <UserButton
@@ -175,7 +185,7 @@ const Navbar = () => {
             />
           </SignedIn>
 
-          <div className="flex items-center ml-2 border-l border-gray-100 pl-4">
+          <div className="flex items-center ml-2 border-l border-gray-100 dark:border-white/10 pl-4">
             <ThemeToggle />
           </div>
         </div>
