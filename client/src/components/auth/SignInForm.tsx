@@ -1,6 +1,6 @@
 'use client'
 
-import { useSignIn } from '@clerk/nextjs'
+import { useSignIn, useUser } from '@clerk/nextjs'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -8,6 +8,7 @@ import { Eye, EyeOff, Mail, Lock, LogIn, ArrowRight, ShieldCheck, RefreshCw, Arr
 
 export default function SignInForm() {
   const { signIn, isLoaded, setActive } = useSignIn()
+  const { user, isLoaded: userLoaded } = useUser()
   const router = useRouter()
 
   const [email, setEmail] = useState<string>('')
@@ -15,6 +16,13 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [isSigningIn, setIsSigningIn] = useState<boolean>(false)
+
+  // Redirect if already signed in
+  useEffect(() => {
+    if (userLoaded && user) {
+      router.push('/dashboard')
+    }
+  }, [user, userLoaded, router])
   const [verifying, setVerifying] = useState<boolean>(false)
   const [code, setCode] = useState<string>('')
   const [isVerifying, setIsVerifying] = useState<boolean>(false)
@@ -161,7 +169,7 @@ export default function SignInForm() {
     try {
       signIn.authenticateWithRedirect({
         strategy: 'oauth_google',
-        redirectUrl: '/sso-callback?prompt=select_account',
+        redirectUrl: '/sso-callback',
         redirectUrlComplete: '/dashboard',
       })
     } catch (err) {

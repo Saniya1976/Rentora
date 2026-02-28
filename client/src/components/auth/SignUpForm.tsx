@@ -1,6 +1,6 @@
 'use client'
 
-import { useSignUp } from '@clerk/nextjs'
+import { useSignUp, useUser } from '@clerk/nextjs'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -11,7 +11,15 @@ type UserRole = 'tenant' | 'manager'
 
 export default function SignUpForm() {
   const { signUp, isLoaded, setActive } = useSignUp()
+  const { user, isLoaded: userLoaded } = useUser()
   const router = useRouter()
+
+  // Redirect if already signed in
+  useEffect(() => {
+    if (userLoaded && user) {
+      router.push('/dashboard')
+    }
+  }, [user, userLoaded, router])
 
   const [role, setRole] = useState<UserRole>('tenant')
   const [firstName, setFirstName] = useState<string>('')
@@ -203,7 +211,7 @@ export default function SignUpForm() {
     try {
       signUp.authenticateWithRedirect({
         strategy: 'oauth_google',
-        redirectUrl: '/sso-callback?prompt=select_account',
+        redirectUrl: '/sso-callback',
         redirectUrlComplete: '/dashboard',
         unsafeMetadata: {
           role,
