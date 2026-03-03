@@ -1,20 +1,24 @@
 import React from 'react'
 import Navbar from '@/components/Navbar'
 import { NAVBAR_HEIGHT } from '@/lib/constants'
+import { SidebarProvider } from '@/components/ui/sidebar'
+import { Sidebar } from 'lucide-react'
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-neutral-950 transition-colors duration-300">
+        <SidebarProvider>
+        <div>
             <Navbar />
-            <main
-                className="flex-grow w-full"
-                style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}
-            >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    {children}
-                </div>
-            </main>
+            <div style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}>
+                <main className='flex '>
+                    <Sidebar />
+                    <div className='flex-grow transition-all duration-300 '>
+                        {children}
+                    </div>
+                </main>
+            </div>
         </div>
+        </SidebarProvider>
     )
 }
 

@@ -216,6 +216,7 @@ export default function SignUpForm() {
         unsafeMetadata: {
           role,
         },
+        oidcPrompt: 'select_account',
       })
     } catch (err) {
       console.error('Google sign up error:', err)

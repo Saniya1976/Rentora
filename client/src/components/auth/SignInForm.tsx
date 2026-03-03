@@ -171,6 +171,7 @@ export default function SignInForm() {
         strategy: 'oauth_google',
         redirectUrl: '/sso-callback',
         redirectUrlComplete: '/dashboard',
+        oidcPrompt: 'select_account',
       })
     } catch (err) {
       console.error('Google sign in error:', err)
