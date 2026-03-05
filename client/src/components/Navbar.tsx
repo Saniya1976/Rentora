@@ -139,7 +139,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center w-full h-full px-4 md:px-10">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="p-1.5 transition-all">
-              <HouseHeart className="w-6 h-6 text-black dark:text-white" />
+              <HouseHeart className="w-10 h-10 text-black dark:text-white shrink-0" />
             </div>
             <span className="text-xl font-bold tracking-wider font-cute text-black dark:text-white">
               RENTORA
@@ -163,7 +163,7 @@ const Navbar = () => {
             </div>
           )}
           <div className="p-2 transition-all">
-            <HouseHeart className="w-7 h-7 text-black dark:text-white" />
+            <HouseHeart className="w-10 h-10 text-black dark:text-white shrink-0" />
           </div>
           <span className="text-2xl font-bold tracking-wider font-cute text-black dark:text-white">
             RENTORA
