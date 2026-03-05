@@ -22,8 +22,8 @@ const CallToActionSection = () => {
         className="object-cover object-center z-0"
       />
 
-      {/* Dark overlay for contrast */}
-      <div className="absolute inset-0 bg-black/45 z-10" />
+      {/* Grayish overlay for contrast */}
+      <div className="absolute inset-0 bg-zinc-800/60 z-10" />
 
       {/* Content */}
       <motion.div
@@ -34,7 +34,7 @@ const CallToActionSection = () => {
         className="relative z-20 max-w-4xl xl:max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 py-12"
       >
         <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-8">
-          
+
           {/* Text */}
           <div className="max-w-xl">
             <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight drop-shadow-xl">
@@ -65,8 +65,8 @@ const CallToActionSection = () => {
             </Link>
           </div>
         </div>
-      <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-white">
-          
+        <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-white">
+
           {/* Footer links */}
           <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm font-medium">
             <Link href="/about" className="hover:underline">

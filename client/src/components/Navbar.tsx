@@ -3,13 +3,14 @@
 import React, { useEffect, useState } from 'react'
 import { NAVBAR_HEIGHT } from '@/lib/constants'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Button } from './ui/button'
-import { SignedIn, SignedOut, UserButton, SignOutButton } from '@clerk/nextjs'
+import { SignedIn, SignedOut, UserButton, SignOutButton, useUser } from '@clerk/nextjs'
 import { LayoutDashboard, Settings, LogOut, Menu, Search, Bell, MessageCircle, Sun, Moon, HouseHeart } from 'lucide-react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
+import { SidebarContext, SidebarTrigger } from '@/components/ui/sidebar'
+import { useGetAuthUserQuery } from '@/state/api'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,10 +20,24 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 const Navbar = () => {
+  const { isLoaded: isClerkLoaded, user: clerkUser } = useUser();
+  const { data: authUser } = useGetAuthUserQuery(undefined, {
+    skip: !isClerkLoaded || !clerkUser,
+  });
+  const userRole = authUser?.userRole;
+
   const pathname = usePathname();
+  const router = useRouter();
   const { setTheme, theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
-  const isDashboardPage = pathname.includes('dashboard');
+  const isDashboardPage = pathname.startsWith('/dashboard') || pathname.startsWith('/manager') || pathname.startsWith('/tenant');
+  const sidebar = React.useContext(SidebarContext);
+
+  const handleDashboardClick = () => {
+    if (isDashboardPage && sidebar) {
+      sidebar.setOpen(true);
+    }
+  };
 
   React.useEffect(() => {
     setMounted(true);
@@ -59,14 +74,27 @@ const Navbar = () => {
       <input
         type="text"
         placeholder="Search..."
-        className="block w-full pl-10 pr-3 py-2 border border-gray-100 dark:border-white/10 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] transition-all bg-gray-50/50 dark:bg-neutral-800/50 text-gray-900 dark:text-gray-100"
+        className="block w-full pl-10 pr-3 py-2 border border-gray-100 dark:border-white/10 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] transition-all bg-gray-50/50 dark:bg-zinc-700/50 text-gray-900 dark:text-gray-100"
       />
     </div>
   );
 
   const NavLinks = ({ mobile = false }: { mobile?: boolean }) => (
     <div className={mobile ? "flex flex-col gap-1 w-full" : "flex items-center gap-6"}>
-      <Link href="/dashboard" className="w-full md:w-auto">
+      {isDashboardPage && (
+        <Link href="/" className="w-full md:w-auto">
+          <div className={cn(
+            "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold",
+            mobile
+              ? "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
+              : "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
+          )}>
+            <HouseHeart className="w-5 h-5" />
+            <span>Home</span>
+          </div>
+        </Link>
+      )}
+      <Link href={userRole === 'manager' ? '/manager' : '/tenant'} className="w-full md:w-auto" onClick={handleDashboardClick}>
         <div className={cn(
           "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold",
           mobile
@@ -127,8 +155,13 @@ const Navbar = () => {
       className="fixed top-0 left-0 w-full z-50 border-b border-gray-100 dark:border-white/10 shadow-sm transition-colors duration-300"
       style={{ height: `${NAVBAR_HEIGHT}px` }}
     >
-      <div className="flex justify-between items-center w-full h-full px-4 md:px-10 bg-white dark:bg-neutral-900 text-black dark:text-white transition-colors duration-300">
+      <div className="flex justify-between items-center w-full h-full px-4 md:px-10 bg-white dark:bg-zinc-700 text-black dark:text-white transition-colors duration-300">
         <Link href="/" className="flex items-center gap-2 group" scroll={false}>
+          {isDashboardPage && sidebar && (
+            <div className="mr-2">
+              <SidebarTrigger />
+            </div>
+          )}
           <div className="p-2 transition-all">
             <HouseHeart className="w-7 h-7 text-black dark:text-white" />
           </div>
@@ -162,13 +195,13 @@ const Navbar = () => {
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl relative group w-11 h-11">
                 <MessageCircle className="w-7 h-7" strokeWidth={2.2} />
-                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white dark:ring-neutral-950 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white dark:ring-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
               <div className="relative group">
                 <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11">
                   <Bell className="w-7 h-7" strokeWidth={2.2} />
                 </Button>
-                <span className="absolute top-3 right-3 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white dark:ring-neutral-950" />
+                <span className="absolute top-3 right-3 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white dark:ring-zinc-700" />
               </div>
             </div>
 
@@ -216,9 +249,9 @@ const Navbar = () => {
                 <Menu className="w-6 h-6" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[280px] p-2 rounded-2xl shadow-xl border-gray-100 dark:border-white/10 bg-white dark:bg-neutral-900 mt-2">
+            <DropdownMenuContent align="end" className="w-[280px] p-2 rounded-2xl shadow-xl border-gray-100 dark:border-white/10 bg-white dark:bg-zinc-700 mt-2">
               <div className="p-1">
-                <div className="flex items-center justify-between px-2 py-2 mb-2 bg-gray-50 dark:bg-neutral-800/50 rounded-xl">
+                <div className="flex items-center justify-between px-2 py-2 mb-2 bg-gray-50 dark:bg-zinc-700/50 rounded-xl">
                   <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-2">App Settings</span>
                   <div className="flex items-center gap-1">
                     <SignedIn>

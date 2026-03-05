@@ -95,33 +95,34 @@ body {
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 14%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 14%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 222 47% 18%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 222 47% 18%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 222 47% 18%;
-    --accent-foreground: 210 40% 98%;
+    --background: 240 5% 25%;
+    /* Zinc 700 - Lighter Grayish */
+    --foreground: 240 5% 98%;
+    --card: 240 5% 20%;
+    --card-foreground: 240 5% 98%;
+    --popover: 240 5% 20%;
+    --popover-foreground: 240 5% 98%;
+    --primary: 177 60% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 30%;
+    --secondary-foreground: 240 5% 98%;
+    --muted: 240 5% 30%;
+    --muted-foreground: 240 4% 75%;
+    --accent: 240 5% 35%;
+    --accent-foreground: 240 5% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 222 47% 20%;
-    --input: 222 47% 20%;
-    --ring: 224.3 76.3% 48%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --destructive-foreground: 240 5% 98%;
+    --border: 240 5% 35%;
+    --input: 240 5% 35%;
+    --ring: 177 60% 45%;
+    --sidebar-background: 240 5% 22%;
+    --sidebar-foreground: 240 5% 95%;
+    --sidebar-primary: 177 60% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 240 5% 30%;
+    --sidebar-accent-foreground: 240 5% 98%;
+    --sidebar-border: 240 5% 30%;
+    --sidebar-ring: 177 60% 45%;
   }
 }
 

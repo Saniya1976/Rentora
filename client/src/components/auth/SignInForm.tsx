@@ -190,7 +190,7 @@ export default function SignInForm() {
   }
 
   return (
-    <div className="w-full max-w-[340px] backdrop-blur-3xl bg-white/70 dark:bg-neutral-900/80 rounded-[28px] p-6 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border border-white/40 dark:border-white/5 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500 transition-colors">
+    <div className="w-full max-w-[340px] backdrop-blur-3xl bg-white/70 dark:bg-zinc-700/80 rounded-[28px] p-6 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border border-white/40 dark:border-white/5 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500 transition-colors">
       <div className="absolute -top-16 -right-16 w-32 h-32 bg-[#1acec8]/10 rounded-full blur-2xl pointer-events-none" />
 
       <div className="relative z-10">
@@ -221,7 +221,7 @@ export default function SignInForm() {
                 type="text"
                 maxLength={6}
                 placeholder="000000"
-                className="w-full text-center text-xl tracking-[0.2em] font-bold py-2.5 bg-gray-50/50 dark:bg-neutral-800/50 border border-gray-100 dark:border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] focus:bg-white dark:focus:bg-neutral-800 transition-all text-gray-900 dark:text-neutral-100"
+                className="w-full text-center text-xl tracking-[0.2em] font-bold py-2.5 bg-gray-50/50 dark:bg-zinc-700/50 border border-gray-100 dark:border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] focus:bg-white dark:focus:bg-zinc-700 transition-all text-gray-900 dark:text-neutral-100"
                 value={code}
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 onKeyDown={handleKeyDown}
@@ -274,7 +274,7 @@ export default function SignInForm() {
                 <input
                   type="email"
                   placeholder="Email"
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50/50 dark:bg-neutral-800/50 border border-gray-100 dark:border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] focus:bg-white dark:focus:bg-neutral-800 transition-all text-gray-900 dark:text-neutral-100 text-[13px] font-medium placeholder:text-gray-400"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50/50 dark:bg-zinc-700/50 border border-gray-100 dark:border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] focus:bg-white dark:focus:bg-zinc-700 transition-all text-gray-900 dark:text-neutral-100 text-[13px] font-medium placeholder:text-gray-400"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -287,7 +287,7 @@ export default function SignInForm() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Password"
-                  className="w-full pl-10 pr-10 py-2.5 bg-gray-50/50 dark:bg-neutral-800/50 border border-gray-100 dark:border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] focus:bg-white dark:focus:bg-neutral-800 transition-all text-gray-900 dark:text-neutral-100 text-[13px] font-medium placeholder:text-gray-400"
+                  className="w-full pl-10 pr-10 py-2.5 bg-gray-50/50 dark:bg-zinc-700/50 border border-gray-100 dark:border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] focus:bg-white dark:focus:bg-zinc-700 transition-all text-gray-900 dark:text-neutral-100 text-[13px] font-medium placeholder:text-gray-400"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -338,7 +338,7 @@ export default function SignInForm() {
 
               <button
                 onClick={googleSignIn}
-                className="w-full py-2.5 bg-white dark:bg-neutral-800 border border-gray-100 dark:border-white/5 rounded-xl font-bold text-gray-700 dark:text-neutral-200 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-all flex items-center justify-center gap-2 shadow-sm border-b-2 active:border-b-0 active:translate-y-0.5"
+                className="w-full py-2.5 bg-white dark:bg-zinc-700 border border-gray-100 dark:border-white/5 rounded-xl font-bold text-gray-700 dark:text-neutral-200 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-all flex items-center justify-center gap-2 shadow-sm border-b-2 active:border-b-0 active:translate-y-0.5"
               >
                 <Image src="/google.png" alt="Google" width={14} height={14} />
                 <span className="text-[13px]">Google</span>

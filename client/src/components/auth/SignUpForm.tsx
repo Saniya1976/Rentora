@@ -235,7 +235,7 @@ export default function SignUpForm() {
   }
 
   return (
-    <div className="w-full max-w-[340px] backdrop-blur-3xl bg-white/70 dark:bg-neutral-900/80 rounded-[28px] p-6 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border border-white/40 dark:border-white/5 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500 transition-colors">
+    <div className="w-full max-w-[340px] backdrop-blur-3xl bg-white/70 dark:bg-zinc-700/80 rounded-[28px] p-6 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border border-white/40 dark:border-white/5 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500 transition-colors">
       <div id="clerk-captcha" className="hidden" />
       <div className="absolute -top-16 -right-16 w-32 h-32 bg-[#1acec8]/10 rounded-full blur-xl pointer-events-none" />
 
@@ -261,7 +261,7 @@ export default function SignUpForm() {
                 "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl border-2 transition-all duration-300",
                 role === 'tenant'
                   ? "border-[#17B9B4] bg-[#17B9B4]/10 text-[#17B9B4]"
-                  : "border-gray-50 bg-gray-50 dark:border-white/5 dark:bg-neutral-800 text-gray-400 hover:border-gray-100 dark:hover:border-white/10"
+                  : "border-gray-50 bg-gray-50 dark:border-white/5 dark:bg-zinc-700 text-gray-400 hover:border-gray-100 dark:hover:border-white/10"
               )}
             >
               <User size={14} className={role === 'tenant' ? "text-[#17B9B4]" : "text-gray-400"} />
@@ -274,7 +274,7 @@ export default function SignUpForm() {
                 "flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl border-2 transition-all duration-300",
                 role === 'manager'
                   ? "border-[#17B9B4] bg-[#17B9B4]/10 text-[#17B9B4]"
-                  : "border-gray-50 bg-gray-50 dark:border-white/5 dark:bg-neutral-800 text-gray-400 hover:border-gray-100 dark:hover:border-white/10"
+                  : "border-gray-50 bg-gray-50 dark:border-white/5 dark:bg-zinc-700 text-gray-400 hover:border-gray-100 dark:hover:border-white/10"
               )}
             >
               <Building2 size={14} className={role === 'manager' ? "text-[#17B9B4]" : "text-gray-400"} />
@@ -298,7 +298,7 @@ export default function SignUpForm() {
                 type="text"
                 maxLength={6}
                 placeholder="000000"
-                className="w-full text-center text-xl tracking-[0.2em] font-bold py-2.5 bg-gray-50/50 dark:bg-neutral-800/50 border border-gray-100 dark:border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#17B9B4]/20 focus:border-[#17B9B4] focus:bg-white dark:focus:bg-neutral-800 transition-all text-gray-900 dark:text-neutral-100"
+                className="w-full text-center text-xl tracking-[0.2em] font-bold py-2.5 bg-gray-50/50 dark:bg-zinc-700/50 border border-gray-100 dark:border-white/5 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#17B9B4]/20 focus:border-[#17B9B4] focus:bg-white dark:focus:bg-zinc-700 transition-all text-gray-900 dark:text-neutral-100"
                 value={code}
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 onKeyDown={handleKeyDown}
@@ -461,7 +461,7 @@ export default function SignUpForm() {
 
               <button
                 onClick={googleSignUp}
-                className="w-full py-2.5 bg-white dark:bg-neutral-800 border border-gray-100 dark:border-white/5 rounded-xl font-bold text-gray-700 dark:text-neutral-200 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-all flex items-center justify-center gap-2 shadow-sm border-b-2 active:border-b-0 active:translate-y-0.5"
+                className="w-full py-2.5 bg-white dark:bg-zinc-700 border border-gray-100 dark:border-white/5 rounded-xl font-bold text-gray-700 dark:text-neutral-200 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-all flex items-center justify-center gap-2 shadow-sm border-b-2 active:border-b-0 active:translate-y-0.5"
               >
                 <Image src="/google.png" alt="Google" width={14} height={14} />
                 <span className="text-[13px]">Google</span>

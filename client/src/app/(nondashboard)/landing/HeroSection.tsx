@@ -5,7 +5,7 @@ import { MapPin, Home, Search } from 'lucide-react'
 
 export default function HeroSection() {
   return (
-    <section className="bg-gray-50 dark:bg-neutral-900 py-20 overflow-hidden transition-colors duration-300">
+    <section className="bg-gray-50 dark:bg-zinc-700 py-20 overflow-hidden transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
 
@@ -40,7 +40,7 @@ export default function HeroSection() {
                 <input
                   type="text"
                   placeholder="Search by location, type..."
-                  className="w-full pl-16 pr-40 py-5 bg-white dark:bg-neutral-900 rounded-full shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] border-none focus:ring-2 focus:ring-[#009698]/20 text-slate-700 dark:text-neutral-200 placeholder:text-slate-400 text-base outline-none transition-all"
+                  className="w-full pl-16 pr-40 py-5 bg-white dark:bg-zinc-700 rounded-full shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] border-none focus:ring-2 focus:ring-[#009698]/20 text-slate-700 dark:text-neutral-200 placeholder:text-slate-400 text-base outline-none transition-all"
                 />
 
                 <button className="absolute right-2 px-8 py-3.5 bg-[#04bbbe] text-white rounded-full font-bold text-sm hover:bg-[#02a2a5] transition-all active:scale-95 shadow-md shadow-[#009698]/20">
@@ -66,7 +66,7 @@ export default function HeroSection() {
           {/* RIGHT IMAGE */}
           <div className="hidden lg:flex justify-center">
             <div className="relative w-[460px] h-[560px] overflow-hidden shadow-2xl 
-                  rounded-t-[240px] rounded-b-none border-[12px] border-white dark:border-neutral-900 transition-colors duration-300">
+                  rounded-t-[240px] rounded-b-none border-[12px] border-white dark:border-zinc-700 transition-colors duration-300">
               <Image
                 src="/mylandingpage.jpg"
                 alt="Modern apartment"

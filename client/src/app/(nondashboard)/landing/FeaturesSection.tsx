@@ -29,7 +29,7 @@ const FeaturesSection = () => {
       whileInView="visible"
       viewport={{ once: true }}
       variants={containerVariants}
-      className="py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-linear-to-b from-gray-50 to-white dark:from-neutral-900 dark:to-neutral-800 transition-colors duration-300"
+      className="py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-linear-to-b from-gray-50 to-white dark:from-zinc-700 dark:to-zinc-700 transition-colors duration-300"
     >
       <div className="max-w-4xl xl:max-w-6xl mx-auto">
         <motion.div variants={itemVariants} className="text-center mb-16">
@@ -93,8 +93,8 @@ const FeatureCard = ({
   linkText: string;
   linkHref: string;
 }) => (
-  <div className="text-center bg-white dark:bg-neutral-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-transparent dark:border-white/5">
-    <div className="rounded-xl mb-6 flex items-center justify-center h-48 bg-gray-50 dark:bg-neutral-900/50">
+  <div className="text-center bg-white dark:bg-zinc-700 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-transparent dark:border-white/5">
+    <div className="rounded-xl mb-6 flex items-center justify-center h-48 bg-gray-50 dark:bg-zinc-700/50">
       <Image
         src={imageSrc}
         width={400}

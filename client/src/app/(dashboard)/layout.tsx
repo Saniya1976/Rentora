@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 import Navbar from '@/components/Navbar'
 import { NAVBAR_HEIGHT } from '@/lib/constants'
@@ -15,15 +17,15 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const userRole = authUser?.userRole as "manager" | "tenant" | undefined;
 
     return (
-        <SidebarProvider>
-            <div className='min-h-screen bg-gray-50 dark:bg-neutral-950 transition-colors duration-300'>
+        <SidebarProvider defaultOpen={true}>
+            <div className='w-full min-h-screen bg-white dark:bg-zinc-700 transition-colors duration-300'>
                 <Navbar />
                 <div style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}>
-                    <main className='flex '>
+                    <main className='flex w-full'>
                         {isClerkLoaded && !isLoading && userRole && (
                             <AppSidebar userType={userRole} />
                         )}
-                        <div className='flex-grow transition-all duration-300 '>
+                        <div className='flex-1 transition-all duration-300 p-4 md:p-8 min-h-[calc(100vh-NAVBAR_HEIGHT)]'>
                             {children}
                         </div>
                     </main>
