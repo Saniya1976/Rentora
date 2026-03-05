@@ -2,12 +2,12 @@
 
 import React from 'react'
 import SettingsForm from '@/components/SettingsForm'
-import { useGetAuthUserQuery, useUpdateTenantSettingsMutation } from '@/state/api'
+import { useGetAuthUserQuery, useUpdateManagerSettingsMutation } from '@/state/api'
 import { toast } from 'sonner'
 
 const SettingsPage = () => {
     const { data: authUser, isLoading: isUserLoading } = useGetAuthUserQuery();
-    const [updateTenant, { isLoading: isUpdating }] = useUpdateTenantSettingsMutation();
+    const [updateManager, { isLoading: isUpdating }] = useUpdateManagerSettingsMutation();
 
     const userInfo = authUser?.userInfo;
     const cognitoId = authUser?.cognitoInfo?.id;
@@ -22,7 +22,7 @@ const SettingsPage = () => {
         if (!cognitoId) return;
 
         try {
-            await updateTenant({
+            await updateManager({
                 cognitoId,
                 ...data
             }).unwrap();
@@ -37,10 +37,10 @@ const SettingsPage = () => {
         <div className="flex flex-col gap-6 max-w-4xl mx-auto py-8">
             <div className="space-y-1">
                 <h1 className="text-4xl font-black bg-gradient-to-r from-[#1acec8] to-[#15b8b3] bg-clip-text text-transparent uppercase tracking-tight">
-                    Account Settings
+                    Manager Settings
                 </h1>
                 <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
-                    Personalize your experience and manage your contact details
+                    Update your business profile and contact information
                 </p>
             </div>
 

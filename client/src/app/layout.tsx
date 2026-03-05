@@ -25,6 +25,7 @@ export const metadata: Metadata = {
 
 import StoreProvider from '@/state/redux'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { Toaster } from "@/components/ui/sonner"
 
 export default function RootLayout({
   children,
@@ -47,6 +48,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <StoreProvider>{children}</StoreProvider>
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>
