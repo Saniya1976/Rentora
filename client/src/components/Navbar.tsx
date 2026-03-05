@@ -74,7 +74,7 @@ const Navbar = () => {
       <input
         type="text"
         placeholder="Search..."
-        className="block w-full pl-10 pr-3 py-2 border border-gray-100 dark:border-white/10 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] transition-all bg-gray-50/50 dark:bg-zinc-700/50 text-gray-900 dark:text-gray-100"
+        className="block w-full pl-10 pr-3 h-11 border border-gray-100 dark:border-white/10 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1acec8]/20 focus:border-[#1acec8] transition-all bg-gray-50/50 dark:bg-zinc-700/50 text-gray-900 dark:text-gray-100"
       />
     </div>
   );
@@ -89,7 +89,7 @@ const Navbar = () => {
               ? "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
               : "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
           )}>
-            <HouseHeart className="w-5 h-5" />
+            <HouseHeart className="w-6 h-6" />
             <span>Home</span>
           </div>
         </Link>
@@ -101,7 +101,7 @@ const Navbar = () => {
             ? "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
             : "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
         )}>
-          <LayoutDashboard className="w-5 h-5" />
+          <LayoutDashboard className="w-6 h-6" />
           <span>Dashboard</span>
         </div>
       </Link>
@@ -112,7 +112,7 @@ const Navbar = () => {
             ? "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
             : "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
         )}>
-          <Settings className="w-5 h-5" />
+          <Settings className="w-6 h-6" />
           <span>Settings</span>
         </div>
       </Link>
@@ -123,7 +123,7 @@ const Navbar = () => {
             ? "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
             : "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
         )}>
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-6 h-6" />
           <span>Sign Out</span>
         </button>
       </SignOutButton>
@@ -139,7 +139,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center w-full h-full px-4 md:px-10">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="p-1.5 transition-all">
-              <HouseHeart className="w-10 h-10 text-black dark:text-white shrink-0" />
+              <HouseHeart className="w-11 h-11 text-black dark:text-white shrink-0" />
             </div>
             <span className="text-xl font-bold tracking-wider font-cute text-black dark:text-white">
               RENTORA
@@ -163,7 +163,7 @@ const Navbar = () => {
             </div>
           )}
           <div className="p-2 transition-all">
-            <HouseHeart className="w-10 h-10 text-black dark:text-white shrink-0" />
+            <HouseHeart className="w-11 h-11 text-black dark:text-white shrink-0" />
           </div>
           <span className="text-2xl font-bold tracking-wider font-cute text-black dark:text-white">
             RENTORA
@@ -174,13 +174,13 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-6">
           <SignedOut>
             <Link href="/signin">
-              <Button variant="ghost" className="px-6 py-2 rounded-xl text-gray-600 dark:text-gray-300 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all">
+              <Button variant="ghost" className="px-6 h-11 rounded-xl text-gray-600 dark:text-gray-300 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all">
                 Sign In
               </Button>
             </Link>
 
             <Link href="/signup">
-              <Button className="px-6 py-2 rounded-xl bg-[#1acec8] text-white font-bold hover:bg-[#15b8b3] hover:shadow-[0_6px_15px_rgba(26,206,200,0.3)] shadow-[0_4px_10px_rgba(26,206,200,0.2)] transition-all">
+              <Button className="px-6 h-11 rounded-xl bg-[#1acec8] text-white font-bold hover:bg-[#15b8b3] hover:shadow-[0_6px_15px_rgba(26,206,200,0.3)] shadow-[0_4px_10px_rgba(26,206,200,0.2)] transition-all">
                 Sign Up
               </Button>
             </Link>
@@ -212,7 +212,7 @@ const Navbar = () => {
               afterSignOutUrl="/"
               appearance={{
                 elements: {
-                  avatarBox: "w-10 h-10 border-2 border-[#1acec8]/20"
+                  avatarBox: "w-11 h-11 border-2 border-[#1acec8]/20"
                 }
               }}
             />
@@ -236,7 +236,7 @@ const Navbar = () => {
                 afterSignOutUrl="/"
                 appearance={{
                   elements: {
-                    avatarBox: "w-8 h-8 border-2 border-[#1acec8]/20"
+                    avatarBox: "w-11 h-11 border-2 border-[#1acec8]/20"
                   }
                 }}
               />
@@ -246,7 +246,7 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="hover:bg-[#1acec8]/10 hover:text-[#1acec8] rounded-xl transition-all">
-                <Menu className="w-6 h-6" />
+                <Menu className="w-7 h-7" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[280px] p-2 rounded-2xl shadow-xl border-gray-100 dark:border-white/10 bg-white dark:bg-zinc-700 mt-2">
@@ -255,11 +255,11 @@ const Navbar = () => {
                   <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-2">App Settings</span>
                   <div className="flex items-center gap-1">
                     <SignedIn>
-                      <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-lg h-9 w-9">
-                        <MessageCircle className="w-5 h-5" strokeWidth={2.2} />
+                      <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-lg h-11 w-11">
+                        <MessageCircle className="w-7 h-7" strokeWidth={2.2} />
                       </Button>
-                      <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-lg h-9 w-9">
-                        <Bell className="w-5 h-5" strokeWidth={2.2} />
+                      <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-lg h-11 w-11">
+                        <Bell className="w-7 h-7" strokeWidth={2.2} />
                       </Button>
                     </SignedIn>
                     <ThemeToggle />

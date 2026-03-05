@@ -1,52 +1,70 @@
-"use client"
+"use client";
 
-import React from 'react'
-import Navbar from '@/components/Navbar'
-import { NAVBAR_HEIGHT } from '@/lib/constants'
-import { SidebarProvider } from '@/components/ui/sidebar'
-import AppSidebar from '@/components/AppSidebar'
-import { usePathname, useRouter } from 'next/navigation'
-import { useGetAuthUserQuery } from '@/state/api'
-import { useUser } from '@clerk/nextjs'
+import React, { useEffect, useState } from "react";
+import Navbar from "@/components/Navbar";
+import { NAVBAR_HEIGHT } from "@/lib/constants";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/AppSidebar";
+import { usePathname, useRouter } from "next/navigation";
+import { useGetAuthUserQuery } from "@/state/api";
+import { useUser } from "@clerk/nextjs";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-    const { isLoaded: isClerkLoaded, user: clerkUser } = useUser();
-    const { data: authUser, isLoading } = useGetAuthUserQuery(undefined, {
-        skip: !isClerkLoaded || !clerkUser,
+  const { isLoaded: isClerkLoaded, user: clerkUser } = useUser();
+
+  const { data: authUser, isLoading: authLoading } =
+    useGetAuthUserQuery(undefined, {
+      skip: !isClerkLoaded || !clerkUser,
     });
-    const pathname = usePathname();
-    const router = useRouter();
 
-    // Cast userRole to the expected type and handle potential undefined
-    const userRole = authUser?.userRole?.toLowerCase() as "manager" | "tenant" | undefined;
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(true);
 
-    React.useEffect(() => {
-        if (isClerkLoaded && !isLoading && userRole) {
-            if (userRole === "manager" && pathname.startsWith("/tenant")) {
-                router.push("/manager");
-            } else if (userRole === "tenant" && pathname.startsWith("/manager")) {
-                router.push("/tenant");
-            }
-        }
-    }, [isClerkLoaded, isLoading, userRole, pathname, router]);
+  const userRole = authUser?.userRole?.toLowerCase() as
+    | "manager"
+    | "tenant"
+    | undefined;
 
-    return (
-        <SidebarProvider defaultOpen={true}>
-            <div className='w-full min-h-screen bg-white dark:bg-zinc-700 transition-colors duration-300'>
-                <Navbar />
-                <div style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}>
-                    <main className='flex w-full'>
-                        {isClerkLoaded && !isLoading && userRole && (
-                            <AppSidebar userType={userRole as "manager" | "tenant"} />
-                        )}
-                        <div className='flex-1 transition-all duration-300 p-4 md:p-8 min-h-[calc(100vh-NAVBAR_HEIGHT)]'>
-                            {children}
-                        </div>
-                    </main>
-                </div>
+  useEffect(() => {
+    if (isClerkLoaded && !authLoading && userRole) {
+      if (
+        (userRole === "manager" && pathname.startsWith("/tenants")) ||
+        (userRole === "tenant" && pathname.startsWith("/managers"))
+      ) {
+        router.push(
+          userRole === "manager"
+            ? "/managers/properties"
+            : "/tenants/favorites",
+          { scroll: false }
+        );
+      } else {
+        setIsRedirecting(false);
+      }
+    }
+  }, [isClerkLoaded, authLoading, userRole, pathname, router]);
+
+  if (!isClerkLoaded || authLoading || isRedirecting) {
+    return <>Loading...</>;
+  }
+
+  if (!userRole) return null;
+
+  return (
+    <SidebarProvider defaultOpen>
+      <div className="w-full min-h-screen bg-white dark:bg-zinc-700 transition-colors duration-300">
+        <Navbar />
+        <div style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}>
+          <main className="flex w-full">
+            <AppSidebar userType={userRole} />
+            <div className="flex-1 transition-all duration-300 p-4 md:p-8">
+              {children}
             </div>
-        </SidebarProvider>
-    )
-}
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
+  );
+};
 
-export default DashboardLayout
+export default DashboardLayout;
