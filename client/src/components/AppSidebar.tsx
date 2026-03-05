@@ -55,7 +55,7 @@ const AppSidebar = ({ userType }: AppSidebarProps) => {
                                         className="text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all p-3 rounded-lg"
                                         onClick={() => toggleSidebar()}
                                     >
-                                        <X className="w-8 h-8 shrink-0" />
+                                        <X className="w-6 h-6 shrink-0" />
                                     </button>
                                 </>
                             ) : (
