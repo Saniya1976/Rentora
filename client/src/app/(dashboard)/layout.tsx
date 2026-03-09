@@ -29,13 +29,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (isClerkLoaded && !authLoading && userRole) {
       if (
-        (userRole === "manager" && pathname.startsWith("/tenants")) ||
-        (userRole === "tenant" && pathname.startsWith("/managers"))
+        (userRole === "manager" && pathname.startsWith("/tenant")) ||
+        (userRole === "tenant" && pathname.startsWith("/manager"))
       ) {
         router.push(
           userRole === "manager"
-            ? "/managers/properties"
-            : "/tenants/favorites",
+            ? "/manager"
+            : "/tenant/favourites",
           { scroll: false }
         );
       } else {

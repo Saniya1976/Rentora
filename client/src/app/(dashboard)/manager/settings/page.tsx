@@ -34,12 +34,12 @@ const SettingsPage = () => {
     };
 
     return (
-        <div className="flex flex-col gap-6 max-w-4xl mx-auto py-8">
-            <div className="space-y-1">
-                <h1 className="text-4xl font-black bg-gradient-to-r from-[#1acec8] to-[#15b8b3] bg-clip-text text-transparent uppercase tracking-tight">
+        <div className="flex flex-col gap-6 max-w-2xl py-6 px-2">
+            <div className="space-y-1 animate-in fade-in slide-in-from-top-4 duration-700">
+                <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
                     Manager Settings
                 </h1>
-                <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">
+                <p className="text-gray-500 dark:text-zinc-400 text-sm md:text-base font-medium max-w-xl">
                     Update your business profile and contact information
                 </p>
             </div>

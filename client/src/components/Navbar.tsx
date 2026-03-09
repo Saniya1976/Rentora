@@ -105,7 +105,7 @@ const Navbar = () => {
           <span>Dashboard</span>
         </div>
       </Link>
-      <Link href="/settings" className="w-full md:w-auto">
+      <Link href={userRole === 'manager' ? '/manager/settings' : '/tenant/settings'} className="w-full md:w-auto">
         <div className={cn(
           "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold",
           mobile

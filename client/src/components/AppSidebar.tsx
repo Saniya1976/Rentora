@@ -13,12 +13,10 @@ interface AppSidebarProps {
 
 const AppSidebar = ({ userType }: AppSidebarProps) => {
     const pathname = usePathname();
-    const { toggleSidebar, open } = useSidebar();
+    const { toggleSidebar, open, isMobile } = useSidebar();
     const navlinks =
         userType === "manager" ? [
             { icon: LayoutDashboard, label: "Dashboard", href: "/manager" },
-            { icon: Building, label: "Properties", href: "/manager/properties" },
-            { icon: FileText, label: "Applications", href: "/manager/applications" },
             { icon: Settings, label: "Settings", href: "/manager/settings" },
             { icon: LogOut, label: "Logout", href: "/manager/logout" }
         ] : [
@@ -33,20 +31,20 @@ const AppSidebar = ({ userType }: AppSidebarProps) => {
         <Sidebar
             collapsible="icon"
             className='bg-white dark:bg-zinc-700 shadow-lg border-r border-gray-100 dark:border-white/10 transition-colors duration-300'
-            style={{
+            style={!isMobile ? {
                 top: `${NAVBAR_HEIGHT}px`,
                 height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
-            }}
+            } : {}}
         >
-            <SidebarContent className='p-4'>
+            <SidebarContent className='p-4 pt-6 md:pt-4'>
                 <SidebarMenu className='gap-2'>
                     <SidebarMenuItem>
                         <div
                             className={cn(
                                 "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold",
-                                open ? "justify-between px-6" : "justify-center"
+                                open || isMobile ? "justify-between px-6" : "justify-center"
                             )}>
-                            {open ? (
+                            {(open || isMobile) ? (
                                 <>
                                     <h1 className="text-xl font-bold text-gray-600 dark:text-gray-300 whitespace-nowrap">
                                         {userType === "manager" ? "Manager view" : "Renter view"}
