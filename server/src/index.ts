@@ -17,10 +17,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 import tenantRoutes from "./routes/tenantRoutes";
 import managerRoutes from "./routes/managerRoutes";
+import propertyRoutes from "./routes/propertyRoutes"; 
 
 app.get("/", (_req, res) => {
   res.send("This is home route");
 });
+app.use("/properties", propertyRoutes)
 app.use("/tenants", authMiddleware(["tenant", "manager"]), tenantRoutes)
 app.use("/managers", authMiddleware(["manager", "tenant"]), managerRoutes)
 
