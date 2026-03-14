@@ -9,6 +9,11 @@ import { cn } from '@/lib/utils'
 
 type UserRole = 'tenant' | 'manager'
 
+function getRedirectPath(userType?: string): string {
+  if (userType === 'manager') return '/manager'
+  return '/tenant'
+}
+
 export default function SignUpForm() {
   const { signUp, isLoaded, setActive } = useSignUp()
   const { user, isLoaded: userLoaded } = useUser()
@@ -17,7 +22,8 @@ export default function SignUpForm() {
   // Redirect if already signed in
   useEffect(() => {
     if (userLoaded && user) {
-      router.push('/dashboard')
+      const userType = user.publicMetadata?.userType as string | undefined
+      router.push(getRedirectPath(userType))
     }
   }, [user, userLoaded, router])
 
@@ -99,7 +105,7 @@ export default function SignUpForm() {
         setVerifying(true)
       } else if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
-        router.push('/dashboard')
+        router.push(getRedirectPath(role))
       }
     } catch (err: unknown) {
       console.error('Sign up error:', err)
@@ -143,7 +149,7 @@ export default function SignUpForm() {
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
-        router.push('/dashboard')
+        router.push(getRedirectPath(role))
       } else if (result.status === 'missing_requirements') {
         const missing = result.missingFields?.join(', ') || 'unknown'
         const unverified = result.unverifiedFields?.join(', ') || ''
@@ -166,7 +172,7 @@ export default function SignUpForm() {
         if (isAlreadyVerified) {
           if (signUp.status === 'complete') {
             await setActive({ session: signUp.createdSessionId })
-            router.push('/dashboard')
+            router.push(getRedirectPath(role))
             return
           } else if (signUp.status === 'missing_requirements') {
             const missing = signUp.missingFields?.join(', ') || 'unknown'
@@ -212,7 +218,7 @@ export default function SignUpForm() {
       signUp.authenticateWithRedirect({
         strategy: 'oauth_google',
         redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/dashboard',
+        redirectUrlComplete: '/sso-callback',
         unsafeMetadata: {
           role,
         },

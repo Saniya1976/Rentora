@@ -1,12 +1,18 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useClerk } from '@clerk/nextjs'
+import { useClerk, useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
+function getRedirectPath(userType?: string): string {
+    if (userType === 'manager') return '/manager'
+    return '/tenant'
+}
+
 export default function SSOCallbackPage() {
     const { handleRedirectCallback } = useClerk()
+    const { user, isLoaded } = useUser()
     const router = useRouter()
     const called = useRef(false)
 
@@ -16,10 +22,7 @@ export default function SSOCallbackPage() {
 
         const handleCallback = async () => {
             try {
-                await handleRedirectCallback({
-                    signInFallbackRedirectUrl: '/dashboard',
-                    signUpFallbackRedirectUrl: '/dashboard',
-                })
+                await handleRedirectCallback({})
             } catch (err) {
                 console.error('SSO callback error:', err)
                 router.push('/signin')
@@ -28,6 +31,14 @@ export default function SSOCallbackPage() {
 
         handleCallback()
     }, [handleRedirectCallback, router])
+
+    // Once Clerk has resolved the user, redirect based on role
+    useEffect(() => {
+        if (isLoaded && user) {
+            const userType = user.publicMetadata?.userType as string | undefined
+            router.push(getRedirectPath(userType))
+        }
+    }, [isLoaded, user, router])
 
     return (
         <div
@@ -68,4 +79,3 @@ export default function SSOCallbackPage() {
         </div>
     )
 }
-

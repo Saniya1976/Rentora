@@ -6,6 +6,11 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Mail, Lock, LogIn, ArrowRight, ShieldCheck, RefreshCw, ArrowLeft } from 'lucide-react'
 
+function getRedirectPath(userType?: string): string {
+  if (userType === 'manager') return '/manager'
+  return '/tenant'
+}
+
 export default function SignInForm() {
   const { signIn, isLoaded, setActive } = useSignIn()
   const { user, isLoaded: userLoaded } = useUser()
@@ -20,7 +25,8 @@ export default function SignInForm() {
   // Redirect if already signed in
   useEffect(() => {
     if (userLoaded && user) {
-      router.push('/dashboard')
+      const userType = user.publicMetadata?.userType as string | undefined
+      router.push(getRedirectPath(userType))
     }
   }, [user, userLoaded, router])
   const [verifying, setVerifying] = useState<boolean>(false)
@@ -56,7 +62,8 @@ export default function SignInForm() {
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
-        router.push('/dashboard')
+        const userType = user?.publicMetadata?.userType as string | undefined
+        router.push(getRedirectPath(userType))
         return
       }
 
@@ -121,7 +128,8 @@ export default function SignInForm() {
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
-        router.push('/dashboard')
+        const userType = user?.publicMetadata?.userType as string | undefined
+        router.push(getRedirectPath(userType))
       } else {
         setError('Verification incomplete.')
       }
@@ -170,7 +178,7 @@ export default function SignInForm() {
       signIn.authenticateWithRedirect({
         strategy: 'oauth_google',
         redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/dashboard',
+        redirectUrlComplete: '/sso-callback',
         oidcPrompt: 'select_account',
       })
     } catch (err) {
