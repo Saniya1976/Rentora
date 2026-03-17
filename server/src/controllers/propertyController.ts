@@ -144,3 +144,29 @@ export const getProperties = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 }
+export const getProperty = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const {id}=req.params;
+        const property=await prisma.property.findUnique({
+            where:{
+                id:Number(id),   
+            },
+            include:{
+                    location:true,
+                },
+        })
+        if(property){
+            const coordinates:{coordinates:string}[]=
+            await prisma.$queryRaw`SELECT ST_AsText(coordinates) as coordinates FROM "location" WHERE id=${property.locationId}`;
+            property.location.coordinates=coordinates[0].coordinates;
+        }
+        if(!property){
+            res.status(404).json({message:"Property not found"});
+            return;
+        }
+        res.json(property);
+    } catch (error:any) {
+        console.error("Error fetching property:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+}
