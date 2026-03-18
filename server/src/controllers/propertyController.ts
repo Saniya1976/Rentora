@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
 import { S3Client } from "@aws-sdk/client-s3";
-import { Upload } from "@aws-sdk/lib-storage";
 import { Location } from "@prisma/client";
+import { Upload } from "@aws-sdk/lib-storage";
 import axios from "axios";
 
 const prisma = new PrismaClient();
@@ -161,15 +161,21 @@ export const getProperty = async (req: Request, res: Response): Promise<void> =>
             const geoJSON: any = wktToGeoJSON(coordinates[0]?.coordinates || "");
             const longitude = geoJSON.coordinates[0];
             const latitude = geoJSON.coordinates[1];
-            
-        }
-        if(!property){
-            res.status(404).json({message:"Property not found"});
-            return;
-        }
-        res.json(property);
-    } catch (error:any) {
-        console.error("Error fetching property:", error);
-        res.status(500).json({ message: "Internal server error", error: error.message });
+        const propertyWithCoordinates = {
+        ...property,
+        location: {
+          ...property.location,
+          coordinates: {
+            longitude,
+            latitude,
+          },
+        },
+      };
+      res.json(propertyWithCoordinates);
     }
-}
+  } catch (err: any) {
+    res
+      .status(500)
+      .json({ message: `Error retrieving property: ${err.message}` });
+  }
+};
