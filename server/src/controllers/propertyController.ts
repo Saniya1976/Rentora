@@ -179,3 +179,22 @@ export const getProperty = async (req: Request, res: Response): Promise<void> =>
       .json({ message: `Error retrieving property: ${err.message}` });
   }
 };
+export const createProperty = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+    try {
+       const files=req.files as Express.Multer.File[];
+       const {
+      address,
+      city,
+      state,
+      country,
+      postalCode,
+      managerClerkId,
+      ...propertyData
+    } = req.body;
+    } catch (error) {
+        
+    }
+}
