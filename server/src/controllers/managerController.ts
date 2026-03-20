@@ -103,3 +103,28 @@ export const getManagerProperty = async (req: Request, res: Response): Promise<v
             .json({ message: `Error retrieving properties: ${err.message}` });
     }
 };
+
+export const updateManager = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { clerkId } = req.params;
+    const { name, email, phoneNumber } = req.body;
+
+    const updateManager = await prisma.manager.update({
+      where: { clerkId: clerkId as string },
+      data: {
+        name,
+        email,
+        phoneNumber,
+      },
+    });
+
+    res.json(updateManager);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: `Error updating manager: ${error.message}` });
+  }
+};

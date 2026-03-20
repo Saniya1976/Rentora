@@ -107,3 +107,28 @@ export const getTenantProperty = async (req: Request, res: Response): Promise<vo
             .json({ message: `Error retrieving properties: ${err.message}` });
     }
 };
+
+export const updateTenant = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { clerkId } = req.params;
+    const { name, email, phoneNumber } = req.body;
+
+    const updateTenant = await prisma.tenant.update({
+      where: { clerkId: clerkId as string },
+      data: {
+        name,
+        email,
+        phoneNumber,
+      },
+    });
+
+    res.json(updateTenant);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: `Error updating tenant: ${error.message}` });
+  }
+};
