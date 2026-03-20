@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
+import { wktToGeoJSON } from "@terraformer/wkt";
 
 export const createTenant = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -49,5 +50,60 @@ export const getTenantById = async (req: Request, res: Response): Promise<void> 
     } catch (error: any) {
         console.error("Error fetching tenant:", error);
         res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+};
+export const getTenantProperty = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { clerkId } = req.params;
+
+        const tenant = await prisma.tenant.findUnique({
+            where: { clerkId: clerkId as string },
+        });
+
+        if (!tenant) {
+            res.status(404).json({ message: "Tenant not found" });
+            return;
+        }
+
+        const properties: Prisma.PropertyGetPayload<{ include: { location: true } }>[] =
+            await prisma.property.findMany({
+                where: {
+                    tenants: {
+                        some: {
+                            clerkId: clerkId as string,
+                        },
+                    },
+                },
+                include: {
+                    location: true,
+                },
+            });
+
+        const propertiesWithFormattedLocation = await Promise.all(
+            properties.map(async (property) => {
+                const coordinates: { coordinates: string }[] =
+                    await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates from "Location" where id = ${property.location.id}`;
+                const geoJSON: any = wktToGeoJSON(coordinates[0]?.coordinates || "");
+                const longitude = geoJSON.coordinates[0];
+                const latitude = geoJSON.coordinates[1];
+
+                return {
+                    ...property,
+                    location: {
+                        ...property.location,
+                        coordinates: {
+                            longitude,
+                            latitude,
+                        },
+                    },
+                };
+            })
+        );
+
+        res.json(propertiesWithFormattedLocation);
+    } catch (err: any) {
+        res
+            .status(500)
+            .json({ message: `Error retrieving properties: ${err.message}` });
     }
 };
