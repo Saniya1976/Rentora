@@ -8,20 +8,7 @@ import {
   Tenant
 } from "@/types/prismaTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-/* -------------------- Filters Type -------------------- */
-
-type FiltersState = {
-  location?: string;
-  priceRange?: [number, number];
-  beds?: number;
-  baths?: number;
-  propertyType?: string;
-  squareFeet?: [number, number];
-  amenities?: string[];
-  availableFrom?: string;
-  coordinates?: [number, number];
-};
+import { FiltersState } from "@/state";
 
 /* -------------------- API -------------------- */
 
@@ -142,7 +129,7 @@ export const api = createApi({
 
     getProperties: build.query<
       Property[],
-      Partial<FiltersState> & { favoriteIds?: number[] }
+      FiltersState & { favoriteIds?: number[] }
     >({
       query: (filters) => {
         const params = cleanParams({
@@ -204,6 +191,32 @@ export const api = createApi({
         url: `tenants/${cognitoId}`,
         method: "PUT",
         body: updatedTenant,
+      }),
+      invalidatesTags: (result) => [
+        { type: "Tenants", id: result?.id },
+      ],
+    }),
+
+    addFavoriteProperty: build.mutation<
+      Tenant,
+      { cognitoId: string; propertyId: number }
+    >({
+      query: ({ cognitoId, propertyId }) => ({
+        url: `tenants/${cognitoId}/favorites/${propertyId}`,
+        method: "POST",
+      }),
+      invalidatesTags: (result) => [
+        { type: "Tenants", id: result?.id },
+      ],
+    }),
+
+    removeFavoriteProperty: build.mutation<
+      Tenant,
+      { cognitoId: string; propertyId: number }
+    >({
+      query: ({ cognitoId, propertyId }) => ({
+        url: `tenants/${cognitoId}/favorites/${propertyId}`,
+        method: "DELETE",
       }),
       invalidatesTags: (result) => [
         { type: "Tenants", id: result?.id },
@@ -283,6 +296,8 @@ export const {
   useGetPropertyQuery,
   useGetTenantQuery,
   useUpdateTenantSettingsMutation,
+  useAddFavoritePropertyMutation,
+  useRemoveFavoritePropertyMutation,
   useGetManagerPropertiesQuery,
   useUpdateManagerSettingsMutation,
   useGetApplicationsQuery,
