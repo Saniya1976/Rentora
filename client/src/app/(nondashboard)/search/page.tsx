@@ -34,7 +34,33 @@ const SearchPage = () => {
       }
     });
 
-    dispatch(setFilters(newFilters));
+    // If location is present but coordinates WERE NOT in the original URL params, geocode it
+    if (newFilters.location && newFilters.location !== "any" && !params.coordinates) {
+      const geocodeLocation = async () => {
+        try {
+          const viewbox = "76.0,29.5,78.5,27.5"; // Wider Delhi NCR area
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+              newFilters.location
+            )}+Delhi+NCR&format=json&limit=1&bounded=1&viewbox=${viewbox}`
+          );
+          const data = await response.json();
+          if (data && data.length > 0) {
+            const { lat, lon } = data[0];
+            newFilters.coordinates = [Number(lon), Number(lat)];
+            dispatch(setFilters(newFilters));
+          } else {
+            dispatch(setFilters(newFilters));
+          }
+        } catch (err) {
+          console.error("Error geocoding initial location:", err);
+          dispatch(setFilters(newFilters));
+        }
+      };
+      geocodeLocation();
+    } else {
+      dispatch(setFilters(newFilters));
+    }
   }, [searchParams, dispatch]);
 
   return (
