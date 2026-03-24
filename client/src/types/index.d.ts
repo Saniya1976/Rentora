@@ -141,5 +141,7 @@ declare global {
   }
 }
 declare module "tailwindcss-animate";
+declare module "filepond-plugin-image-preview";
+declare module "filepond-plugin-image-exif-orientation";
 
 export { };

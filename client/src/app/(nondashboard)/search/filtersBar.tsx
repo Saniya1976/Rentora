@@ -62,7 +62,7 @@ const FiltersBar = () => {
       }
       newValue = currentArrayRange;
     } else if (key === "coordinates") {
-      newValue = value === "any" ? [0, 0] : value.map(Number);
+      newValue = value === "any" ? [0, 0] : (value.map(Number) as [number, number]);
     } else {
       newValue = value === "any" ? "any" : value;
     }
@@ -74,25 +74,26 @@ const FiltersBar = () => {
 
   const handleLocationSearch = async () => {
     try {
+      // Using Nominatim (OpenStreetMap) restricted to wider NCR area
+      const viewbox = "76.0,29.5,78.5,27.5";
       const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
           searchInput
-        )}.json?access_token=${
-          process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
-        }&fuzzyMatch=true`
+        )}+Delhi+NCR&format=json&limit=1&bounded=1&viewbox=${viewbox}`
       );
       const data = await response.json();
-      if (data.features && data.features.length > 0) {
-        const [lng, lat] = data.features[0].center;
-        dispatch(
-          setFilters({
-            location: searchInput,
-            coordinates: [lng, lat],
-          })
-        );
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        const newFilters = {
+          ...filters,
+          location: searchInput,
+          coordinates: [Number(lon), Number(lat)] as [number, number],
+        };
+        dispatch(setFilters(newFilters));
+        updateURL(newFilters);
       }
     } catch (err) {
-      console.error("Error search location:", err);
+      console.error("Error searching location:", err);
     }
   };
 
@@ -119,12 +120,12 @@ const FiltersBar = () => {
             placeholder="Search location"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="w-40 rounded-l-xl rounded-r-none border-primary-400 border-r-0"
+            className="w-40 rounded-l-xl rounded-r-none border-primary-400 border-r-0 dark:bg-zinc-800 dark:text-white dark:border-white/10"
           />
           <Button
             onClick={handleLocationSearch}
             className={`rounded-r-xl rounded-l-none border-l-none border-primary-400 shadow-none 
-              border hover:bg-primary-700 hover:text-primary-50`}
+              border bg-primary-700 text-white hover:bg-primary-800 transition-colors h-10 w-12 flex items-center justify-center`}
           >
             <Search className="w-4 h-4" />
           </Button>
@@ -139,12 +140,12 @@ const FiltersBar = () => {
               handleFilterChange("priceRange", value, true)
             }
           >
-            <SelectTrigger className="w-22 rounded-xl border-primary-400">
+            <SelectTrigger className="w-22 rounded-xl border-primary-400 dark:bg-zinc-800 dark:border-white/10">
               <SelectValue>
                 {formatPriceValue(filters.priceRange[0], true)}
               </SelectValue>
             </SelectTrigger>
-            <SelectContent className="bg-white">
+            <SelectContent className="bg-white dark:bg-zinc-800 dark:border-white/10">
               <SelectItem value="any">Any Min Price</SelectItem>
               {[500, 1000, 1500, 2000, 3000, 5000, 10000].map((price) => (
                 <SelectItem key={price} value={price.toString()}>
@@ -161,12 +162,12 @@ const FiltersBar = () => {
               handleFilterChange("priceRange", value, false)
             }
           >
-            <SelectTrigger className="w-22 rounded-xl border-primary-400">
+            <SelectTrigger className="w-22 rounded-xl border-primary-400 dark:bg-zinc-800 dark:border-white/10">
               <SelectValue>
                 {formatPriceValue(filters.priceRange[1], false)}
               </SelectValue>
             </SelectTrigger>
-            <SelectContent className="bg-white">
+            <SelectContent className="bg-white dark:bg-zinc-800 dark:border-white/10">
               <SelectItem value="any">Any Max Price</SelectItem>
               {[1000, 2000, 3000, 5000, 10000].map((price) => (
                 <SelectItem key={price} value={price.toString()}>
@@ -184,10 +185,10 @@ const FiltersBar = () => {
             value={filters.beds}
             onValueChange={(value) => handleFilterChange("beds", value, null)}
           >
-            <SelectTrigger className="w-26 rounded-xl border-primary-400">
+            <SelectTrigger className="w-26 rounded-xl border-primary-400 dark:bg-zinc-800 dark:border-white/10">
               <SelectValue placeholder="Beds" />
             </SelectTrigger>
-            <SelectContent className="bg-white">
+            <SelectContent className="bg-white dark:bg-zinc-800 dark:border-white/10">
               <SelectItem value="any">Any Beds</SelectItem>
               <SelectItem value="1">1+ bed</SelectItem>
               <SelectItem value="2">2+ beds</SelectItem>
@@ -201,10 +202,10 @@ const FiltersBar = () => {
             value={filters.baths}
             onValueChange={(value) => handleFilterChange("baths", value, null)}
           >
-            <SelectTrigger className="w-26 rounded-xl border-primary-400">
+            <SelectTrigger className="w-26 rounded-xl border-primary-400 dark:bg-zinc-800 dark:border-white/10">
               <SelectValue placeholder="Baths" />
             </SelectTrigger>
-            <SelectContent className="bg-white">
+            <SelectContent className="bg-white dark:bg-zinc-800 dark:border-white/10">
               <SelectItem value="any">Any Baths</SelectItem>
               <SelectItem value="1">1+ bath</SelectItem>
               <SelectItem value="2">2+ baths</SelectItem>
@@ -220,10 +221,10 @@ const FiltersBar = () => {
             handleFilterChange("propertyType", value, null)
           }
         >
-          <SelectTrigger className="w-32 rounded-xl border-primary-400">
+          <SelectTrigger className="w-32 rounded-xl border-primary-400 dark:bg-zinc-800 dark:border-white/10">
             <SelectValue placeholder="Home Type" />
           </SelectTrigger>
-          <SelectContent className="bg-white">
+          <SelectContent className="bg-white dark:bg-zinc-800 dark:border-white/10">
             <SelectItem value="any">Any Property Type</SelectItem>
             {Object.entries(PropertyTypeIcons).map(([type, Icon]) => (
               <SelectItem key={type} value={type}>
@@ -239,12 +240,12 @@ const FiltersBar = () => {
 
       {/* View Mode */}
       <div className="flex justify-between items-center gap-4 p-2">
-        <div className="flex border rounded-xl">
+        <div className="flex border rounded-xl dark:border-white/10">
           <Button
             variant="ghost"
             className={cn(
-              "px-3 py-1 rounded-none rounded-l-xl hover:bg-primary-600 hover:text-primary-50",
-              viewMode === "list" ? "bg-primary-700 text-primary-50" : ""
+              "px-3 py-1 rounded-none rounded-l-xl hover:bg-primary-600 hover:text-primary-50 dark:text-gray-400 dark:hover:bg-primary-700 dark:hover:text-white",
+              viewMode === "list" ? "bg-primary-700 text-primary-50 dark:bg-primary-600 dark:text-white" : ""
             )}
             onClick={() => dispatch(setViewMode("list"))}
           >
@@ -253,8 +254,8 @@ const FiltersBar = () => {
           <Button
             variant="ghost"
             className={cn(
-              "px-3 py-1 rounded-none rounded-r-xl hover:bg-primary-600 hover:text-primary-50",
-              viewMode === "grid" ? "bg-primary-700 text-primary-50" : ""
+              "px-3 py-1 rounded-none rounded-r-xl hover:bg-primary-600 hover:text-primary-50 dark:text-gray-400 dark:hover:bg-primary-700 dark:hover:text-white",
+              viewMode === "grid" ? "bg-primary-700 text-primary-50 dark:bg-primary-600 dark:text-white" : ""
             )}
             onClick={() => dispatch(setViewMode("grid"))}
           >

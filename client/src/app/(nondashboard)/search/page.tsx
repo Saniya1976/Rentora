@@ -7,7 +7,7 @@ import React, { useEffect } from "react";
 import FiltersBar from "./filtersBar";
 import FiltersFull from "./filtersFull";
 import { cleanParams } from "@/lib/utils";
-import { setFilters } from "@/state";
+import { setFilters, initialState } from "@/state";
 import Map from "./map";
 import Listings from "./listings";
 
@@ -19,24 +19,23 @@ const SearchPage = () => {
   );
 
   useEffect(() => {
-    const initialFilters = Array.from(searchParams.entries()).reduce(
-      (acc: any, [key, value]) => {
-        if (key === "priceRange" || key === "squareFeet") {
-          acc[key] = value.split(",").map((v) => (v === "" ? null : Number(v)));
-        } else if (key === "coordinates") {
-          acc[key] = value.split(",").map(Number);
-        } else {
-          acc[key] = value === "any" ? null : value;
-        }
+    const params = Object.fromEntries(searchParams.entries());
+    const newFilters: any = { ...initialState.filters };
 
-        return acc;
-      },
-      {}
-    );
+    Object.entries(params).forEach(([key, value]) => {
+      if (key === "priceRange" || key === "squareFeet") {
+        newFilters[key] = value.split(",").map((v) => (v === "null" || v === "" ? null : Number(v)));
+      } else if (key === "coordinates") {
+        newFilters[key] = value.split(",").map(Number);
+      } else if (key === "amenities") {
+        newFilters[key] = value.split(",");
+      } else {
+        newFilters[key] = value === "any" ? "any" : value;
+      }
+    });
 
-    const cleanedFilters = cleanParams(initialFilters);
-    dispatch(setFilters(cleanedFilters));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    dispatch(setFilters(newFilters));
+  }, [searchParams, dispatch]);
 
   return (
     <div
@@ -48,11 +47,10 @@ const SearchPage = () => {
       <FiltersBar />
       <div className="flex justify-between flex-1 overflow-hidden gap-3 mb-5">
         <div
-          className={`h-full overflow-auto transition-all duration-300 ease-in-out ${
-            isFiltersFullOpen
-              ? "w-3/12 opacity-100 visible"
-              : "w-0 opacity-0 invisible"
-          }`}
+          className={`h-full overflow-auto transition-all duration-300 ease-in-out ${isFiltersFullOpen
+            ? "w-3/12 opacity-100 visible"
+            : "w-0 opacity-0 invisible"
+            }`}
         >
           <FiltersFull />
         </div>

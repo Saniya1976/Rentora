@@ -105,6 +105,17 @@ const Navbar = () => {
           <span>Dashboard</span>
         </div>
       </Link>
+      <Link href="/search" className="w-full md:w-auto">
+        <div className={cn(
+          "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold",
+          mobile
+            ? "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 w-full"
+            : "text-gray-600 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/5"
+        )}>
+          <Search className="w-6 h-6" />
+          <span>Search</span>
+        </div>
+      </Link>
       <Link href={userRole === 'manager' ? '/manager/settings' : '/tenant/settings'} className="w-full md:w-auto">
         <div className={cn(
           "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all font-bold",
@@ -173,6 +184,12 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
           <SignedOut>
+            <Link href="/search">
+              <Button variant="ghost" className="px-6 h-11 rounded-xl text-gray-600 dark:text-gray-300 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all">
+                Search
+              </Button>
+            </Link>
+
             <Link href="/signin">
               <Button variant="ghost" className="px-6 h-11 rounded-xl text-gray-600 dark:text-gray-300 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all">
                 Sign In
@@ -269,6 +286,11 @@ const Navbar = () => {
 
               <SignedOut>
                 <div className="p-2 flex flex-col gap-2">
+                  <Link href="/search" className="w-full">
+                    <Button variant="outline" className="w-full justify-center rounded-xl font-bold border-gray-200 dark:border-white/10 dark:text-white hover:bg-[#1acec8]/5 hover:text-[#1acec8] hover:border-[#1acec8]/30 transition-all">
+                      Search
+                    </Button>
+                  </Link>
                   <Link href="/signin" className="w-full">
                     <Button variant="outline" className="w-full justify-center rounded-xl font-bold border-gray-200 dark:border-white/10 dark:text-white hover:bg-[#1acec8]/5 hover:text-[#1acec8] hover:border-[#1acec8]/30 transition-all">
                       Sign In

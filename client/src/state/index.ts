@@ -28,7 +28,7 @@ export const initialState: GlobalState = {
     squareFeet: [null, null],
     amenities: [],
     availableFrom: "any",
-    coordinates: [0, 0],
+    coordinates: [77.209, 28.6139],
   },
   isFiltersFullOpen: false,
   viewMode: "grid",
