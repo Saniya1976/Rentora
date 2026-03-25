@@ -15,18 +15,18 @@ const Favourites = () => {
     const dispatch = useAppDispatch();
     const { data: authUser } = useGetAuthUserQuery();
     const { data: tenant, isLoading, isError } = useGetTenantQuery(
-        authUser?.cognitoInfo?.id || "",
+        authUser?.clerkInfo?.id || "",
         {
-            skip: !authUser?.cognitoInfo?.id,
+            skip: !authUser?.clerkInfo?.id,
         }
     );
     const [removeFavorite] = useRemoveFavoritePropertyMutation();
     const viewMode = useAppSelector((state) => state.global.viewMode);
 
     const handleRemoveFavorite = async (propertyId: number) => {
-        if (!authUser?.cognitoInfo?.id) return;
+        if (!authUser?.clerkInfo?.id) return;
         await removeFavorite({
-            cognitoId: authUser.cognitoInfo.id,
+            clerkId: authUser.clerkInfo.id,
             propertyId,
         });
     };

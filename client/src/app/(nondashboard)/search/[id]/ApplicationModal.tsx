@@ -44,7 +44,7 @@ const ApplicationModal = ({
       applicationDate: new Date().toISOString(),
       status: "Pending",
       propertyId: propertyId,
-      tenantCognitoId: authUser.cognitoInfo.userId,
+      tenantClerkId: authUser.clerkInfo.id,
     });
     onClose();
   };

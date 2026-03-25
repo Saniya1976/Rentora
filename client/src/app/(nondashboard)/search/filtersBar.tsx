@@ -37,8 +37,14 @@ const FiltersBar = () => {
 
   const updateURL = useCallback(
     (newFilters) => {
-      const currentParams = Object.fromEntries(searchParams.entries());
-      const updatedParams = cleanParams(newFilters);
+      const filtersToClean = { ...newFilters };
+      if (
+        newFilters.coordinates?.[0] === 0 &&
+        newFilters.coordinates?.[1] === 0
+      ) {
+        delete filtersToClean.coordinates;
+      }
+      const updatedParams = cleanParams(filtersToClean);
 
       const queryString = new URLSearchParams(updatedParams).toString();
       window.history.replaceState(null, "", `?${queryString}`);
@@ -330,8 +336,8 @@ const FiltersBar = () => {
             variant="ghost"
             onClick={() => dispatch(setViewMode("grid"))}
             className={`rounded-none px-3 h-11 transition-all ${viewMode === "grid"
-                ? "bg-primary text-primary-foreground font-bold shadow-inner"
-                : "text-muted-foreground hover:bg-muted"
+              ? "bg-primary text-primary-foreground font-bold shadow-inner"
+              : "text-muted-foreground hover:bg-muted"
               }`}
           >
             <Grid className="w-4 h-4" />
@@ -340,8 +346,8 @@ const FiltersBar = () => {
             variant="ghost"
             onClick={() => dispatch(setViewMode("list"))}
             className={`rounded-none px-3 h-11 transition-all ${viewMode === "list"
-                ? "bg-primary text-primary-foreground font-bold shadow-inner"
-                : "text-muted-foreground hover:bg-muted"
+              ? "bg-primary text-primary-foreground font-bold shadow-inner"
+              : "text-muted-foreground hover:bg-muted"
               }`}
           >
             <List className="w-4 h-4" />

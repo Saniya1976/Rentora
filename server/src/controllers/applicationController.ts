@@ -14,11 +14,11 @@ export const listApplications = async (
 
         if (userId && userType) {
             if (userType === "tenant") {
-                whereClause = { tenantCognitoId: String(userId) };
+                whereClause = { tenantClerkId: String(userId) };
             } else if (userType === "manager") {
                 whereClause = {
                     property: {
-                        managerCognitoId: String(userId),
+                        managerClerkId: String(userId),
                     },
                 };
             }

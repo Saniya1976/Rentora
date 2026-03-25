@@ -10,7 +10,7 @@ const SettingsPage = () => {
     const [updateManager, { isLoading: isUpdating }] = useUpdateManagerSettingsMutation();
 
     const userInfo = authUser?.userInfo;
-    const cognitoId = authUser?.cognitoInfo?.id;
+    const clerkId = authUser?.clerkInfo?.id;
 
     const initialData = {
         name: userInfo && 'name' in userInfo ? userInfo.name : "",
@@ -19,11 +19,11 @@ const SettingsPage = () => {
     };
 
     const handleSubmit = async (data: { name: string; email: string; phoneNumber: string }) => {
-        if (!cognitoId) return;
+        if (!clerkId) return;
 
         try {
             await updateManager({
-                cognitoId,
+                clerkId,
                 ...data
             }).unwrap();
             toast.success("Settings updated successfully!");

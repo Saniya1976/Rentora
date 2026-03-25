@@ -91,7 +91,7 @@ export const getProperties = async (
     if (latitude && longitude && latitude !== "any" && longitude !== "any") {
       const lat = parseFloat(latitude as string);
       const lng = parseFloat(longitude as string);
-      if (!isNaN(lat) && !isNaN(lng)) {
+      if (!isNaN(lat) && !isNaN(lng) && (lat !== 0 || lng !== 0)) {
         const radiusInMeters = 5000; // 5km radius
         whereConditions.push(
           Prisma.sql`ST_DWithin(l.coordinates, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography, ${radiusInMeters})`

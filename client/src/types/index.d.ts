@@ -135,7 +135,7 @@ declare global {
   }
 
   interface User {
-    cognitoInfo: any;
+    clerkInfo: any;
     userInfo: Tenant | Manager;
     userRole: string;
   }
