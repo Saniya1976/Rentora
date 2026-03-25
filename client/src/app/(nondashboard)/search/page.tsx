@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import FiltersBar from "./filtersBar";
 import FiltersFull from "./filtersFull";
-import { cleanParams } from "@/lib/utils";
 import { setFilters, initialState } from "@/state";
 import Map from "./map";
 import Listings from "./listings";

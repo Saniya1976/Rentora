@@ -1,18 +1,7 @@
-import {
-  FiltersState,
-  setFilters,
-  setViewMode,
-  toggleFiltersFullOpen,
-} from "@/state";
-import { useAppSelector } from "@/state/redux";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { debounce } from "lodash";
-import { cleanParams, cn, formatPriceValue } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Filter, Grid, List, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+"use client";
+
+import { useAppDispatch, useAppSelector } from "@/state/redux";
+import { setFilters, toggleFiltersFullOpen } from "@/state";
 import {
   Select,
   SelectContent,
@@ -20,64 +9,80 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Filter, Grid, List, Search } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import { cleanParams } from "@/lib/utils";
 import { PropertyTypeIcons } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { setViewMode } from "@/state";
 
 const FiltersBar = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const pathname = usePathname();
+  const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
   const filters = useAppSelector((state) => state.global.filters);
   const isFiltersFullOpen = useAppSelector(
     (state) => state.global.isFiltersFullOpen
   );
   const viewMode = useAppSelector((state) => state.global.viewMode);
-  const [searchInput, setSearchInput] = useState(filters.location);
+
+  const [searchInput, setSearchInput] = useState(filters.location || "");
   const [isGeocoding, setIsGeocoding] = useState(false);
 
-  React.useEffect(() => {
-    setSearchInput(filters.location);
+  useEffect(() => {
+    setSearchInput(filters.location || "");
   }, [filters.location]);
 
-  const updateURL = debounce((newFilters: FiltersState) => {
-    const cleanFilters = cleanParams(newFilters);
-    const updatedSearchParams = new URLSearchParams();
+  const updateURL = useCallback(
+    (newFilters) => {
+      const currentParams = Object.fromEntries(searchParams.entries());
+      const updatedParams = cleanParams(newFilters);
 
-    Object.entries(cleanFilters).forEach(([key, value]) => {
-      updatedSearchParams.set(
-        key,
-        Array.isArray(value) ? value.join(",") : value.toString()
-      );
-    });
+      const queryString = new URLSearchParams(updatedParams).toString();
+      window.history.replaceState(null, "", `?${queryString}`);
+    },
+    [searchParams]
+  );
 
-    router.push(`${pathname}?${updatedSearchParams.toString()}`);
-  });
+  const handleFilterChange = useCallback(
+    (key, value, isMinMax = null) => {
+      let newFilters = { ...filters };
 
-  const handleFilterChange = (
-    key: string,
-    value: any,
-    isMin: boolean | null
-  ) => {
-    let newValue = value;
+      if (key === "priceRange" || key === "squareFeet") {
+        const currentRange = newFilters[key] || [null, null];
+        const parsedValue = value === "any" ? null : Number(value);
 
-    if (key === "priceRange" || key === "squareFeet") {
-      const currentArrayRange = [...filters[key]];
-      if (isMin !== null) {
-        const index = isMin ? 0 : 1;
-        currentArrayRange[index] = value === "any" ? null : Number(value);
+        if (isMinMax === true) {
+          // Setting min value
+          newFilters[key] = [parsedValue, currentRange[1]];
+        } else if (isMinMax === false) {
+          // Setting max value
+          newFilters[key] = [currentRange[0], parsedValue];
+        }
+      } else if (key === "beds" || key === "baths") {
+        newFilters[key] = value === "any" ? "any" : value;
+      } else if (key === "propertyType") {
+        newFilters[key] = value === "any" ? "any" : value;
+      } else {
+        newFilters[key] = value;
       }
-      newValue = currentArrayRange;
-    } else if (key === "coordinates") {
-      newValue = value === "any" ? [0, 0] : (value.map(Number) as [number, number]);
-    } else {
-      newValue = value === "any" ? "any" : value;
-    }
 
-    const newFilters = { ...filters, [key]: newValue };
-    dispatch(setFilters(newFilters));
-    updateURL(newFilters);
+      dispatch(setFilters(newFilters));
+      updateURL(newFilters);
+    },
+    [filters, dispatch, updateURL]
+  );
+
+  const formatPriceValue = (value, isMin) => {
+    if (value === null || value === "any") {
+      return isMin ? "Min Price" : "Max Price";
+    }
+    return `₹${(value / 1000).toFixed(0)}k${isMin ? "+" : ""}`;
   };
 
-  const handleLocationSearch = async () => {
+  const handleLocationSearch = useCallback(async () => {
     if (!searchInput.trim()) {
       const newFilters = {
         ...filters,
@@ -91,8 +96,7 @@ const FiltersBar = () => {
 
     setIsGeocoding(true);
     try {
-      // Using Nominatim (OpenStreetMap) restricted to wider NCR area
-      const viewbox = "76.0,29.5,78.5,27.5";
+      const viewbox = "76.0,29.5,78.5,27.5"; // Wider Delhi NCR area
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
           searchInput
@@ -104,6 +108,7 @@ const FiltersBar = () => {
         }
       );
       const data = await response.json();
+
       if (data && data.length > 0) {
         const { lat, lon } = data[0];
         const newFilters = {
@@ -114,7 +119,7 @@ const FiltersBar = () => {
         dispatch(setFilters(newFilters));
         updateURL(newFilters);
       } else {
-        // Fallback search without Delhi suffix if no results
+        // Fallback search without Delhi suffix
         const fallbackResponse = await fetch(
           `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
             searchInput
@@ -135,14 +140,25 @@ const FiltersBar = () => {
           };
           dispatch(setFilters(newFilters));
           updateURL(newFilters);
+        } else {
+          console.warn("Location not found:", searchInput);
+          // Optionally, clear location or show an error
+          const newFilters = {
+            ...filters,
+            location: searchInput,
+            coordinates: [0, 0] as [number, number], // Reset coordinates if not found
+          };
+          dispatch(setFilters(newFilters));
+          updateURL(newFilters);
         }
       }
-    } catch (err) {
-      console.error("Error searching location:", err);
+    } catch (error) {
+      console.error("Error geocoding location:", error);
+      // Optionally, handle error state
     } finally {
       setIsGeocoding(false);
     }
-  };
+  }, [searchInput, filters, dispatch, updateURL]);
 
   return (
     <div className="flex justify-between items-center w-full py-5 transition-colors duration-300 border-b border-border relative z-40">
@@ -312,25 +328,23 @@ const FiltersBar = () => {
         <div className="flex border border-border rounded-xl overflow-hidden shadow-sm bg-background">
           <Button
             variant="ghost"
-            title="List View"
-            className={cn(
-              "h-11 w-12 p-0 rounded-none hover:bg-primary/10 text-muted-foreground transition-all duration-300",
-              viewMode === "list" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""
-            )}
-            onClick={() => dispatch(setViewMode("list"))}
+            onClick={() => dispatch(setViewMode("grid"))}
+            className={`rounded-none px-3 h-11 transition-all ${viewMode === "grid"
+                ? "bg-primary text-primary-foreground font-bold shadow-inner"
+                : "text-muted-foreground hover:bg-muted"
+              }`}
           >
-            <List className="w-5 h-5" />
+            <Grid className="w-4 h-4" />
           </Button>
           <Button
             variant="ghost"
-            title="Grid View"
-            className={cn(
-              "h-11 w-12 p-0 rounded-none hover:bg-primary/10 text-muted-foreground transition-all duration-300",
-              viewMode === "grid" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""
-            )}
-            onClick={() => dispatch(setViewMode("grid"))}
+            onClick={() => dispatch(setViewMode("list"))}
+            className={`rounded-none px-3 h-11 transition-all ${viewMode === "list"
+                ? "bg-primary text-primary-foreground font-bold shadow-inner"
+                : "text-muted-foreground hover:bg-muted"
+              }`}
           >
-            <Grid className="w-5 h-5" />
+            <List className="w-4 h-4" />
           </Button>
         </div>
       </div>
