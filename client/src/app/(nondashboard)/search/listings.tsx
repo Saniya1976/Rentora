@@ -14,9 +14,9 @@ import CardCompact from "@/components/CardCompact";
 const Listings = () => {
   const { data: authUser } = useGetAuthUserQuery();
   const { data: tenant } = useGetTenantQuery(
-    authUser?.cognitoInfo?.userId || "",
+    authUser?.cognitoInfo?.id || "",
     {
-      skip: !authUser?.cognitoInfo?.userId,
+      skip: !authUser?.cognitoInfo?.id,
     }
   );
   const [addFavorite] = useAddFavoritePropertyMutation();
@@ -31,7 +31,7 @@ const Listings = () => {
   } = useGetPropertiesQuery(filters);
 
   const handleFavoriteToggle = async (propertyId: number) => {
-    if (!authUser) return;
+    if (!authUser || !authUser.cognitoInfo?.id) return;
 
     const isFavorite = tenant?.favorites?.some(
       (fav: Property) => fav.id === propertyId
@@ -39,12 +39,12 @@ const Listings = () => {
 
     if (isFavorite) {
       await removeFavorite({
-        cognitoId: authUser.cognitoInfo.userId,
+        cognitoId: authUser.cognitoInfo.id,
         propertyId,
       });
     } else {
       await addFavorite({
-        cognitoId: authUser.cognitoInfo.userId,
+        cognitoId: authUser.cognitoInfo.id,
         propertyId,
       });
     }
@@ -55,14 +55,8 @@ const Listings = () => {
 
   return (
     <div className="w-full">
-      <h3 className="text-sm px-4 font-bold">
-        {properties.length}{" "}
-        <span className="text-gray-700 font-normal">
-          Places in {filters.location}
-        </span>
-      </h3>
       <div className="flex">
-        <div className="p-4 w-full">
+        <div className="p-0 w-full">
           {properties?.map((property) =>
             viewMode === "grid" ? (
               <Card

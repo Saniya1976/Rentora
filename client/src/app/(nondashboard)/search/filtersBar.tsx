@@ -32,6 +32,11 @@ const FiltersBar = () => {
   );
   const viewMode = useAppSelector((state) => state.global.viewMode);
   const [searchInput, setSearchInput] = useState(filters.location);
+  const [isGeocoding, setIsGeocoding] = useState(false);
+
+  React.useEffect(() => {
+    setSearchInput(filters.location);
+  }, [filters.location]);
 
   const updateURL = debounce((newFilters: FiltersState) => {
     const cleanFilters = cleanParams(newFilters);
@@ -73,13 +78,30 @@ const FiltersBar = () => {
   };
 
   const handleLocationSearch = async () => {
+    if (!searchInput.trim()) {
+      const newFilters = {
+        ...filters,
+        location: "",
+        coordinates: [0, 0] as [number, number],
+      };
+      dispatch(setFilters(newFilters));
+      updateURL(newFilters);
+      return;
+    }
+
+    setIsGeocoding(true);
     try {
       // Using Nominatim (OpenStreetMap) restricted to wider NCR area
       const viewbox = "76.0,29.5,78.5,27.5";
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
           searchInput
-        )}+Delhi+NCR&format=json&limit=1&bounded=1&viewbox=${viewbox}`
+        )}+Delhi+NCR&format=json&limit=1&bounded=1&viewbox=${viewbox}`,
+        {
+          headers: {
+            "User-Agent": "RentoraApp/1.0",
+          },
+        }
       );
       const data = await response.json();
       if (data && data.length > 0) {
@@ -91,22 +113,47 @@ const FiltersBar = () => {
         };
         dispatch(setFilters(newFilters));
         updateURL(newFilters);
+      } else {
+        // Fallback search without Delhi suffix if no results
+        const fallbackResponse = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+            searchInput
+          )}&format=json&limit=1`,
+          {
+            headers: {
+              "User-Agent": "RentoraApp/1.0",
+            },
+          }
+        );
+        const fallbackData = await fallbackResponse.json();
+        if (fallbackData && fallbackData.length > 0) {
+          const { lat, lon } = fallbackData[0];
+          const newFilters = {
+            ...filters,
+            location: searchInput,
+            coordinates: [Number(lon), Number(lat)] as [number, number],
+          };
+          dispatch(setFilters(newFilters));
+          updateURL(newFilters);
+        }
       }
     } catch (err) {
       console.error("Error searching location:", err);
+    } finally {
+      setIsGeocoding(false);
     }
   };
 
   return (
-    <div className="flex justify-between items-center w-full py-5">
+    <div className="flex justify-between items-center w-full py-5 transition-colors duration-300 border-b border-border relative z-40">
       {/* Filters */}
-      <div className="flex justify-between items-center gap-4 p-2">
+      <div className="flex items-center gap-4 p-2">
         {/* All Filters */}
         <Button
           variant="outline"
           className={cn(
-            "gap-2 rounded-xl border-primary-400 hover:bg-primary-500 hover:text-primary-100",
-            isFiltersFullOpen && "bg-primary-700 text-primary-100"
+            "gap-2 rounded-xl border-primary hover:bg-primary/10 transition-all font-semibold h-11 px-4",
+            isFiltersFullOpen && "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
           )}
           onClick={() => dispatch(toggleFiltersFullOpen())}
         >
@@ -115,19 +162,41 @@ const FiltersBar = () => {
         </Button>
 
         {/* Search Location */}
-        <div className="flex items-center">
+        <div className="flex items-center shadow-sm rounded-xl overflow-hidden">
           <Input
-            placeholder="Search location"
+            placeholder="Search location..."
             value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            className="w-40 rounded-l-xl rounded-r-none border-primary-400 border-r-0 dark:bg-zinc-800 dark:text-white dark:border-white/10"
+            onChange={(e) => {
+              const val = e.target.value;
+              setSearchInput(val);
+              if (!val.trim()) {
+                const newFilters = {
+                  ...filters,
+                  location: "",
+                  coordinates: [0, 0] as [number, number],
+                };
+                dispatch(setFilters(newFilters));
+                updateURL(newFilters);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleLocationSearch();
+              }
+            }}
+            className="w-64 h-11 rounded-l-xl rounded-r-none border-primary border-r-0 bg-background text-foreground text-sm focus-visible:ring-primary/20"
           />
           <Button
             onClick={handleLocationSearch}
-            className={`rounded-r-xl rounded-l-none border-l-none border-primary-400 shadow-none 
-              border bg-primary-700 text-white hover:bg-primary-800 transition-colors h-10 w-12 flex items-center justify-center`}
+            disabled={isGeocoding}
+            className={`rounded-r-xl rounded-l-none border-l-none border-primary shadow-none 
+              border bg-primary text-primary-foreground hover:bg-primary/90 transition-colors h-11 w-12 flex items-center justify-center p-0`}
           >
-            <Search className="w-4 h-4" />
+            {isGeocoding ? (
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <Search className="w-4 h-4" />
+            )}
           </Button>
         </div>
 
@@ -140,16 +209,16 @@ const FiltersBar = () => {
               handleFilterChange("priceRange", value, true)
             }
           >
-            <SelectTrigger className="w-22 rounded-xl border-primary-400 dark:bg-zinc-800 dark:border-white/10">
+            <SelectTrigger className="w-32 h-11 rounded-xl border-primary bg-background text-foreground font-medium">
               <SelectValue>
                 {formatPriceValue(filters.priceRange[0], true)}
               </SelectValue>
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-zinc-800 dark:border-white/10">
-              <SelectItem value="any">Any Min Price</SelectItem>
-              {[500, 1000, 1500, 2000, 3000, 5000, 10000].map((price) => (
+            <SelectContent className="bg-card text-card-foreground border-border z-[9999]">
+              <SelectItem value="any">Min Price</SelectItem>
+              {[10000, 20000, 30000, 50000, 75000, 100000].map((price) => (
                 <SelectItem key={price} value={price.toString()}>
-                  ${price / 1000}k+
+                  ₹{(price / 1000).toFixed(0)}k+
                 </SelectItem>
               ))}
             </SelectContent>
@@ -162,16 +231,16 @@ const FiltersBar = () => {
               handleFilterChange("priceRange", value, false)
             }
           >
-            <SelectTrigger className="w-22 rounded-xl border-primary-400 dark:bg-zinc-800 dark:border-white/10">
+            <SelectTrigger className="w-32 h-11 rounded-xl border-primary bg-background text-foreground font-medium">
               <SelectValue>
                 {formatPriceValue(filters.priceRange[1], false)}
               </SelectValue>
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-zinc-800 dark:border-white/10">
-              <SelectItem value="any">Any Max Price</SelectItem>
-              {[1000, 2000, 3000, 5000, 10000].map((price) => (
+            <SelectContent className="bg-card text-card-foreground border-border z-[9999]">
+              <SelectItem value="any">Max Price</SelectItem>
+              {[20000, 30000, 50000, 75000, 100000, 150000].map((price) => (
                 <SelectItem key={price} value={price.toString()}>
-                  &lt;${price / 1000}k
+                  &lt; ₹{(price / 1000).toFixed(0)}k
                 </SelectItem>
               ))}
             </SelectContent>
@@ -185,10 +254,10 @@ const FiltersBar = () => {
             value={filters.beds}
             onValueChange={(value) => handleFilterChange("beds", value, null)}
           >
-            <SelectTrigger className="w-26 rounded-xl border-primary-400 dark:bg-zinc-800 dark:border-white/10">
+            <SelectTrigger className="w-28 h-11 rounded-xl border-primary bg-background text-foreground font-medium">
               <SelectValue placeholder="Beds" />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-zinc-800 dark:border-white/10">
+            <SelectContent className="bg-card text-card-foreground border-border z-[9999]">
               <SelectItem value="any">Any Beds</SelectItem>
               <SelectItem value="1">1+ bed</SelectItem>
               <SelectItem value="2">2+ beds</SelectItem>
@@ -202,10 +271,10 @@ const FiltersBar = () => {
             value={filters.baths}
             onValueChange={(value) => handleFilterChange("baths", value, null)}
           >
-            <SelectTrigger className="w-26 rounded-xl border-primary-400 dark:bg-zinc-800 dark:border-white/10">
+            <SelectTrigger className="w-28 h-11 rounded-xl border-primary bg-background text-foreground font-medium">
               <SelectValue placeholder="Baths" />
             </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-zinc-800 dark:border-white/10">
+            <SelectContent className="bg-card text-card-foreground border-border z-[9999]">
               <SelectItem value="any">Any Baths</SelectItem>
               <SelectItem value="1">1+ bath</SelectItem>
               <SelectItem value="2">2+ baths</SelectItem>
@@ -221,16 +290,16 @@ const FiltersBar = () => {
             handleFilterChange("propertyType", value, null)
           }
         >
-          <SelectTrigger className="w-32 rounded-xl border-primary-400 dark:bg-zinc-800 dark:border-white/10">
+          <SelectTrigger className="w-40 h-11 rounded-xl border-primary bg-background text-foreground font-medium">
             <SelectValue placeholder="Home Type" />
           </SelectTrigger>
-          <SelectContent className="bg-white dark:bg-zinc-800 dark:border-white/10">
-            <SelectItem value="any">Any Property Type</SelectItem>
+          <SelectContent className="bg-card text-card-foreground border-border z-[9999]">
+            <SelectItem value="any">Any Type</SelectItem>
             {Object.entries(PropertyTypeIcons).map(([type, Icon]) => (
               <SelectItem key={type} value={type}>
-                <div className="flex items-center">
-                  <Icon className="w-4 h-4 mr-2" />
-                  <span>{type}</span>
+                <div className="flex items-center group">
+                  <Icon className="w-4 h-4 mr-2 group-hover:text-primary transition-colors" />
+                  <span className="group-hover:text-primary transition-colors text-sm">{type}</span>
                 </div>
               </SelectItem>
             ))}
@@ -239,13 +308,14 @@ const FiltersBar = () => {
       </div>
 
       {/* View Mode */}
-      <div className="flex justify-between items-center gap-4 p-2">
-        <div className="flex border rounded-xl dark:border-white/10">
+      <div className="flex items-center gap-4">
+        <div className="flex border border-border rounded-xl overflow-hidden shadow-sm bg-background">
           <Button
             variant="ghost"
+            title="List View"
             className={cn(
-              "px-3 py-1 rounded-none rounded-l-xl hover:bg-primary-600 hover:text-primary-50 dark:text-gray-400 dark:hover:bg-primary-700 dark:hover:text-white",
-              viewMode === "list" ? "bg-primary-700 text-primary-50 dark:bg-primary-600 dark:text-white" : ""
+              "h-11 w-12 p-0 rounded-none hover:bg-primary/10 text-muted-foreground transition-all duration-300",
+              viewMode === "list" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""
             )}
             onClick={() => dispatch(setViewMode("list"))}
           >
@@ -253,9 +323,10 @@ const FiltersBar = () => {
           </Button>
           <Button
             variant="ghost"
+            title="Grid View"
             className={cn(
-              "px-3 py-1 rounded-none rounded-r-xl hover:bg-primary-600 hover:text-primary-50 dark:text-gray-400 dark:hover:bg-primary-700 dark:hover:text-white",
-              viewMode === "grid" ? "bg-primary-700 text-primary-50 dark:bg-primary-600 dark:text-white" : ""
+              "h-11 w-12 p-0 rounded-none hover:bg-primary/10 text-muted-foreground transition-all duration-300",
+              viewMode === "grid" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""
             )}
             onClick={() => dispatch(setViewMode("grid"))}
           >

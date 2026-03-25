@@ -130,6 +130,19 @@ body {
   @apply pt-8 pb-5 px-8;
 }
 
+/* Leaflet Popup Overrides */
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  @apply !bg-card !text-card-foreground !border !border-border;
+}
+
+.leaflet-popup-content {
+  @apply !m-0 !p-0;
+}
+
+.leaflet-container {
+  @apply !font-cute;
+}
+
 .mapboxgl-popup-content {
   @apply !bg-primary-700;
   @apply !rounded-lg;

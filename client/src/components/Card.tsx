@@ -15,7 +15,7 @@ const Card = ({
   );
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-lg w-full mb-5">
+    <div className="bg-card text-card-foreground rounded-xl overflow-hidden shadow-lg w-full mb-5 border border-border transition-colors duration-300">
       <div className="relative">
         <div className="w-full h-48 relative">
           <Image
@@ -29,25 +29,24 @@ const Card = ({
         </div>
         <div className="absolute bottom-4 left-4 flex gap-2">
           {property.isPetsAllowed && (
-            <span className="bg-white/80 text-black text-xs font-semibold px-2 py-1 rounded-full">
+            <span className="bg-background/80 text-foreground text-xs font-semibold px-2 py-1 rounded-full backdrop-blur-sm">
               Pets Allowed
             </span>
           )}
           {property.isParkingIncluded && (
-            <span className="bg-white/80 text-black text-xs font-semibold px-2 py-1 rounded-full">
+            <span className="bg-background/80 text-foreground text-xs font-semibold px-2 py-1 rounded-full backdrop-blur-sm">
               Parking Included
             </span>
           )}
         </div>
         {showFavoriteButton && (
           <button
-            className="absolute bottom-4 right-4 bg-white hover:bg-white/90 rounded-full p-2 cursor-pointer"
+            className="absolute bottom-4 right-4 bg-background hover:bg-muted text-foreground rounded-full p-2 cursor-pointer transition-colors shadow-md"
             onClick={onFavoriteToggle}
           >
             <Heart
-              className={`w-5 h-5 ${
-                isFavorite ? "text-red-500 fill-red-500" : "text-gray-600"
-              }`}
+              className={`w-5 h-5 ${isFavorite ? "text-red-500 fill-red-500" : "text-muted-foreground"
+                }`}
             />
           </button>
         )}
@@ -57,7 +56,7 @@ const Card = ({
           {propertyLink ? (
             <Link
               href={propertyLink}
-              className="hover:underline hover:text-blue-600"
+              className="hover:underline hover:text-primary transition-colors"
               scroll={false}
             >
               {property.name}
@@ -66,26 +65,26 @@ const Card = ({
             property.name
           )}
         </h2>
-        <p className="text-gray-600 mb-2">
+        <p className="text-muted-foreground mb-2">
           {property?.location?.address}, {property?.location?.city}
         </p>
         <div className="flex justify-between items-center">
           <div className="flex items-center mb-2">
-            <Star className="w-4 h-4 text-yellow-400 mr-1" />
+            <Star className="w-4 h-4 text-yellow-500 mr-1 fill-yellow-500" />
             <span className="font-semibold">
               {property.averageRating.toFixed(1)}
             </span>
-            <span className="text-gray-600 ml-1">
+            <span className="text-muted-foreground ml-1">
               ({property.numberOfReviews} Reviews)
             </span>
           </div>
           <p className="text-lg font-bold mb-3">
-            ${property.pricePerMonth.toFixed(0)}{" "}
-            <span className="text-gray-600 text-base font-normal"> /month</span>
+            ₹{property.pricePerMonth.toLocaleString()}{" "}
+            <span className="text-muted-foreground text-base font-normal"> /month</span>
           </p>
         </div>
-        <hr />
-        <div className="flex justify-between items-center gap-4 text-gray-600 mt-5">
+        <hr className="border-border" />
+        <div className="flex justify-between items-center gap-4 text-muted-foreground mt-5">
           <span className="flex items-center">
             <Bed className="w-5 h-5 mr-2" />
             {property.beds} Bed

@@ -1,17 +1,23 @@
 [
   {
     "id": 1,
-    "name": "Sunny Downtown Apartment",
-    "description": "A beautiful apartment in the heart of downtown with plenty of natural light.",
-    "pricePerMonth": 1500.0,
-    "securityDeposit": 1500.0,
-    "applicationFee": 50.0,
+    "name": "Spacious 2BHK in Dwarka",
+    "description": "Modern 2BHK apartment in Sector 6, Dwarka, near the Metro station.",
+    "pricePerMonth": 28000.0,
+    "securityDeposit": 50000.0,
+    "applicationFee": 1000.0,
     "photoUrls": [
-      "https://example.com/apartment1_1.jpg",
-      "https://example.com/apartment1_2.jpg"
+      "/landing-i1.png"
     ],
-    "amenities": ["AirConditioning", "WasherDryer", "Parking"],
-    "highlights": ["HighSpeedInternetAccess", "CloseToTransit"],
+    "amenities": [
+      "AirConditioning",
+      "WasherDryer",
+      "Parking"
+    ],
+    "highlights": [
+      "HighSpeedInternetAccess",
+      "CloseToTransit"
+    ],
     "isPetsAllowed": true,
     "isParkingIncluded": false,
     "beds": 2,
@@ -26,17 +32,24 @@
   },
   {
     "id": 2,
-    "name": "Cozy Beach House",
-    "description": "A charming beach house with stunning ocean views.",
-    "pricePerMonth": 2000.0,
-    "securityDeposit": 2000.0,
-    "applicationFee": 75.0,
+    "name": "Premium 3BHK in Saket",
+    "description": "Well-maintained 3BHK in Saket, South Delhi, close to District Center.",
+    "pricePerMonth": 45000.0,
+    "securityDeposit": 90000.0,
+    "applicationFee": 2000.0,
     "photoUrls": [
-      "https://example.com/beachhouse1.jpg",
-      "https://example.com/beachhouse2.jpg"
+      "/landing-i2.png"
     ],
-    "amenities": ["AirConditioning", "WasherDryer", "Parking", "Pool"],
-    "highlights": ["GreatView", "CloseToTransit"],
+    "amenities": [
+      "AirConditioning",
+      "WasherDryer",
+      "Parking",
+      "Pool"
+    ],
+    "highlights": [
+      "GreatView",
+      "CloseToTransit"
+    ],
     "isPetsAllowed": true,
     "isParkingIncluded": true,
     "beds": 3,
@@ -51,17 +64,23 @@
   },
   {
     "id": 3,
-    "name": "Modern City Loft",
-    "description": "Sleek and stylish loft in the heart of the city.",
-    "pricePerMonth": 2200.0,
-    "securityDeposit": 2200.0,
-    "applicationFee": 60.0,
+    "name": "Smart Loft in Connaught Place",
+    "description": "Chic urban loft in the heart of Connaught Place, the city's hub.",
+    "pricePerMonth": 49000.0,
+    "securityDeposit": 100000.0,
+    "applicationFee": 2500.0,
     "photoUrls": [
-      "https://example.com/cityloft1.jpg",
-      "https://example.com/cityloft2.jpg"
+      "/landing-i3.png"
     ],
-    "amenities": ["AirConditioning", "WasherDryer", "Gym"],
-    "highlights": ["HighSpeedInternetAccess", "CloseToTransit"],
+    "amenities": [
+      "AirConditioning",
+      "WasherDryer",
+      "Gym"
+    ],
+    "highlights": [
+      "HighSpeedInternetAccess",
+      "CloseToTransit"
+    ],
     "isPetsAllowed": true,
     "isParkingIncluded": false,
     "beds": 1,
@@ -76,17 +95,23 @@
   },
   {
     "id": 4,
-    "name": "Spacious Family Home",
-    "description": "Large family home with a beautiful backyard and modern amenities.",
-    "pricePerMonth": 2500.0,
-    "securityDeposit": 2500.0,
-    "applicationFee": 80.0,
+    "name": "Heritage Home in Karol Bagh",
+    "description": "Spacious family home in Karol Bagh, Central Delhi, near Ghaffar Market.",
+    "pricePerMonth": 32000.0,
+    "securityDeposit": 60000.0,
+    "applicationFee": 1500.0,
     "photoUrls": [
-      "https://example.com/familyhome1.jpg",
-      "https://example.com/familyhome2.jpg"
+      "/landing-i4.png"
     ],
-    "amenities": ["AirConditioning", "WasherDryer", "Parking", "Dishwasher"],
-    "highlights": ["QuietNeighborhood"],
+    "amenities": [
+      "AirConditioning",
+      "WasherDryer",
+      "Parking",
+      "Dishwasher"
+    ],
+    "highlights": [
+      "QuietNeighborhood"
+    ],
     "isPetsAllowed": true,
     "isParkingIncluded": false,
     "beds": 4,
@@ -101,17 +126,23 @@
   },
   {
     "id": 5,
-    "name": "Luxury Penthouse",
-    "description": "Stunning penthouse with panoramic city views and high-end finishes.",
-    "pricePerMonth": 5000.0,
-    "securityDeposit": 5000.0,
-    "applicationFee": 100.0,
+    "name": "Luxury Suite in Lajpat Nagar",
+    "description": "Elegant apartment in Lajpat Nagar with premium amenities.",
+    "pricePerMonth": 38000.0,
+    "securityDeposit": 70000.0,
+    "applicationFee": 1200.0,
     "photoUrls": [
-      "https://example.com/penthouse1.jpg",
-      "https://example.com/penthouse2.jpg"
+      "/landing-i5.png"
     ],
-    "amenities": ["AirConditioning", "WasherDryer", "Gym", "Pool"],
-    "highlights": ["GreatView"],
+    "amenities": [
+      "AirConditioning",
+      "WasherDryer",
+      "Gym",
+      "Pool"
+    ],
+    "highlights": [
+      "GreatView"
+    ],
     "isPetsAllowed": true,
     "isParkingIncluded": false,
     "beds": 3,
@@ -126,17 +157,21 @@
   },
   {
     "id": 6,
-    "name": "Cozy Studio Apartment",
-    "description": "Efficient studio apartment perfect for students or young professionals.",
-    "pricePerMonth": 1200.0,
-    "securityDeposit": 1200.0,
-    "applicationFee": 40.0,
+    "name": "Compact 1BHK in Rohini",
+    "description": "Affordable and cozy 1BHK in Rohini, North Delhi.",
+    "pricePerMonth": 22000.0,
+    "securityDeposit": 40000.0,
+    "applicationFee": 500.0,
     "photoUrls": [
-      "https://example.com/studio1.jpg",
-      "https://example.com/studio2.jpg"
+      "/landing-i6.png"
     ],
-    "amenities": ["AirConditioning", "HighSpeedInternet"],
-    "highlights": ["CloseToTransit"],
+    "amenities": [
+      "AirConditioning",
+      "HighSpeedInternet"
+    ],
+    "highlights": [
+      "CloseToTransit"
+    ],
     "isPetsAllowed": true,
     "isParkingIncluded": false,
     "beds": 0,
@@ -151,17 +186,22 @@
   },
   {
     "id": 7,
-    "name": "Historic Brownstone",
-    "description": "Charming brownstone with original features and modern updates.",
-    "pricePerMonth": 3000.0,
-    "securityDeposit": 3000.0,
-    "applicationFee": 70.0,
+    "name": "Modern Flat in Janakpuri",
+    "description": "Renovated 2BHK flat in Janakpuri, West Delhi.",
+    "pricePerMonth": 26000.0,
+    "securityDeposit": 50000.0,
+    "applicationFee": 800.0,
     "photoUrls": [
-      "https://example.com/brownstone1.jpg",
-      "https://example.com/brownstone2.jpg"
+      "/landing-i7.png"
     ],
-    "amenities": ["AirConditioning", "WasherDryer", "HighSpeedInternet"],
-    "highlights": ["RecentlyRenovated"],
+    "amenities": [
+      "AirConditioning",
+      "WasherDryer",
+      "HighSpeedInternet"
+    ],
+    "highlights": [
+      "RecentlyRenovated"
+    ],
     "isPetsAllowed": true,
     "isParkingIncluded": false,
     "beds": 3,
@@ -176,17 +216,21 @@
   },
   {
     "id": 8,
-    "name": "Urban Micro-Apartment",
-    "description": "Compact and efficient living space in the heart of the city.",
-    "pricePerMonth": 1000.0,
-    "securityDeposit": 1000.0,
-    "applicationFee": 30.0,
+    "name": "Trendy Apartment in Pitampura",
+    "description": "Stylish apartment in Pitampura with easy access to metro.",
+    "pricePerMonth": 31000.0,
+    "securityDeposit": 60000.0,
+    "applicationFee": 1000.0,
     "photoUrls": [
-      "https://example.com/micro1.jpg",
-      "https://example.com/micro2.jpg"
+      "/singlelisting-2.jpg"
     ],
-    "amenities": ["AirConditioning", "HighSpeedInternet"],
-    "highlights": ["CloseToTransit"],
+    "amenities": [
+      "AirConditioning",
+      "HighSpeedInternet"
+    ],
+    "highlights": [
+      "CloseToTransit"
+    ],
     "isPetsAllowed": true,
     "isParkingIncluded": false,
     "beds": 0,
@@ -201,17 +245,22 @@
   },
   {
     "id": 9,
-    "name": "Mountain View Cabin",
-    "description": "Rustic cabin with breathtaking mountain views and modern amenities.",
-    "pricePerMonth": 1800.0,
-    "securityDeposit": 1800.0,
-    "applicationFee": 60.0,
+    "name": "Green View in Vasant Kunj",
+    "description": "Peaceful 3BHK in Vasant Kunj with park facing balcony.",
+    "pricePerMonth": 48000.0,
+    "securityDeposit": 95000.0,
+    "applicationFee": 2000.0,
     "photoUrls": [
-      "https://example.com/cabin1.jpg",
-      "https://example.com/cabin2.jpg"
+      "/singlelisting-3.jpg"
     ],
-    "amenities": ["WasherDryer", "AirConditioning"],
-    "highlights": ["GreatView", "QuietNeighborhood"],
+    "amenities": [
+      "WasherDryer",
+      "AirConditioning"
+    ],
+    "highlights": [
+      "GreatView",
+      "QuietNeighborhood"
+    ],
     "isPetsAllowed": true,
     "isParkingIncluded": false,
     "beds": 2,
@@ -226,17 +275,22 @@
   },
   {
     "id": 10,
-    "name": "Eco-Friendly Tiny House",
-    "description": "Sustainable living in a compact, well-designed tiny house.",
-    "pricePerMonth": 900.0,
-    "securityDeposit": 900.0,
-    "applicationFee": 35.0,
+    "name": "Cute Studio in Mayur Vihar",
+    "description": "Efficient studio apartment in Mayur Vihar, East Delhi.",
+    "pricePerMonth": 24000.0,
+    "securityDeposit": 45000.0,
+    "applicationFee": 500.0,
     "photoUrls": [
-      "https://example.com/tinyhouse1.jpg",
-      "https://example.com/tinyhouse2.jpg"
+      "/mylandingpage.jpg"
     ],
-    "amenities": ["WasherDryer", "AirConditioning", "HighSpeedInternet"],
-    "highlights": ["SmokeFree"],
+    "amenities": [
+      "WasherDryer",
+      "AirConditioning",
+      "HighSpeedInternet"
+    ],
+    "highlights": [
+      "SmokeFree"
+    ],
     "isPetsAllowed": true,
     "isParkingIncluded": false,
     "beds": 1,
@@ -248,5 +302,146 @@
     "numberOfReviews": 8,
     "locationId": 10,
     "managerClerkId": "us-east-2:01234567-90ab-cdef-1234-567890abcdef"
+  },
+  {
+    "id": 11,
+    "name": "Luxury Floor in Preet Vihar",
+    "description": "Beautiful independent floor in Preet Vihar, East Delhi.",
+    "pricePerMonth": 42000.0,
+    "securityDeposit": 70000.0,
+    "applicationFee": 1000.0,
+    "photoUrls": [
+      "/landing-i1.png"
+    ],
+    "amenities": [
+      "AirConditioning",
+      "Parking",
+      "WiFi"
+    ],
+    "highlights": [
+      "RecentlyRenovated",
+      "CloseToTransit"
+    ],
+    "isPetsAllowed": true,
+    "isParkingIncluded": true,
+    "beds": 3,
+    "baths": 3,
+    "squareFeet": 1500,
+    "propertyType": "Apartment",
+    "locationId": 11,
+    "managerClerkId": "010be580-60a1-70ae-780e-18a6fd94ad32"
+  },
+  {
+    "id": 12,
+    "name": "Modern Office/Flat in Nehru Place",
+    "description": "Convenient living space near Nehru Place business hub.",
+    "pricePerMonth": 35000.0,
+    "securityDeposit": 50000.0,
+    "applicationFee": 500.0,
+    "photoUrls": [
+      "/landing-i2.png"
+    ],
+    "amenities": [
+      "AirConditioning",
+      "WiFi"
+    ],
+    "highlights": [
+      "CloseToTransit"
+    ],
+    "isPetsAllowed": false,
+    "isParkingIncluded": false,
+    "beds": 2,
+    "baths": 2,
+    "squareFeet": 950,
+    "propertyType": "Apartment",
+    "locationId": 12,
+    "managerClerkId": "010be580-60a1-70ae-780e-18a6fd94ad32"
+  },
+  {
+    "id": 13,
+    "name": "Classic Flat in Rajouri Garden",
+    "description": "Well-furnished flat in Rajouri Garden, West Delhi.",
+    "pricePerMonth": 33000.0,
+    "securityDeposit": 90000.0,
+    "applicationFee": 2000.0,
+    "photoUrls": [
+      "/landing-i3.png"
+    ],
+    "amenities": [
+      "AirConditioning",
+      "Parking",
+      "WiFi",
+      "Pool",
+      "Gym"
+    ],
+    "highlights": [
+      "GreatView",
+      "QuietNeighborhood"
+    ],
+    "isPetsAllowed": true,
+    "isParkingIncluded": true,
+    "beds": 5,
+    "baths": 4,
+    "squareFeet": 4500,
+    "propertyType": "Villa",
+    "locationId": 13,
+    "managerClerkId": "010be580-60a1-70ae-780e-18a6fd94ad32"
+  },
+  {
+    "id": 16,
+    "name": "Spacious Floor in Paschim Vihar",
+    "description": "Large independent floor in Paschim Vihar, West Delhi.",
+    "pricePerMonth": 36000.0,
+    "securityDeposit": 56000.0,
+    "applicationFee": 500.0,
+    "photoUrls": [
+      "/landing-i4.png"
+    ],
+    "amenities": [
+      "AirConditioning",
+      "Parking",
+      "WiFi"
+    ],
+    "highlights": [
+      "CloseToTransit",
+      "HighSpeedInternetAccess"
+    ],
+    "isPetsAllowed": true,
+    "isParkingIncluded": true,
+    "beds": 2,
+    "baths": 2,
+    "squareFeet": 1100,
+    "propertyType": "Apartment",
+    "locationId": 14,
+    "managerClerkId": "010be580-60a1-70ae-780e-18a6fd94ad32"
+  },
+  {
+    "id": 17,
+    "name": "Premium Suite in Hauz Khas",
+    "description": "High-end apartment in the historical Hauz Khas village area.",
+    "pricePerMonth": 50000.0,
+    "securityDeposit": 130000.0,
+    "applicationFee": 2000.0,
+    "photoUrls": [
+      "/landing-i5.png"
+    ],
+    "amenities": [
+      "AirConditioning",
+      "Parking",
+      "WiFi",
+      "Gym"
+    ],
+    "highlights": [
+      "GreatView",
+      "RecentlyRenovated"
+    ],
+    "isPetsAllowed": false,
+    "isParkingIncluded": true,
+    "beds": 4,
+    "baths": 4,
+    "squareFeet": 2200,
+    "propertyType": "Apartment",
+    "locationId": 15,
+    "managerClerkId": "010be580-60a1-70ae-780e-18a6fd94ad32"
   }
 ]

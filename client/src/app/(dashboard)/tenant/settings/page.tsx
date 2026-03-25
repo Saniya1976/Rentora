@@ -36,11 +36,11 @@ const SettingsPage = () => {
     return (
         <div className="flex flex-col gap-6 max-w-2xl py-6 px-2">
             <div className="space-y-1 animate-in fade-in slide-in-from-top-4 duration-700">
-                <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
-                    Tenant Settings
+                <h1 className="text-5xl font-black bg-linear-to-r from-[#07c2c5] to-[#04a7aa] bg-clip-text text-transparent uppercase tracking-tight leading-[1.1]">
+                    Tenant <span className="text-foreground/90 font-black">Settings</span>
                 </h1>
-                <p className="text-gray-500 dark:text-zinc-400 text-sm md:text-base font-medium max-w-xl">
-                    Manage your account preferences and personal information
+                <p className="text-muted-foreground text-lg font-medium italic pl-1">
+                    Manage your account preferences and personal info.
                 </p>
             </div>
 

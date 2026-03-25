@@ -24,7 +24,7 @@ const CardCompact = ({
     );
 
     return (
-        <div className="bg-white rounded-xl overflow-hidden shadow-lg w-full flex h-40 mb-5">
+        <div className="bg-card text-card-foreground rounded-xl overflow-hidden shadow-lg w-full flex h-40 mb-5 border border-border transition-colors duration-300">
             <div className="relative w-1/3">
                 <Image
                     src={imgSrc}
@@ -36,12 +36,12 @@ const CardCompact = ({
                 />
                 <div className="absolute bottom-2 left-2 flex gap-1 flex-col">
                     {property.isPetsAllowed && (
-                        <span className="bg-white/80 text-black text-xs font-semibold px-2 py-1 rounded-full w-fit">
+                        <span className="bg-background/80 text-foreground text-[10px] font-semibold px-2 py-0.5 rounded-full w-fit backdrop-blur-sm">
                             Pets
                         </span>
                     )}
                     {property.isParkingIncluded && (
-                        <span className="bg-white/80 text-black text-xs font-semibold px-2 py-1 rounded-full">
+                        <span className="bg-background/80 text-foreground text-[10px] font-semibold px-2 py-0.5 rounded-full w-fit backdrop-blur-sm">
                             Parking
                         </span>
                     )}
@@ -50,11 +50,11 @@ const CardCompact = ({
             <div className="w-2/3 p-4 flex flex-col justify-between">
                 <div>
                     <div className="flex justify-between items-start">
-                        <h2 className="text-xl font-bold mb-1">
+                        <h2 className="text-lg font-bold mb-1 truncate mr-2">
                             {propertyLink ? (
                                 <Link
                                     href={propertyLink}
-                                    className="hover:underline hover:text-blue-600"
+                                    className="hover:underline hover:text-primary transition-colors"
                                     scroll={false}
                                 >
                                     {property.name}
@@ -65,48 +65,48 @@ const CardCompact = ({
                         </h2>
                         {showFavoriteButton && (
                             <button
-                                className="bg-white rounded-full p-1"
+                                className="bg-background hover:bg-muted text-foreground rounded-full p-1.5 transition-colors shadow-sm"
                                 onClick={onFavoriteToggle}
                             >
                                 <Heart
-                                    className={`w-4 h-4 ${isFavorite ? "text-red-500 fill-red-500" : "text-gray-600"
+                                    className={`w-3.5 h-3.5 ${isFavorite ? "text-red-500 fill-red-500" : "text-muted-foreground"
                                         }`}
                                 />
                             </button>
                         )}
                     </div>
-                    <p className="text-gray-600 mb-1 text-sm">
+                    <p className="text-muted-foreground mb-1 text-xs truncate">
                         {property?.location?.address}, {property?.location?.city}
                     </p>
-                    <div className="flex text-sm items-center">
-                        <Star className="w-3 h-3 text-yellow-400 mr-1" />
-                        <span className="font-semibold">
+                    <div className="flex text-xs items-center">
+                        <Star className="w-3 h-3 text-yellow-500 mr-1 fill-yellow-500" />
+                        <span className="font-semibold text-foreground">
                             {property.averageRating.toFixed(1)}
                         </span>
-                        <span className="text-gray-600 ml-1">
+                        <span className="text-muted-foreground ml-1">
                             ({property.numberOfReviews})
                         </span>
                     </div>
                 </div>
-                <div className="flex justify-between items-center text-sm">
-                    <div className="flex gap-2 text-gray-600">
+                <div className="flex justify-between items-center text-xs">
+                    <div className="flex gap-2 text-muted-foreground">
                         <span className="flex items-center">
-                            <Bed className="w-4 h-4 mr-1" />
+                            <Bed className="w-3.5 h-3.5 mr-1" />
                             {property.beds}
                         </span>
                         <span className="flex items-center">
-                            <Bath className="w-4 h-4 mr-1" />
+                            <Bath className="w-3.5 h-3.5 mr-1" />
                             {property.baths}
                         </span>
                         <span className="flex items-center">
-                            <House className="w-4 h-4 mr-1" />
+                            <House className="w-3.5 h-3.5 mr-1" />
                             {property.squareFeet}
                         </span>
                     </div>
 
-                    <p className="text-base font-bold">
-                        ${property.pricePerMonth.toFixed(0)}
-                        <span className="text-gray-600 text-xs font-normal"> /mo</span>
+                    <p className="text-base font-bold text-foreground">
+                        ₹{property.pricePerMonth.toLocaleString()}
+                        <span className="text-muted-foreground text-[10px] font-normal"> /mo</span>
                     </p>
                 </div>
             </div>

@@ -2,33 +2,33 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface FiltersState {
   location: string;
-  priceRange: [number | null, number | null];
   beds: string;
   baths: string;
   propertyType: string;
-  squareFeet: [number | null, number | null];
   amenities: string[];
   availableFrom: string;
+  priceRange: [number, number] | [null, null];
+  squareFeet: [number, number] | [null, null];
   coordinates: [number, number];
 }
 
-interface GlobalState {
+interface InitialStateTypes {
   filters: FiltersState;
   isFiltersFullOpen: boolean;
-  viewMode: "list" | "grid";
+  viewMode: "grid" | "list";
 }
 
-export const initialState: GlobalState = {
+export const initialState: InitialStateTypes = {
   filters: {
     location: "",
-    priceRange: [null, null],
     beds: "any",
     baths: "any",
     propertyType: "any",
-    squareFeet: [null, null],
     amenities: [],
     availableFrom: "any",
-    coordinates: [77.209, 28.6139],
+    priceRange: [null, null],
+    squareFeet: [null, null],
+    coordinates: [0, 0],
   },
   isFiltersFullOpen: false,
   viewMode: "grid",
@@ -44,7 +44,7 @@ export const globalSlice = createSlice({
     toggleFiltersFullOpen: (state) => {
       state.isFiltersFullOpen = !state.isFiltersFullOpen;
     },
-    setViewMode: (state, action: PayloadAction<"list" | "grid">) => {
+    setViewMode: (state, action: PayloadAction<"grid" | "list">) => {
       state.viewMode = action.payload;
     },
   },

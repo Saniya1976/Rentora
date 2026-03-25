@@ -1,92 +1,137 @@
 [
   {
     "id": 1,
-    "country": "United States",
-    "city": "Pasadena",
-    "state": "CA",
-    "address": "123 Colorado Blvd",
-    "postalCode": "91105",
-    "coordinates": "POINT(-118.144516 34.147785)"
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Sector 6, Dwarka",
+    "postalCode": "110075",
+    "coordinates": "POINT(77.0583 28.5912)"
   },
   {
     "id": 2,
-    "country": "United States",
-    "city": "Santa Monica",
-    "state": "CA",
-    "address": "456 Ocean Ave",
-    "postalCode": "90401",
-    "coordinates": "POINT(-118.496513 34.013654)"
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Saket, South Delhi",
+    "postalCode": "110017",
+    "coordinates": "POINT(77.2100 28.5275)"
   },
   {
     "id": 3,
-    "country": "United States",
-    "city": "Burbank",
-    "state": "CA",
-    "address": "789 Hollywood Way",
-    "postalCode": "91505",
-    "coordinates": "POINT(-118.328661 34.180839)"
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Connaught Place",
+    "postalCode": "110001",
+    "coordinates": "POINT(77.2167 28.6333)"
   },
   {
     "id": 4,
-    "country": "United States",
-    "city": "Long Beach",
-    "state": "CA",
-    "address": "101 Pine Ave",
-    "postalCode": "90802",
-    "coordinates": "POINT(-118.192604 33.766720)"
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Karol Bagh, Central Delhi",
+    "postalCode": "110005",
+    "coordinates": "POINT(77.1888 28.6550)"
   },
   {
     "id": 5,
-    "country": "United States",
-    "city": "New York",
-    "state": "NY",
-    "address": "555 Manhattan Ave",
-    "postalCode": "10001",
-    "coordinates": "POINT(-74.005941 40.712784)"
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Lajpat Nagar, South East Delhi",
+    "postalCode": "110024",
+    "coordinates": "POINT(77.2425 28.5675)"
   },
   {
     "id": 6,
-    "country": "United States",
-    "city": "Malibu",
-    "state": "CA",
-    "address": "888 Malibu Road",
-    "postalCode": "90265",
-    "coordinates": "POINT(-118.774518 34.025922)"
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Rohini",
+    "postalCode": "110085",
+    "coordinates": "POINT(77.0822 28.7383)"
   },
   {
     "id": 7,
-    "country": "United States",
-    "city": "Glendale",
-    "state": "CA",
-    "address": "777 Brand Blvd",
-    "postalCode": "91203",
-    "coordinates": "POINT(-118.254708 34.142508)"
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Janakpuri",
+    "postalCode": "110058",
+    "coordinates": "POINT(77.0878 28.6219)"
   },
   {
     "id": 8,
-    "country": "United States",
-    "city": "Torrance",
-    "state": "CA",
-    "address": "555 Torrance Blvd",
-    "postalCode": "90503",
-    "coordinates": "POINT(-118.352575 33.835849)"
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Pitampura",
+    "postalCode": "110034",
+    "coordinates": "POINT(77.1387 28.6990)"
   },
   {
     "id": 9,
-    "country": "United States",
-    "city": "Miami",
-    "state": "FL",
-    "address": "1234 Ocean Dr",
-    "postalCode": "33139",
-    "coordinates": "POINT(-80.130045 25.782551)"
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Vasant Kunj",
+    "postalCode": "110070",
+    "coordinates": "POINT(77.1484 28.5293)"
   },
   {
     "id": 10,
-    "country": "United States",
-    "city": "Beverly Hills",
-    "state": "CA",
-    "address": "789 Rodeo Dr",
-    "postalCode": "90210",
-    "coordinates": "POINT(-118.400356 34.073620)"
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Mayur Vihar",
+    "postalCode": "110091",
+    "coordinates": "POINT(77.2931 28.6084)"
+  },
+  {
+    "id": 11,
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Preet Vihar",
+    "postalCode": "110092",
+    "coordinates": "POINT(77.2928 28.6364)"
+  },
+  {
+    "id": 12,
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Nehru Place",
+    "postalCode": "110019",
+    "coordinates": "POINT(77.2502 28.5503)"
+  },
+  {
+    "id": 13,
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Rajouri Garden",
+    "postalCode": "110027",
+    "coordinates": "POINT(77.1225 28.6417)"
+  },
+  {
+    "id": 14,
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Paschim Vihar",
+    "postalCode": "110063",
+    "coordinates": "POINT(77.0929 28.6691)"
+  },
+  {
+    "id": 15,
+    "country": "India",
+    "city": "New Delhi",
+    "state": "Delhi",
+    "address": "Hauz Khas",
+    "postalCode": "110016",
+    "coordinates": "POINT(77.2031 28.5479)"
   }
 ]

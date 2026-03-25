@@ -69,15 +69,15 @@ const Map = () => {
   const isSearching = filters.coordinates && (filters.coordinates[0] !== 0 || filters.coordinates[1] !== 0);
 
   return (
-    <div className="basis-5/12 grow relative rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-sm">
+    <div className="basis-5/12 grow relative rounded-xl overflow-hidden border border-border shadow-sm transition-colors duration-300">
       <MapContainer
         center={center}
         zoom={9}
         scrollWheelZoom={true}
-        className="h-full w-full"
+        className="h-full w-full dark:invert-[0.85] dark:hue-rotate-180 dark:brightness-[1] dark:contrast-[0.9]"
         maxBounds={[
-          [27.5, 76.0], // Southwestern NCR including parts of Rajasthan/Haryana
-          [29.5, 78.5], // Northeastern NCR including parts of Uttar Pradesh
+          [27.5, 76.0], // Southwestern NCR
+          [29.5, 78.5], // Northeastern NCR
         ]}
         minZoom={8}
       >
@@ -90,7 +90,7 @@ const Map = () => {
         {isSearching && searchMarkerIcon && (
           <Marker position={center} icon={searchMarkerIcon}>
             <Popup>
-              <div className="p-2 font-bold text-center">Searched Location</div>
+              <div className="p-2 font-bold text-center text-foreground bg-background">Searched Location</div>
             </Popup>
           </Marker>
         )}
@@ -104,27 +104,27 @@ const Map = () => {
             ]}
           >
             <Popup>
-              <div className="p-1 min-w-[200px]">
-                <div className="h-24 w-full bg-slate-100 dark:bg-zinc-800 rounded-md mb-2 overflow-hidden">
+              <div className="p-1 min-w-[200px] bg-background text-foreground">
+                <div className="h-24 w-full bg-muted rounded-md mb-2 overflow-hidden border border-border">
                   {property.photoUrls && property.photoUrls.length > 0 ? (
                     <img src={property.photoUrls[0]} alt={property.name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-400">No Image</div>
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground bg-muted">No Image</div>
                   )}
                 </div>
                 <h4 className="font-bold text-sm mb-1 truncate">
-                  <a href={`/search/${property.id}`} className="hover:text-[#1acec8] transition-colors">
+                  <a href={`/search/${property.id}`} className="hover:text-primary transition-colors">
                     {property.name}
                   </a>
                 </h4>
-                <p className="text-xs text-slate-500 mb-2">
+                <p className="text-xs text-muted-foreground mb-2">
                   {property.location.city}, {property.location.state}
                 </p>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-[#1acec8]">
-                    ${property.pricePerMonth.toLocaleString()}/mo
+                <div className="flex justify-between items-center border-t border-border pt-2 mt-1">
+                  <span className="font-bold text-primary">
+                    ₹{property.pricePerMonth.toLocaleString()}/mo
                   </span>
-                  <span className="text-[10px] text-slate-400">
+                  <span className="text-[10px] text-muted-foreground">
                     {property.beds}bd | {property.baths}ba
                   </span>
                 </div>

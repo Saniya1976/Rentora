@@ -42,7 +42,12 @@ const SearchPage = () => {
           const response = await fetch(
             `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
               newFilters.location
-            )}+Delhi+NCR&format=json&limit=1&bounded=1&viewbox=${viewbox}`
+            )}+Delhi+NCR&format=json&limit=1&bounded=1&viewbox=${viewbox}`,
+            {
+              headers: {
+                "User-Agent": "RentoraApp/1.0",
+              },
+            }
           );
           const data = await response.json();
           if (data && data.length > 0) {
@@ -50,6 +55,22 @@ const SearchPage = () => {
             newFilters.coordinates = [Number(lon), Number(lat)];
             dispatch(setFilters(newFilters));
           } else {
+            // Fallback search without Delhi suffix
+            const fallbackResponse = await fetch(
+              `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+                newFilters.location
+              )}&format=json&limit=1`,
+              {
+                headers: {
+                  "User-Agent": "RentoraApp/1.0",
+                },
+              }
+            );
+            const fallbackData = await fallbackResponse.json();
+            if (fallbackData && fallbackData.length > 0) {
+              const { lat, lon } = fallbackData[0];
+              newFilters.coordinates = [Number(lon), Number(lat)];
+            }
             dispatch(setFilters(newFilters));
           }
         } catch (err) {

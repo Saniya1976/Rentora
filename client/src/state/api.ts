@@ -144,8 +144,14 @@ export const api = createApi({
           amenities: filters.amenities?.join(","),
           availableFrom: filters.availableFrom,
           favoriteIds: filters.favoriteIds?.join(","),
-          latitude: filters.coordinates?.[1],
-          longitude: filters.coordinates?.[0],
+          latitude:
+            filters.coordinates && filters.coordinates[1] !== 0
+              ? filters.coordinates[1]
+              : undefined,
+          longitude:
+            filters.coordinates && filters.coordinates[0] !== 0
+              ? filters.coordinates[0]
+              : undefined,
         });
 
         return { url: "properties", params };
