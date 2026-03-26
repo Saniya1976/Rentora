@@ -29,6 +29,12 @@ const FiltersFull = () => {
         (state) => state.global.isFiltersFullOpen
     );
 
+    React.useEffect(() => {
+        if (isFiltersFullOpen) {
+            setLocalFilters(filters);
+        }
+    }, [isFiltersFullOpen, filters]);
+
     const updateURL = debounce((newFilters: FiltersState) => {
         const cleanFilters = cleanParams(newFilters);
         const updatedSearchParams = new URLSearchParams();

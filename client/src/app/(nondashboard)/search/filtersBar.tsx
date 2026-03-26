@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/state/redux";
-import { setFilters, toggleFiltersFullOpen } from "@/state";
+import { FiltersState, setFilters, toggleFiltersFullOpen } from "@/state";
 import {
   Select,
   SelectContent,
@@ -36,43 +36,39 @@ const FiltersBar = () => {
   }, [filters.location]);
 
   const updateURL = useCallback(
-    (newFilters) => {
-      const filtersToClean = { ...newFilters };
+    (newFilters: FiltersState) => {
+      const filtersToClean: Partial<FiltersState> = { ...newFilters };
       if (
         newFilters.coordinates?.[0] === 0 &&
         newFilters.coordinates?.[1] === 0
       ) {
         delete filtersToClean.coordinates;
       }
-      const updatedParams = cleanParams(filtersToClean);
+      const updatedParams = cleanParams(filtersToClean as Record<string, unknown>);
 
       const queryString = new URLSearchParams(updatedParams).toString();
       window.history.replaceState(null, "", `?${queryString}`);
     },
-    [searchParams]
+    []
   );
 
   const handleFilterChange = useCallback(
-    (key, value, isMinMax = null) => {
-      let newFilters = { ...filters };
+    (key: keyof FiltersState, value: string, isMinMax: boolean | null = null) => {
+      const newFilters: FiltersState = { ...filters };
 
       if (key === "priceRange" || key === "squareFeet") {
         const currentRange = newFilters[key] || [null, null];
         const parsedValue = value === "any" ? null : Number(value);
 
         if (isMinMax === true) {
-          // Setting min value
-          newFilters[key] = [parsedValue, currentRange[1]];
+          (newFilters[key] as [number | null, number | null]) = [parsedValue, currentRange[1]];
         } else if (isMinMax === false) {
-          // Setting max value
-          newFilters[key] = [currentRange[0], parsedValue];
+          (newFilters[key] as [number | null, number | null]) = [currentRange[0], parsedValue];
         }
-      } else if (key === "beds" || key === "baths") {
-        newFilters[key] = value === "any" ? "any" : value;
-      } else if (key === "propertyType") {
-        newFilters[key] = value === "any" ? "any" : value;
+      } else if (key === "beds" || key === "baths" || key === "propertyType") {
+        (newFilters[key] as string) = value === "any" ? "any" : value;
       } else {
-        newFilters[key] = value;
+        (newFilters as unknown as Record<string, unknown>)[key] = value;
       }
 
       dispatch(setFilters(newFilters));
@@ -81,11 +77,12 @@ const FiltersBar = () => {
     [filters, dispatch, updateURL]
   );
 
-  const formatPriceValue = (value, isMin) => {
-    if (value === null || value === "any") {
+  const formatPriceValue = (value: number | null, isMin: boolean): string => {
+    if (value === null) {
       return isMin ? "Min Price" : "Max Price";
     }
-    return `₹${(value / 1000).toFixed(0)}k${isMin ? "+" : ""}`;
+    const amount = `₹${(value / 1000).toFixed(0)}k`;
+    return isMin ? `${amount}+` : `< ${amount}`;
   };
 
   const handleLocationSearch = useCallback(async () => {
@@ -211,8 +208,8 @@ const FiltersBar = () => {
           <Button
             onClick={handleLocationSearch}
             disabled={isGeocoding}
-            className={`rounded-r-xl rounded-l-none border-l-none border-primary shadow-none 
-              border bg-primary text-primary-foreground hover:bg-primary/90 transition-colors h-11 w-12 flex items-center justify-center p-0`}
+            className="rounded-r-xl rounded-l-none border-l-0 border-primary shadow-none 
+              border bg-primary text-primary-foreground hover:bg-primary/90 transition-colors h-11 w-12 flex items-center justify-center p-0"
           >
             {isGeocoding ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -226,17 +223,17 @@ const FiltersBar = () => {
         <div className="flex gap-1">
           {/* Minimum Price Selector */}
           <Select
-            value={filters.priceRange[0]?.toString() || "any"}
+            value={filters.priceRange[0]?.toString() ?? "any"}
             onValueChange={(value) =>
               handleFilterChange("priceRange", value, true)
             }
           >
             <SelectTrigger className="w-32 h-11 rounded-xl border-primary bg-background text-foreground font-medium">
               <SelectValue>
-                {formatPriceValue(filters.priceRange[0], true)}
+                {formatPriceValue(filters.priceRange[0] ?? null, true)}
               </SelectValue>
             </SelectTrigger>
-            <SelectContent className="bg-card text-card-foreground border-border z-[9999]">
+            <SelectContent className="bg-card text-card-foreground border-border z-9999">
               <SelectItem value="any">Min Price</SelectItem>
               {[10000, 20000, 30000, 50000, 75000, 100000].map((price) => (
                 <SelectItem key={price} value={price.toString()}>
@@ -248,17 +245,17 @@ const FiltersBar = () => {
 
           {/* Maximum Price Selector */}
           <Select
-            value={filters.priceRange[1]?.toString() || "any"}
+            value={filters.priceRange[1]?.toString() ?? "any"}
             onValueChange={(value) =>
               handleFilterChange("priceRange", value, false)
             }
           >
             <SelectTrigger className="w-32 h-11 rounded-xl border-primary bg-background text-foreground font-medium">
               <SelectValue>
-                {formatPriceValue(filters.priceRange[1], false)}
+                {formatPriceValue(filters.priceRange[1] ?? null, false)}
               </SelectValue>
             </SelectTrigger>
-            <SelectContent className="bg-card text-card-foreground border-border z-[9999]">
+            <SelectContent className="bg-card text-card-foreground border-border z-9999">
               <SelectItem value="any">Max Price</SelectItem>
               {[20000, 30000, 50000, 75000, 100000, 150000].map((price) => (
                 <SelectItem key={price} value={price.toString()}>
@@ -279,7 +276,7 @@ const FiltersBar = () => {
             <SelectTrigger className="w-28 h-11 rounded-xl border-primary bg-background text-foreground font-medium">
               <SelectValue placeholder="Beds" />
             </SelectTrigger>
-            <SelectContent className="bg-card text-card-foreground border-border z-[9999]">
+            <SelectContent className="bg-card text-card-foreground border-border z-9999">
               <SelectItem value="any">Any Beds</SelectItem>
               <SelectItem value="1">1+ bed</SelectItem>
               <SelectItem value="2">2+ beds</SelectItem>
@@ -296,7 +293,7 @@ const FiltersBar = () => {
             <SelectTrigger className="w-28 h-11 rounded-xl border-primary bg-background text-foreground font-medium">
               <SelectValue placeholder="Baths" />
             </SelectTrigger>
-            <SelectContent className="bg-card text-card-foreground border-border z-[9999]">
+            <SelectContent className="bg-card text-card-foreground border-border z-9999">
               <SelectItem value="any">Any Baths</SelectItem>
               <SelectItem value="1">1+ bath</SelectItem>
               <SelectItem value="2">2+ baths</SelectItem>
@@ -315,7 +312,7 @@ const FiltersBar = () => {
           <SelectTrigger className="w-40 h-11 rounded-xl border-primary bg-background text-foreground font-medium">
             <SelectValue placeholder="Home Type" />
           </SelectTrigger>
-          <SelectContent className="bg-card text-card-foreground border-border z-[9999]">
+          <SelectContent className="bg-card text-card-foreground border-border z-9999">
             <SelectItem value="any">Any Type</SelectItem>
             {Object.entries(PropertyTypeIcons).map(([type, Icon]) => (
               <SelectItem key={type} value={type}>
