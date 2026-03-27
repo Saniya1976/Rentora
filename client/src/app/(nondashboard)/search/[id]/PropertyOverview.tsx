@@ -43,7 +43,7 @@ const PropertyOverview = ({ propertyId }: PropertyOverviewProps) => {
       </div>
 
       {/* Details */}
-      <div className="border border-primary-200 rounded-xl p-6 mb-6">
+      <div className="border border-border rounded-2xl p-6 mb-6 bg-card/30 shadow-inner">
         <div className="flex justify-between items-center gap-4 px-5">
           <div>
             <div className="text-sm text-gray-500">Monthly Rent</div>
@@ -74,8 +74,9 @@ const PropertyOverview = ({ propertyId }: PropertyOverviewProps) => {
       {/* Summary */}
       <div className="my-16">
         <h2 className="text-xl font-semibold mb-5">About {property.name}</h2>
-        <p className="text-gray-500 leading-7">
+        <p className="text-foreground font-medium leading-7 transition-colors duration-300">
           {property.description}
+          {property.description && <br />}
           Experience resort style luxury living at Seacrest Homes, where the
           ocean and city are seamlessly intertwined. Our newly built community
           features sophisticated two and three-bedroom residences, each complete

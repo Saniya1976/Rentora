@@ -28,10 +28,10 @@ const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
             return (
               <div
                 key={amenity}
-                className="flex flex-col items-center border rounded-xl py-8 px-4"
+                className="flex flex-col items-center border border-border bg-card rounded-xl py-8 px-4 transition-colors duration-300 shadow-sm"
               >
-                <Icon className="w-8 h-8 mb-2 text-gray-700" />
-                <span className="text-sm text-center text-gray-700">
+                <Icon className="w-8 h-8 mb-2 text-primary" />
+                <span className="text-sm text-center text-foreground font-medium">
                   {formatEnumString(amenity)}
                 </span>
               </div>
@@ -42,7 +42,7 @@ const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
 
       {/* Highlights */}
       <div className="mt-12 mb-16">
-        <h3 className="text-xl font-semibold text-primary-800 dark:text-primary-100">
+        <h3 className="text-xl font-semibold text-foreground italic">
           Highlights
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-4 w-full">
@@ -52,10 +52,10 @@ const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
             return (
               <div
                 key={highlight}
-                className="flex flex-col items-center border rounded-xl py-8 px-4"
+                className="flex flex-col items-center border border-border bg-card rounded-xl py-8 px-4 transition-colors duration-300 shadow-sm"
               >
-                <Icon className="w-8 h-8 mb-2 text-primary-600 dark:text-primary-300" />
-                <span className="text-sm text-center text-primary-600 dark:text-primary-300">
+                <Icon className="w-8 h-8 mb-2 text-primary" />
+                <span className="text-sm text-center text-foreground font-medium">
                   {formatEnumString(highlight)}
                 </span>
               </div>
@@ -66,10 +66,10 @@ const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
 
       {/* Tabs Section */}
       <div>
-        <h3 className="text-xl font-semibold text-primary-800 dark:text-primary-100 mb-5">
+        <h3 className="text-xl font-semibold text-foreground italic mb-5">
           Fees and Policies
         </h3>
-        <p className="text-sm text-primary-600 dark:text-primary-300 mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           The fees below are based on community-supplied data and may exclude
           additional fees and utilities.
         </p>
@@ -79,34 +79,34 @@ const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
             <TabsTrigger value="pets">Pets</TabsTrigger>
             <TabsTrigger value="parking">Parking</TabsTrigger>
           </TabsList>
-          <TabsContent value="required-fees" className="w-1/3">
-            <p className="font-semibold mt-5 mb-2">One time move in fees</p>
-            <hr />
-            <div className="flex justify-between py-2 bg-secondary-50">
-              <span className="text-primary-700 font-medium">
+          <TabsContent value="required-fees" className="w-full lg:w-1/3">
+            <p className="font-semibold mt-5 mb-2 text-foreground">One time move in fees</p>
+            <hr className="border-border" />
+            <div className="flex justify-between py-2 bg-muted/30">
+              <span className="text-muted-foreground font-medium">
                 Application Fee
               </span>
-              <span className="text-primary-700">
+              <span className="text-foreground font-bold">
                 ${property.applicationFee}
               </span>
             </div>
-            <hr />
-            <div className="flex justify-between py-2 bg-secondary-50">
-              <span className="text-primary-700 font-medium">
+            <hr className="border-border" />
+            <div className="flex justify-between py-2 bg-muted/30">
+              <span className="text-muted-foreground font-medium">
                 Security Deposit
               </span>
-              <span className="text-primary-700">
+              <span className="text-foreground font-bold">
                 ${property.securityDeposit}
               </span>
             </div>
-            <hr />
+            <hr className="border-border" />
           </TabsContent>
-          <TabsContent value="pets">
+          <TabsContent value="pets" className="text-foreground">
             <p className="font-semibold mt-5 mb-2">
               Pets are {property.isPetsAllowed ? "allowed" : "not allowed"}
             </p>
           </TabsContent>
-          <TabsContent value="parking">
+          <TabsContent value="parking" className="text-foreground">
             <p className="font-semibold mt-5 mb-2">
               Parking is{" "}
               {property.isParkingIncluded ? "included" : "not included"}

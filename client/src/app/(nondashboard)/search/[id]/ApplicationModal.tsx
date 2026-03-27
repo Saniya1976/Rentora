@@ -51,9 +51,9 @@ const ApplicationModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-white">
+      <DialogContent className="bg-card text-card-foreground border-border rounded-2xl">
         <DialogHeader className="mb-4">
-          <DialogTitle>Submit Application for this Property</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">Submit Application</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -81,8 +81,8 @@ const ApplicationModal = ({
               type="textarea"
               placeholder="Enter any additional information"
             />
-            <Button type="submit" className="bg-primary-700 text-white w-full">
-              Submit Application
+            <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90 w-full py-6 font-bold rounded-xl shadow-lg transition-all active:scale-[0.98]">
+              SUBMIT APPLICATION
             </Button>
           </form>
         </Form>

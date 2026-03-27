@@ -70,7 +70,7 @@ body {
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 211 100% 50%;
+    --primary: 181 100% 38%;
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -82,7 +82,7 @@ body {
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 88%;
-    --ring: 211 100% 50%;
+    --ring: 181 100% 38%;
     --radius: 0.5rem;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -91,7 +91,7 @@ body {
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 181 100% 38%;
   }
 
   .dark {
@@ -102,7 +102,7 @@ body {
     --card-foreground: 240 5% 98%;
     --popover: 240 5% 20%;
     --popover-foreground: 240 5% 98%;
-    --primary: 177 60% 45%;
+    --primary: 181 100% 38%;
     --primary-foreground: 0 0% 100%;
     --secondary: 240 5% 30%;
     --secondary-foreground: 240 5% 98%;
@@ -114,7 +114,7 @@ body {
     --destructive-foreground: 240 5% 98%;
     --border: 240 5% 35%;
     --input: 240 5% 35%;
-    --ring: 177 60% 45%;
+    --ring: 181 100% 38%;
     --sidebar-background: 240 5% 22%;
     --sidebar-foreground: 240 5% 95%;
     --sidebar-primary: 177 60% 45%;
@@ -131,7 +131,8 @@ body {
 }
 
 /* Leaflet Popup Overrides */
-.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
   @apply !bg-card !text-card-foreground !border !border-border;
 }
 
@@ -140,7 +141,7 @@ body {
 }
 
 .leaflet-container {
-  @apply !font-cute;
+  font-family: var(--font-outfit), sans-serif;
 }
 
 .mapboxgl-popup-content {
@@ -222,82 +223,6 @@ body {
   }
 }
 
-/* Amplify UI Overrides */
-[data-amplify-authenticator] {
-  --amplify-components-button-primary-background-color: var(--primary);
-  --amplify-components-button-primary-hover-background-color: hsl(var(--primary) / 0.9);
-  --amplify-components-button-border-radius: var(--radius);
-  --amplify-components-fieldcontrol-border-radius: var(--radius);
-}
-
-[data-amplify-authenticator][data-variation="default"] {
-  height: 100%;
-  padding: 2rem !important;
-}
-
-[data-amplify-authenticator] [data-amplify-router] {
-  border: none !important;
-  box-shadow: none !important;
-  max-width: 400px !important;
-  margin: 0 auto;
-}
-
-[data-amplify-authenticator] [data-amplify-container] {
-  border-radius: var(--radius);
-  padding: 2rem !important;
-  border: 1px solid hsl(var(--border));
-}
-
-[data-amplify-authenticator] [data-amplify-form] {
-  padding: 0 !important;
-}
-
-[data-amplify-authenticator] .amplify-tabs__list {
-  display: none;
-}
-
-[data-amplify-authenticator] .amplify-button--primary {
-  width: 100%;
-  height: 2.75rem;
-  margin-top: 1rem;
-  background-color: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-  @apply font-medium;
-  @apply text-sm;
-}
-
-[data-amplify-authenticator] .amplify-button--primary:hover {
-  background-color: hsl(var(--primary) / 0.8) !important;
-}
-
-[data-amplify-authenticator] .amplify-field-group__control {
-  border-color: hsl(var(--input));
-}
-
-[data-amplify-authenticator] .amplify-field-group__control:focus-within {
-  border-color: hsl(var(--ring)) !important;
-  box-shadow: 0 0 0 1px hsl(var(--ring)) !important;
-}
-
-[data-amplify-authenticator] .amplify-field__show-password {
-  color: hsl(var(--muted-foreground));
-}
-
-[data-amplify-authenticator] .amplify-label {
-  @apply text-sm font-medium;
-  color: hsl(var(--foreground));
-}
-
-[data-amplify-authenticator] .amplify-select {
-  border-color: hsl(var(--input));
-  border-radius: var(--radius);
-  height: 2.5rem;
-  @apply text-sm;
-}
-
-[data-amplify-authenticator] .amplify-text--error {
-  color: #ff0000;
-}
 
 /* Sonner Toast Styles */
 [data-close-button="true"] {

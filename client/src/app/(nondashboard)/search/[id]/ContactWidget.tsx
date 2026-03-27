@@ -17,31 +17,35 @@ const ContactWidget = ({ onOpenModal }: ContactWidgetProps) => {
   };
 
   return (
-    <div className="bg-white border border-primary-200 rounded-2xl p-7 h-fit min-w-[300px]">
+    <div className="bg-card text-card-foreground border border-border rounded-2xl p-7 h-fit min-w-[300px] shadow-sm transition-colors duration-300">
       {/* Contact Property */}
-      <div className="flex items-center gap-5 mb-4 border border-primary-200 p-4 rounded-xl">
-        <div className="flex items-center p-4 bg-primary-900 rounded-full">
-          <Phone className="text-primary-50" size={15} />
+      <div className="flex items-center gap-5 mb-4 border border-border p-4 rounded-xl">
+        <div className="flex items-center p-4 bg-primary rounded-full shadow-md">
+          <Phone className="text-primary-foreground" size={15} />
         </div>
         <div>
-          <p>Contact This Property</p>
-          <div className="text-lg font-bold text-primary-800">
+          <p className="text-sm font-medium text-muted-foreground">Contact Property</p>
+          <div className="text-lg font-bold">
             (424) 340-5574
           </div>
         </div>
       </div>
       <Button
-        className="w-full bg-primary-700 text-white hover:bg-primary-600"
+        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold py-6 rounded-xl transition-all shadow-md active:scale-95"
         onClick={handleButtonClick}
       >
         {authUser ? "Submit Application" : "Sign In to Apply"}
       </Button>
 
-      <hr className="my-4" />
-      <div className="text-sm">
-        <div className="text-primary-600 mb-1">Language: English, Bahasa.</div>
-        <div className="text-primary-600">
-          Open by appointment on Monday - Sunday
+      <hr className="my-4 border-border" />
+      <div className="text-sm text-muted-foreground space-y-2">
+        <div className="flex justify-between">
+          <span>Language:</span>
+          <span className="font-semibold text-foreground">English, Hindi</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Hours:</span>
+          <span className="font-semibold text-foreground italic">Mon - Sun (9am - 6pm)</span>
         </div>
       </div>
     </div>
