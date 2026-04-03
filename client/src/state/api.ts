@@ -271,8 +271,13 @@ export const api = createApi({
     }),
 
     // lease related enpoints
-    getLeases: build.query<Lease[], number>({
-      query: () => "leases",
+    getLeases: build.query<Lease[], { tenantClerkId?: string, managerClerkId?: string } | void>({
+      query: (params) => {
+        const queryParams = new URLSearchParams();
+        if (params?.tenantClerkId) queryParams.append("tenantClerkId", params.tenantClerkId);
+        if (params?.managerClerkId) queryParams.append("managerClerkId", params.managerClerkId);
+        return `leases?${queryParams.toString()}`;
+      },
       providesTags: ["Leases"],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
