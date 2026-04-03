@@ -1,6 +1,6 @@
 import React from "react";
 
-const Loading = () => {
+const LoadingState = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-[400px] w-full p-20 space-y-4">
             <div className="relative w-16 h-16">
@@ -14,4 +14,4 @@ const Loading = () => {
     );
 };
 
-export default Loading;
+export default LoadingState;

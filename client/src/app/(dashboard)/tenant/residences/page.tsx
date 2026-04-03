@@ -1,18 +1,58 @@
-"use client"
+"use client";
 
-import React from 'react'
+import Card from "@/components/Card";
+import Header from "@/components/Header";
+import LoadingState from "@/components/LoadingState";
+import {
+    useGetAuthUserQuery,
+    useGetCurrentResidencesQuery,
+    useGetTenantQuery,
+} from "@/state/api";
+import React from "react";
 
-const ResidencesPage = () => {
+const Residences = () => {
+    const { data: authUser } = useGetAuthUserQuery();
+    const { data: tenant } = useGetTenantQuery(
+        authUser?.clerkInfo?.id || "",
+        {
+            skip: !authUser?.clerkInfo?.id,
+        }
+    );
+
+    const {
+        data: currentResidences,
+        isLoading,
+        error,
+    } = useGetCurrentResidencesQuery(authUser?.clerkInfo?.id || "", {
+        skip: !authUser?.clerkInfo?.id,
+    });
+
+    if (isLoading) return <LoadingState />;
+    if (error) return <div>Error loading current residences</div>;
+
     return (
-        <div className="flex flex-col gap-4">
-            <h1 className="text-4xl font-black bg-gradient-to-r from-[#1acec8] to-[#15b8b3] bg-clip-text text-transparent uppercase tracking-tight">
-                Residences
-            </h1>
-            <p className="text-gray-500 dark:text-zinc-400 text-sm italic">
-                View and manage your residential properties here...
-            </p>
+        <div className="dashboard-container">
+            <Header
+                title="Current Residences"
+                subtitle="View and manage your current living spaces"
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {currentResidences?.map((property) => (
+                    <Card
+                        key={property.id}
+                        property={property}
+                        isFavorite={tenant?.favorites.includes(property.id) || false}
+                        onFavoriteToggle={() => { }}
+                        showFavoriteButton={false}
+                        propertyLink={`/tenant/residences/${property.id}`}
+                    />
+                ))}
+            </div>
+            {(!currentResidences || currentResidences.length === 0) && (
+                <p>You don&lsquo;t have any current residences</p>
+            )}
         </div>
-    )
-}
+    );
+};
 
-export default ResidencesPage
+export default Residences;
