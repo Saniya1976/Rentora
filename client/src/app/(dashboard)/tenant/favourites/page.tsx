@@ -37,7 +37,7 @@ const Favourites = () => {
     const favorites = tenant?.favorites || [];
 
     return (
-        <div className="flex flex-col gap-8 p-2 max-w-4xl">
+        <div className="flex flex-col gap-8 p-2 w-full transition-all duration-500">
             <div className="flex justify-between items-start">
                 <div className="space-y-1">
                     <h1 className="text-5xl font-black bg-linear-to-r from-[#07c2c5] to-[#04a7aa] bg-clip-text text-transparent uppercase tracking-tight leading-[1.1]">
@@ -78,7 +78,7 @@ const Favourites = () => {
             {favorites.length > 0 ? (
                 <div className={cn(
                     "mt-4",
-                    viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 gap-8" : "flex flex-col gap-4"
+                    viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "flex flex-col gap-4 max-w-5xl"
                 )}>
                     {favorites.map((property: Property) => (
                         viewMode === "grid" ? (
@@ -101,7 +101,7 @@ const Favourites = () => {
                     ))}
                 </div>
             ) : (
-                <div className="flex flex-col items-center justify-center py-24 px-6 bg-zinc-50 dark:bg-zinc-800/30 rounded-[32px] border border-dashed border-border transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800/50">
+                <div className="flex flex-col items-center justify-center py-24 px-6 bg-zinc-50 dark:bg-zinc-800/30 rounded-[32px] border border-dashed border-border transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800/50 max-w-4xl">
                     <div className="w-16 h-16 bg-zinc-200 dark:bg-zinc-700 rounded-full flex items-center justify-center mb-6">
                         <span className="text-3xl">❤️</span>
                     </div>
