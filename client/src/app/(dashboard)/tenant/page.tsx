@@ -41,32 +41,28 @@ const DashboardPage = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-4xl font-black bg-gradient-to-r from-[#1acec8] to-[#15b8b3] bg-clip-text text-transparent uppercase tracking-tight">
+            <h1 className="text-4xl font-black bg-linear-to-r from-[#1acec8] to-[#15b8b3] bg-clip-text text-transparent uppercase tracking-tight">
                 tenant dashboard
             </h1>
             <p className="text-gray-500 dark:text-zinc-400 text-sm italic">
                 Welcome back! Here's your rental overview.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
                 {[
-                    { title: 'Active Leases', value: '1', icon: Home, color: 'text-blue-600', bg: 'bg-blue-100' },
-                    { title: 'Rent Due', value: '$1,200', icon: Wallet, color: 'text-orange-600', bg: 'bg-orange-100' },
-                    { title: 'Saved Properties', value: '15', icon: Heart, color: 'text-rose-600', bg: 'bg-rose-100' },
-                    { title: 'Maintenance', value: '2', icon: MessageSquare, color: 'text-purple-600', bg: 'bg-purple-100' },
+                    { title: 'Active Leases', value: '1', color: 'text-blue-600' },
+                    { title: 'Rent Due', value: '$1,200', color: 'text-orange-600' },
+                    { title: 'Saved', value: '15', color: 'text-rose-600' },
+                    { title: 'Maintenance', value: '2', color: 'text-purple-600' },
                 ].map((stat, index) => (
-                    <Card key={index} className="border-none shadow-sm dark:shadow-zinc-800/50 hover:shadow-md transition-all dark:bg-zinc-700/50 dark:border dark:border-white/5">
-                        <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                            <CardTitle className="text-sm font-medium text-gray-500 dark:text-zinc-400 transition-colors">
+                    <Card key={index} className="border-none shadow-sm dark:bg-zinc-700/50 dark:border dark:border-white/5 h-10 flex items-center cursor-pointer transition-all active:scale-[0.98] outline-none hover:bg-muted/10 focus-within:ring-2 focus-within:ring-[#1acec8]">
+                        <CardContent className="p-0 px-3 w-full flex items-center justify-between gap-2">
+                            <span className="text-[9px] uppercase tracking-tighter font-bold text-gray-500 dark:text-neutral-200 whitespace-nowrap transition-colors">
                                 {stat.title}
-                            </CardTitle>
-                            <div className={`${stat.bg} dark:bg-zinc-700/50 p-2 rounded-lg transition-colors`}>
-                                <stat.icon className={`w-5 h-5 ${stat.color} dark:text-[#1acec8] transition-colors`} />
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold dark:text-neutral-100 transition-colors">{stat.value}</div>
-                            <p className="text-xs text-gray-400 dark:text-zinc-500 mt-1">Updated just now</p>
+                            </span>
+                            <span className={cn("text-sm font-black dark:text-[#1acec8] transition-colors", stat.color)}>
+                                {stat.value}
+                            </span>
                         </CardContent>
                     </Card>
                 ))}

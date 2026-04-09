@@ -79,45 +79,29 @@ const ManagerDashboard = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="border-border bg-card/40 shadow-sm border-t-2 border-t-[#1acec8]">
-                    <CardHeader className="pb-1 p-4">
-                        <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-                            <Building className="w-3 h-3 text-[#1acec8]" /> Managed Properties
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0">
-                        <div className="text-2xl font-black text-[#1acec8]">{properties?.length || 0}</div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-1">
+                <Card className="border-border bg-card/40 shadow-sm border-t border-t-[#1acec8] h-10 flex items-center">
+                    <CardContent className="p-0 px-3 w-full flex items-center justify-between gap-2">
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Managed</span>
+                        <span className="text-sm font-black text-[#1acec8]">{properties?.length || 0}</span>
                     </CardContent>
                 </Card>
-                <Card className="border-border bg-card/40 shadow-sm">
-                    <CardHeader className="pb-1 p-4">
-                        <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Pending</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0">
-                        <div className="text-2xl font-black text-amber-500">
-                            {applications?.filter(a => a.status === "Pending").length || 0}
-                        </div>
+                <Card className="border-border bg-card/40 shadow-sm h-10 flex items-center">
+                    <CardContent className="p-0 px-3 w-full flex items-center justify-between gap-2">
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Pending</span>
+                        <span className="text-sm font-black text-amber-500">{applications?.filter(a => a.status === "Pending").length || 0}</span>
                     </CardContent>
                 </Card>
-                <Card className="border-border bg-card/40 shadow-sm">
-                    <CardHeader className="pb-1 p-4">
-                        <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Approved</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0">
-                        <div className="text-2xl font-black text-emerald-500">
-                            {applications?.filter(a => a.status === "Approved").length || 0}
-                        </div>
+                <Card className="border-border bg-card/40 shadow-sm h-10 flex items-center">
+                    <CardContent className="p-0 px-3 w-full flex items-center justify-between gap-2">
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Approved</span>
+                        <span className="text-sm font-black text-emerald-500">{applications?.filter(a => a.status === "Approved").length || 0}</span>
                     </CardContent>
                 </Card>
-                <Card className="border-border bg-card/40 shadow-sm">
-                    <CardHeader className="pb-1 p-4">
-                        <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Denied</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0">
-                        <div className="text-2xl font-black text-rose-500">
-                            {applications?.filter(a => a.status === "Denied").length || 0}
-                        </div>
+                <Card className="border-border bg-card/40 shadow-sm h-10 flex items-center">
+                    <CardContent className="p-0 px-3 w-full flex items-center justify-between gap-2">
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest whitespace-nowrap">Denied</span>
+                        <span className="text-sm font-black text-rose-500">{applications?.filter(a => a.status === "Denied").length || 0}</span>
                     </CardContent>
                 </Card>
             </div>

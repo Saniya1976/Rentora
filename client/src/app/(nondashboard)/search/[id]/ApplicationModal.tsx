@@ -10,8 +10,15 @@ import { Form } from "@/components/ui/form";
 import { ApplicationFormData, applicationSchema } from "@/lib/schemas";
 import { useCreateApplicationMutation, useGetAuthUserQuery } from "@/state/api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+interface ApplicationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  propertyId: number;
+}
 
 const ApplicationModal = ({
   isOpen,
@@ -31,22 +38,45 @@ const ApplicationModal = ({
     },
   });
 
+  useEffect(() => {
+    if (authUser?.clerkInfo) {
+      const name = [authUser.clerkInfo.firstName, authUser.clerkInfo.lastName]
+        .filter(Boolean)
+        .join(" ");
+      form.reset({
+        name: name || "",
+        email: authUser.clerkInfo.primaryEmailAddress?.emailAddress || "",
+        phoneNumber: "",
+        message: "",
+      });
+    }
+  }, [authUser, form, isOpen]);
+
   const onSubmit = async (data: ApplicationFormData) => {
     if (!authUser || authUser.userRole !== "tenant") {
-      console.error(
-        "You must be logged in as a tenant to submit an application"
-      );
+      toast.error("You must be logged in as a tenant to submit an application");
       return;
     }
 
-    await createApplication({
-      ...data,
-      applicationDate: new Date().toISOString(),
-      status: "Pending",
-      propertyId: propertyId,
-      tenantClerkId: authUser.clerkInfo.id,
-    });
-    onClose();
+    const userEmail = authUser.clerkInfo.primaryEmailAddress?.emailAddress;
+    if (data.email !== userEmail) {
+      toast.error("Application email must match your account email.");
+      return;
+    }
+
+    try {
+      await createApplication({
+        ...data,
+        applicationDate: new Date().toISOString(),
+        status: "Pending",
+        propertyId: propertyId,
+        tenantClerkId: authUser.clerkInfo.id,
+      }).unwrap();
+      toast.success("Application submitted successfully!");
+      onClose();
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to submit application");
+    }
   };
 
   return (

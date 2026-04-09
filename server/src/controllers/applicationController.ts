@@ -108,6 +108,22 @@ export const createApplication = async (
             return;
         }
 
+        // Check if application already exists for this property and user
+        const existingApplication = await prisma.application.findFirst({
+            where: {
+                propertyId,
+                OR: [
+                    { email },
+                    { tenantClerkId }
+                ]
+            }
+        });
+
+        if (existingApplication) {
+            res.status(400).json({ message: "You have already submitted an application for this property." });
+            return;
+        }
+
         // Create the application with Pending status only — no lease yet.
         // The lease will be created when the manager approves the application.
         const newApplication = await prisma.application.create({

@@ -29,3 +29,44 @@
 2026-04-09T10:48:35.734Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM/current-residences?userType=tenant undefined
 2026-04-09T10:48:37.456Z - GET /applications?userId=user_39O6gpcKdINfe9Vbmx1jGH5wPGM&userType=tenant undefined
 2026-04-09T10:48:41.788Z - GET /properties? undefined
+2026-04-09T14:02:02.878Z - GET /properties/4 undefined
+2026-04-09T14:02:09.078Z - GET /applications?userId=user_39O6gpcKdINfe9Vbmx1jGH5wPGM&userType=tenant undefined
+2026-04-09T14:02:26.043Z - GET /properties/6 undefined
+2026-04-09T14:10:11.300Z - GET /properties/6 undefined
+2026-04-09T14:10:11.739Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM?userType=tenant undefined
+2026-04-09T14:10:32.949Z - POST /applications?userType=tenant {"name":"Saniya Kumari","email":"saniyakumari1976@gmail.com","phoneNumber":"8882549281","message":"..","applicationDate":"2026-04-09T14:10:32.912Z","status":"Pending","propertyId":6,"tenantClerkId":"user_39O6gpcKdINfe9Vbmx1jGH5wPGM"}
+2026-04-09T14:10:43.346Z - GET /properties/6 undefined
+2026-04-09T14:10:43.723Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM?userType=tenant undefined
+2026-04-09T14:10:53.856Z - GET /properties/6 undefined
+2026-04-09T14:10:54.385Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM?userType=tenant undefined
+2026-04-09T14:11:07.152Z - POST /applications?userType=tenant {"name":"Saniya Kumari","email":"saniyakumari1976@gmail.com","phoneNumber":"8882549281","message":"....","applicationDate":"2026-04-09T14:11:06.938Z","status":"Pending","propertyId":6,"tenantClerkId":"user_39O6gpcKdINfe9Vbmx1jGH5wPGM"}
+2026-04-09T14:11:13.376Z - POST /applications?userType=tenant {"name":"Saniya Kumari","email":"saniyakumari1976@gmail.com","phoneNumber":"8882549291","message":"....","applicationDate":"2026-04-09T14:11:12.938Z","status":"Pending","propertyId":6,"tenantClerkId":"user_39O6gpcKdINfe9Vbmx1jGH5wPGM"}
+2026-04-09T14:13:58.423Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM undefined
+2026-04-09T14:13:58.440Z - GET /properties? undefined
+2026-04-09T14:14:00.382Z - GET /properties/1 undefined
+2026-04-09T14:14:06.166Z - POST /applications?userType=tenant {"name":"Saniya Kumari","email":"saniyakumari1976@gmail.com","phoneNumber":"8882549281","message":"","applicationDate":"2026-04-09T14:14:05.639Z","status":"Pending","propertyId":1,"tenantClerkId":"user_39O6gpcKdINfe9Vbmx1jGH5wPGM"}
+2026-04-09T14:14:24.360Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM/current-residences?userType=tenant undefined
+2026-04-09T14:14:30.045Z - GET /applications?userId=user_39O6gpcKdINfe9Vbmx1jGH5wPGM&userType=tenant undefined
+2026-04-09T14:14:56.854Z - GET /managers/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE?userType=manager undefined
+2026-04-09T14:15:04.407Z - GET /managers/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE/properties?userType=manager undefined
+2026-04-09T14:15:04.411Z - GET /applications?userId=user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE&userType=manager undefined
+2026-04-09T14:15:14.164Z - PUT /applications/18/status?userType=manager {"status":"Approved"}
+2026-04-09T14:15:14.254Z - GET /applications?userId=user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE&userType=manager undefined
+2026-04-09T14:15:25.938Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM?userType=tenant undefined
+2026-04-09T14:15:26.207Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM undefined
+2026-04-09T14:15:26.222Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM/current-residences?userType=tenant undefined
+2026-04-09T14:15:38.001Z - GET /applications?userId=user_39O6gpcKdINfe9Vbmx1jGH5wPGM&userType=tenant undefined
+2026-04-09T14:23:54.290Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM?userType=tenant undefined
+2026-04-09T14:23:54.605Z - GET /applications?userId=user_39O6gpcKdINfe9Vbmx1jGH5wPGM&userType=tenant undefined
+2026-04-09T14:24:01.669Z - GET /managers/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE?userType=manager undefined
+2026-04-09T14:24:01.936Z - GET /applications?userId=user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE&userType=manager undefined
+2026-04-09T14:24:01.946Z - GET /managers/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE/properties?userType=manager undefined
+2026-04-09T14:24:12.286Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM undefined
+2026-04-09T14:24:12.873Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM/current-residences?userType=tenant undefined
+2026-04-09T14:29:22.556Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM undefined
+2026-04-09T14:29:22.567Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM/current-residences?userType=tenant undefined
+2026-04-09T14:38:17.564Z - GET /managers/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE?userType=manager undefined
+2026-04-09T14:38:17.841Z - GET /applications?userId=user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE&userType=manager undefined
+2026-04-09T14:38:17.866Z - GET /managers/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE/properties?userType=manager undefined
+2026-04-09T14:39:00.675Z - GET /tenants/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE undefined
+2026-04-09T14:39:00.678Z - GET /properties? undefined
