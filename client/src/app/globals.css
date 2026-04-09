@@ -142,6 +142,15 @@ body {
 
 .leaflet-container {
   font-family: var(--font-outfit), sans-serif;
+  @apply transition-colors duration-300;
+}
+
+.dark .leaflet-tile-pane {
+  filter: invert(0.85) hue-rotate(180deg) brightness(1) contrast(0.9);
+}
+
+.dark .leaflet-container {
+  background: #333;
 }
 
 .mapboxgl-popup-content {

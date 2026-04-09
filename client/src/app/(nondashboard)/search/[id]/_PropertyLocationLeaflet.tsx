@@ -45,7 +45,7 @@ const PropertyLocationLeaflet = ({ propertyId }: PropertyDetailsProps) => {
                 center={center}
                 zoom={14}
                 scrollWheelZoom={false}
-                className="h-full w-full dark:invert-[0.85] dark:hue-rotate-180 dark:brightness-[1] dark:contrast-[0.9]"
+                className="h-full w-full"
             >
                 <ChangeView center={center} />
                 <TileLayer

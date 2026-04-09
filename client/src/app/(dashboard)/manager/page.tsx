@@ -174,7 +174,7 @@ const ManagerDashboard = () => {
                                                             Applied on {format(new Date(app.applicationDate), "MMM dd, yyyy")}
                                                         </div>
                                                         <div className="mt-1 p-2.5 bg-muted/40 rounded-lg text-xs italic text-muted-foreground line-clamp-2">
-                                                            "{app.message || "No message provided."}"
+                                                            &ldquo;{app.message || "No message provided."}&rdquo;
                                                         </div>
                                                     </div>
                                                 </div>

@@ -101,7 +101,6 @@ export const createApplication = async (
 
         const property = await prisma.property.findUnique({
             where: { id: propertyId },
-            select: { pricePerMonth: true, securityDeposit: true },
         });
 
         if (!property) {
@@ -109,52 +108,32 @@ export const createApplication = async (
             return;
         }
 
-        const newApplication = await prisma.$transaction(async (prisma) => {
-            // Create lease first
-            const lease = await prisma.lease.create({
-                data: {
-                    startDate: new Date(), // Today
-                    endDate: new Date(
-                        new Date().setFullYear(new Date().getFullYear() + 1)
-                    ), // 1 year from today
-                    rent: property.pricePerMonth,
-                    deposit: property.securityDeposit,
-                    property: {
-                        connect: { id: propertyId },
-                    },
-                    tenant: {
-                        connect: { clerkId: tenantClerkId },
+        // Create the application with Pending status only — no lease yet.
+        // The lease will be created when the manager approves the application.
+        const newApplication = await prisma.application.create({
+            data: {
+                applicationDate: new Date(applicationDate),
+                status: "Pending",
+                name,
+                email,
+                phoneNumber,
+                message,
+                property: {
+                    connect: { id: propertyId },
+                },
+                tenant: {
+                    connect: { clerkId: tenantClerkId },
+                },
+            },
+            include: {
+                property: {
+                    include: {
+                        location: true,
+                        manager: true,
                     },
                 },
-            });
-
-            // Then create application with lease connection
-            const application = await prisma.application.create({
-                data: {
-                    applicationDate: new Date(applicationDate),
-                    status,
-                    name,
-                    email,
-                    phoneNumber,
-                    message,
-                    property: {
-                        connect: { id: propertyId },
-                    },
-                    tenant: {
-                        connect: { clerkId: tenantClerkId },
-                    },
-                    lease: {
-                        connect: { id: lease.id },
-                    },
-                },
-                include: {
-                    property: true,
-                    tenant: true,
-                    lease: true,
-                },
-            });
-
-            return application;
+                tenant: true,
+            },
         });
 
         res.status(201).json(newApplication);

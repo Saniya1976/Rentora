@@ -107,7 +107,7 @@ const ApplicationsPage = () => {
 
                                 {app.message && (
                                     <div className="p-3 bg-muted/40 rounded-lg text-xs italic text-muted-foreground line-clamp-2">
-                                        "{app.message}"
+                                        &ldquo;{app.message}&rdquo;
                                     </div>
                                 )}
 

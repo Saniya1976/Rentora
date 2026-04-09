@@ -90,7 +90,7 @@ const MapLeaflet = () => {
                 center={center}
                 zoom={zoom}
                 scrollWheelZoom={true}
-                className="h-full w-full dark:invert-[0.85] dark:hue-rotate-180 dark:brightness-[1] dark:contrast-[0.9]"
+                className="h-full w-full"
                 maxBounds={[
                     [27.5, 76.0],
                     [29.5, 78.5],
