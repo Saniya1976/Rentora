@@ -5,11 +5,12 @@ import { NAVBAR_HEIGHT } from '@/lib/constants'
 import Link from 'next/link'
 import { Button } from './ui/button'
 import { SignedIn, SignedOut, UserButton, SignOutButton, useUser } from '@clerk/nextjs'
-import { LayoutDashboard, Settings, LogOut, Menu, Search, Bell, MessageCircle, Sun, Moon, HouseHeart } from 'lucide-react'
+import { LayoutDashboard, Settings, LogOut, Menu, Search, Bell, MessageCircle, Sun, Moon, HouseHeart, Info, FileText } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
 import { SidebarContext, SidebarTrigger } from '@/components/ui/sidebar'
+import { Badge } from '@/components/ui/badge'
 import { useGetAuthUserQuery } from '@/state/api'
 import {
   DropdownMenu,
@@ -25,6 +26,20 @@ const Navbar = () => {
     skip: !isClerkLoaded || !clerkUser,
   });
   const userRole = authUser?.userRole;
+
+  const notifications = React.useMemo(() => {
+    if (userRole === "manager") {
+      return [
+        { title: "New Application", desc: "A new tenant has applied for Modern Sea View.", time: "10m ago", icon: FileText, color: "text-[#1acec8]", bg: "bg-[#1acec8]/10" },
+        { title: "Upcoming Lease End", desc: "Lease for Unit 402 ends in 30 days.", time: "Reminder", icon: Bell, color: "text-amber-600", bg: "bg-amber-50" }
+      ];
+    } else {
+      return [
+        { title: "Application Under Review", desc: "The manager of White House is reviewing your profile.", time: "2 hours ago", icon: Info, color: "text-blue-500", bg: "bg-blue-50" },
+        { title: "Upcoming Rent", desc: "Your next payment is due in 3 days.", time: "Urgent", icon: Bell, color: "text-amber-600", bg: "bg-amber-50" }
+      ];
+    }
+  }, [userRole]);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -162,47 +177,18 @@ const Navbar = () => {
   }
 
   return (
-    <div
-      className="fixed top-0 left-0 w-full z-50 border-b border-gray-100 dark:border-white/10 shadow-sm transition-colors duration-300"
-      style={{ height: `${NAVBAR_HEIGHT}px` }}
-    >
-      <div className="flex justify-between items-center w-full h-full px-4 md:px-10 bg-white dark:bg-zinc-700 text-black dark:text-white transition-colors duration-300">
-        <Link href="/" className="flex items-center gap-2 group" scroll={false}>
-          {isDashboardPage && sidebar && (
-            <div className="mr-2">
-              <SidebarTrigger />
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/5 transition-all duration-300" style={{ height: NAVBAR_HEIGHT }}>
+      <div className="max-w-[1400px] mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 bg-linear-to-br from-[#1acec8] to-[#15b8b3] rounded-xl flex items-center justify-center shadow-[0_4px_15px_rgba(26,206,200,0.3)] group-hover:scale-105 transition-all">
+              <HouseHeart className="w-6 h-6 text-white" />
             </div>
-          )}
-          <div className="p-2 transition-all">
-            <HouseHeart className="w-11 h-11 text-black dark:text-white shrink-0" />
-          </div>
-          <span className="text-2xl font-bold tracking-wider font-cute text-black dark:text-white">
-            RENTORA
-          </span>
-        </Link>
+            <span className="text-2xl font-black tracking-tighter text-gray-900 dark:text-white uppercase">rentora</span>
+          </Link>
+        </div>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-6">
-          <SignedOut>
-            <Link href="/search">
-              <Button variant="ghost" className="px-6 h-11 rounded-xl text-gray-600 dark:text-gray-300 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all">
-                Search
-              </Button>
-            </Link>
-
-            <Link href="/signin">
-              <Button variant="ghost" className="px-6 h-11 rounded-xl text-gray-600 dark:text-gray-300 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all">
-                Sign In
-              </Button>
-            </Link>
-
-            <Link href="/signup">
-              <Button className="px-6 h-11 rounded-xl bg-[#1acec8] text-white font-bold hover:bg-[#15b8b3] hover:shadow-[0_6px_15px_rgba(26,206,200,0.3)] shadow-[0_4px_10px_rgba(26,206,200,0.2)] transition-all">
-                Sign Up
-              </Button>
-            </Link>
-          </SignedOut>
-
+        <div className="hidden md:flex items-center gap-1">
           <SignedIn>
             {isDashboardPage && (
               <div className="hidden lg:block w-72 mr-4">
@@ -214,12 +200,49 @@ const Navbar = () => {
                 <MessageCircle className="w-7 h-7" strokeWidth={2.2} />
                 <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white dark:ring-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
-              <div className="relative group">
-                <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11">
-                  <Bell className="w-7 h-7" strokeWidth={2.2} />
-                </Button>
-                <span className="absolute top-3 right-3 w-2 h-2 bg-[#1acec8] rounded-full ring-2 ring-white dark:ring-zinc-700" />
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-300 hover:text-[#1acec8] hover:bg-[#1acec8]/10 transition-all rounded-xl w-11 h-11 relative">
+                    <Bell className="w-7 h-7" strokeWidth={2.2} />
+                    {notifications.length > 0 && (
+                      <span className="absolute top-3 right-3 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white dark:ring-zinc-800" />
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80 p-0 border border-border shadow-2xl rounded-2xl overflow-hidden mt-2">
+                  <div className="p-4 bg-muted/30 border-b border-border flex items-center justify-between">
+                    <h3 className="font-black uppercase tracking-tighter text-sm">Notifications</h3>
+                    <Badge className="bg-[#1acec8] text-white text-[9px] h-4 px-1.5 uppercase font-bold">{notifications.length} New</Badge>
+                  </div>
+                  <div className="max-h-[400px] overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="p-8 text-center text-muted-foreground text-xs font-medium italic">
+                        No new notifications
+                      </div>
+                    ) : (
+                      notifications.map((notif, i) => (
+                        <DropdownMenuItem key={i} className="p-4 flex items-start gap-4 cursor-pointer focus:bg-muted/50 transition-colors border-b border-border last:border-0 outline-none group/item">
+                          <div className={cn("p-2 rounded-xl shrink-0 transition-transform group-hover/item:scale-110", notif.bg)}>
+                            <notif.icon className={cn("w-4 h-4", notif.color)} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-0.5">
+                              <h4 className="font-bold text-xs tracking-tight">{notif.title}</h4>
+                              <span className="text-[8px] font-black text-muted-foreground uppercase">{notif.time}</span>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground leading-tight">{notif.desc}</p>
+                          </div>
+                        </DropdownMenuItem>
+                      ))
+                    )}
+                  </div>
+                  <div className="p-3 bg-muted/10 text-center">
+                    <button className="text-[10px] font-black uppercase text-[#1acec8] hover:underline tracking-widest">
+                      Mark all as read
+                    </button>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             <div className="h-6 w-px bg-gray-100 dark:bg-white/10 mx-2" />
@@ -318,10 +341,8 @@ const Navbar = () => {
           </DropdownMenu>
         </div>
       </div>
-    </div>
+    </nav>
   )
 }
 
 export default Navbar
-
-

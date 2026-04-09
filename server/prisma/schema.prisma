@@ -20,9 +20,9 @@ model Application {
   phoneNumber     String
   message         String?
   leaseId         Int?              @unique
-  Lease           Lease?            @relation(fields: [leaseId], references: [id])
-  Property        Property          @relation(fields: [propertyId], references: [id])
-  Tenant          Tenant            @relation(fields: [tenantClerkId], references: [clerkId])
+  lease           Lease?            @relation(fields: [leaseId], references: [id])
+  property        Property          @relation(fields: [propertyId], references: [id])
+  tenant          Tenant            @relation(fields: [tenantClerkId], references: [clerkId])
 }
 
 model Lease {
@@ -33,10 +33,10 @@ model Lease {
   deposit       Float
   propertyId    Int
   tenantClerkId String
-  Application   Application?
-  Property      Property     @relation(fields: [propertyId], references: [id])
-  Tenant        Tenant       @relation(fields: [tenantClerkId], references: [clerkId])
-  Payment       Payment[]
+  application   Application?
+  property      Property     @relation(fields: [propertyId], references: [id])
+  tenant        Tenant       @relation(fields: [tenantClerkId], references: [clerkId])
+  payments      Payment[]
 }
 
 model Location {
@@ -47,16 +47,16 @@ model Location {
   country     String
   postalCode  String
   coordinates Unsupported("geography")
-  Property    Property[]
+  properties  Property[]
 }
 
 model Manager {
-  id          Int        @id @default(autoincrement())
-  clerkId     String     @unique
-  name        String
-  email       String
-  phoneNumber String
-  Property    Property[]
+  id                Int        @id @default(autoincrement())
+  clerkId           String     @unique
+  name              String
+  email             String
+  phoneNumber       String
+  managedProperties Property[]
 }
 
 model Payment {
@@ -67,7 +67,7 @@ model Payment {
   paymentDate   DateTime
   paymentStatus PaymentStatus
   leaseId       Int
-  Lease         Lease         @relation(fields: [leaseId], references: [id])
+  lease         Lease         @relation(fields: [leaseId], references: [id])
 }
 
 model Property {
@@ -91,24 +91,24 @@ model Property {
   numberOfReviews         Int?          @default(0)
   locationId              Int
   managerClerkId          String
-  Application             Application[]
-  Lease                   Lease[]
-  Location                Location      @relation(fields: [locationId], references: [id])
-  Manager                 Manager       @relation(fields: [managerClerkId], references: [clerkId])
-  Tenant_TenantFavorites  Tenant[]      @relation("TenantFavorites")
-  Tenant_TenantProperties Tenant[]      @relation("TenantProperties")
+  applications            Application[]
+  leases                  Lease[]
+  location                Location      @relation(fields: [locationId], references: [id])
+  manager                 Manager       @relation(fields: [managerClerkId], references: [clerkId])
+  favoritedBy             Tenant[]      @relation("TenantFavorites")
+  tenants                 Tenant[]      @relation("TenantProperties")
 }
 
 model Tenant {
-  id                        Int           @id @default(autoincrement())
-  clerkId                   String        @unique
-  name                      String
-  email                     String
-  phoneNumber               String
-  Application               Application[]
-  Lease                     Lease[]
-  Property_TenantFavorites  Property[]    @relation("TenantFavorites")
-  Property_TenantProperties Property[]    @relation("TenantProperties")
+  id           Int           @id @default(autoincrement())
+  clerkId      String        @unique
+  name         String
+  email        String
+  phoneNumber  String
+  applications Application[]
+  leases       Lease[]
+  favorites    Property[]    @relation("TenantFavorites")
+  properties   Property[]    @relation("TenantProperties")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
