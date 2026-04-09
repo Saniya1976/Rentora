@@ -34,14 +34,22 @@ export const authMiddleware = (allowedRoles: string[]) => {
         return;
       }
 
-      // Check multiple possible locations for the role
-      const userRole =
+      // Check multiple possible locations for the role in the JWT
+      const jwtRole =
         decoded.role ||
         decoded.metadata?.role ||
+        decoded.publicMetadata?.userType ||   // Clerk stores role here as "userType"
         decoded.publicMetadata?.role ||
+        decoded.unsafeMetadata?.userType ||
         decoded.unsafeMetadata?.role ||
-        decoded["custom:role"] ||
-        "tenant";
+        decoded["custom:role"];
+
+      // Fallback: use the userType query param if JWT doesn't carry role info.
+      // This is needed because Clerk's default JWT template does NOT include
+      // publicMetadata, so the role must be passed explicitly by the client.
+      const queryRole = req.query.userType as string | undefined;
+
+      const userRole = jwtRole || queryRole || "tenant";
 
       console.log(`[Auth] User:${decoded.sub} Role:${userRole} Path:${req.path}`);
 

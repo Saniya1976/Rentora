@@ -49,8 +49,8 @@ export const api = createApi({
 
           const endpoint =
             userRole.toLowerCase() === "manager"
-              ? `/managers/${clerkUser.id}`
-              : `/tenants/${clerkUser.id}`;
+              ? `/managers/${clerkUser.id}?userType=manager`
+              : `/tenants/${clerkUser.id}?userType=tenant`;
 
           let userDetailsResponse = await fetchWithBQ(endpoint);
 
@@ -144,7 +144,7 @@ export const api = createApi({
     }),
 
     getCurrentResidences: build.query<Property[], string>({
-      query: (clerkId) => `tenants/${clerkId}/current-residences`,
+      query: (clerkId) => `tenants/${clerkId}/current-residences?userType=tenant`,
       providesTags: (result) =>
         result
           ? [
@@ -164,7 +164,7 @@ export const api = createApi({
       { clerkId: string } & Partial<Tenant>
     >({
       query: ({ clerkId, ...updatedTenant }) => ({
-        url: `tenants/${clerkId}`,
+        url: `tenants/${clerkId}?userType=tenant`,
         method: "PUT",
         body: updatedTenant,
       }),
@@ -182,7 +182,7 @@ export const api = createApi({
       { clerkId: string; propertyId: number }
     >({
       query: ({ clerkId, propertyId }) => ({
-        url: `tenants/${clerkId}/favorites/${propertyId}`,
+        url: `tenants/${clerkId}/favorites/${propertyId}?userType=tenant`,
         method: "POST",
       }),
       invalidatesTags: (result) => [
@@ -202,7 +202,7 @@ export const api = createApi({
       { clerkId: string; propertyId: number }
     >({
       query: ({ clerkId, propertyId }) => ({
-        url: `tenants/${clerkId}/favorites/${propertyId}`,
+        url: `tenants/${clerkId}/favorites/${propertyId}?userType=tenant`,
         method: "DELETE",
       }),
       invalidatesTags: (result) => [
@@ -219,7 +219,7 @@ export const api = createApi({
 
     // manager related endpoints
     getManagerProperties: build.query<Property[], string>({
-      query: (clerkId) => `managers/${clerkId}/properties`,
+      query: (clerkId) => `managers/${clerkId}/properties?userType=manager`,
       providesTags: (result) =>
         result
           ? [
@@ -239,7 +239,7 @@ export const api = createApi({
       { clerkId: string } & Partial<Manager>
     >({
       query: ({ clerkId, ...updatedManager }) => ({
-        url: `managers/${clerkId}`,
+        url: `managers/${clerkId}?userType=manager`,
         method: "PUT",
         body: updatedManager,
       }),
@@ -254,7 +254,7 @@ export const api = createApi({
 
     createProperty: build.mutation<Property, FormData>({
       query: (newProperty) => ({
-        url: `properties`,
+        url: `properties?userType=manager`,
         method: "POST",
         body: newProperty,
       }),
@@ -266,6 +266,23 @@ export const api = createApi({
         await withToast(queryFulfilled, {
           success: "Property created successfully!",
           error: "Failed to create property.",
+        });
+      },
+    }),
+    updateProperty: build.mutation<Property, { id: number; formData: FormData }>({
+      query: ({ id, formData }) => ({
+        url: `properties/${id}?userType=manager`,
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: (result) => [
+        { type: "Properties", id: result?.id },
+        { type: "Properties", id: "LIST" },
+      ],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Property updated successfully!",
+          error: "Failed to update property.",
         });
       },
     }),
@@ -287,7 +304,7 @@ export const api = createApi({
     }),
 
     getPropertyLeases: build.query<Lease[], number>({
-      query: (propertyId) => `properties/${propertyId}/leases`,
+      query: (propertyId) => `properties/${propertyId}/leases?userType=manager`,
       providesTags: ["Leases"],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
@@ -335,7 +352,7 @@ export const api = createApi({
       { id: number; status: string }
     >({
       query: ({ id, status }) => ({
-        url: `applications/${id}/status`,
+        url: `applications/${id}/status?userType=manager`,
         method: "PUT",
         body: { status },
       }),
@@ -349,10 +366,10 @@ export const api = createApi({
     }),
 
     createApplication: build.mutation<Application, Partial<Application>>({
-      query: (body) => ({
-        url: `applications`,
+      query: (newApplication) => ({
+        url: "applications?userType=tenant",
         method: "POST",
-        body: body,
+        body: newApplication,
       }),
       invalidatesTags: ["Applications"],
       async onQueryStarted(_, { queryFulfilled }) {
@@ -374,6 +391,7 @@ export const {
   useGetCurrentResidencesQuery,
   useGetManagerPropertiesQuery,
   useCreatePropertyMutation,
+  useUpdatePropertyMutation,
   useGetTenantQuery,
   useAddFavoritePropertyMutation,
   useRemoveFavoritePropertyMutation,

@@ -242,11 +242,11 @@ export const createProperty = async (
         managerClerkId,
         amenities:
           typeof propertyData.amenities === "string"
-            ? propertyData.amenities.split(",")
+            ? propertyData.amenities.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "")
             : [],
         highlights:
           typeof propertyData.highlights === "string"
-            ? propertyData.highlights.split(",")
+            ? propertyData.highlights.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "")
             : [],
         isPetsAllowed: propertyData.isPetsAllowed === "true",
         isParkingIncluded: propertyData.isParkingIncluded === "true",
@@ -268,3 +268,139 @@ export const createProperty = async (
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 }
+
+export const updateProperty = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const files = req.files as Express.Multer.File[];
+    const {
+      address,
+      city,
+      state,
+      country,
+      postalCode,
+      existingPhotoUrls,
+      ...propertyData
+    } = req.body;
+
+    const propertyId = Number(id);
+    const existingProperty = await prisma.property.findUnique({
+      where: { id: propertyId },
+      include: { location: true },
+    });
+
+    if (!existingProperty) {
+      res.status(404).json({ message: "Property not found" });
+      return;
+    }
+
+    let photoUrls: string[] = [];
+
+    // Parse existing photos if provided, otherwise keep existing ones
+    if (existingPhotoUrls) {
+      try {
+        photoUrls = JSON.parse(existingPhotoUrls);
+      } catch (e) {
+        photoUrls = existingProperty.photoUrls;
+      }
+    } else {
+      photoUrls = existingProperty.photoUrls;
+    }
+
+    if (files && files.length > 0) {
+      const newPhotoUrls = await Promise.all(
+        files.map(async (file) => {
+          const uploadParams = {
+            Bucket: process.env.S3_BUCKET_NAME!,
+            Key: `properties/${Date.now()}-${file.originalname}`,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+          };
+          const uploadResult = await new Upload({
+            client: s3Client,
+            params: uploadParams,
+          }).done();
+          return uploadResult.Location;
+        })
+      );
+      photoUrls = [...photoUrls, ...newPhotoUrls as string[]];
+    }
+
+    let locationId = existingProperty.locationId;
+    const addressChanged =
+      address !== existingProperty.location.address ||
+      city !== existingProperty.location.city ||
+      state !== existingProperty.location.state ||
+      country !== existingProperty.location.country ||
+      postalCode !== existingProperty.location.postalCode;
+
+    if (addressChanged) {
+      const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
+        {
+          street: address,
+          city,
+          country,
+          postalcode: postalCode,
+          format: "json",
+          limit: "1",
+        }
+      ).toString()}`;
+      const geocodingResponse = await axios.get(geocodingUrl, {
+        headers: {
+          "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)",
+        },
+      });
+      const [longitude, latitude] =
+        geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
+          ? [
+            parseFloat(geocodingResponse.data[0]?.lon),
+            parseFloat(geocodingResponse.data[0]?.lat),
+          ]
+          : [0, 0];
+
+      const [location] = await prisma.$queryRaw<Location[]>`
+        INSERT INTO "Location" (address, city, state, country, "postalCode", coordinates)
+        VALUES (${address}, ${city}, ${state}, ${country}, ${postalCode}, ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326))
+        RETURNING id;
+      `;
+      locationId = location.id;
+    }
+
+    const updatedProperty = await prisma.property.update({
+      where: { id: propertyId },
+      data: {
+        ...propertyData,
+        photoUrls,
+        locationId,
+        amenities:
+          typeof propertyData.amenities === "string"
+            ? propertyData.amenities.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "")
+            : propertyData.amenities,
+        highlights:
+          typeof propertyData.highlights === "string"
+            ? propertyData.highlights.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "")
+            : propertyData.highlights,
+        isPetsAllowed: propertyData.isPetsAllowed === "true" || propertyData.isPetsAllowed === true,
+        isParkingIncluded: propertyData.isParkingIncluded === "true" || propertyData.isParkingIncluded === true,
+        pricePerMonth: parseFloat(propertyData.pricePerMonth),
+        securityDeposit: parseFloat(propertyData.securityDeposit),
+        applicationFee: parseFloat(propertyData.applicationFee),
+        beds: parseInt(propertyData.beds),
+        baths: parseFloat(propertyData.baths),
+        squareFeet: parseInt(propertyData.squareFeet),
+      },
+      include: {
+        location: true,
+        manager: true,
+      },
+    });
+
+    res.json(updatedProperty);
+  } catch (error: any) {
+    console.error("Error updating property:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};

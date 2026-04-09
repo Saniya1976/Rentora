@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { useGetApplicationsQuery, useGetAuthUserQuery, useUpdateApplicationStatusMutation } from "@/state/api";
+import { useGetApplicationsQuery, useGetAuthUserQuery, useUpdateApplicationStatusMutation, useGetManagerPropertiesQuery } from "@/state/api";
 import { format } from "date-fns";
-import { FileText, MapPin, Calendar, User, Phone, Mail, CheckCircle, XCircle } from "lucide-react";
+import { FileText, MapPin, Calendar, User, Phone, Mail, CheckCircle, XCircle, Building } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,12 +12,22 @@ const ManagerDashboard = () => {
     const { data: authUser } = useGetAuthUserQuery();
     const {
         data: applications,
-        isLoading,
-        isError,
+        isLoading: isAppsLoading,
+        isError: isAppsError,
     } = useGetApplicationsQuery({
         userId: authUser?.clerkInfo.id,
         userType: "manager",
     });
+
+    const {
+        data: properties,
+        isLoading: isPropsLoading,
+    } = useGetManagerPropertiesQuery(authUser?.clerkInfo.id || "", {
+        skip: !authUser?.clerkInfo.id,
+    });
+
+    const isLoading = isAppsLoading || isPropsLoading;
+    const isError = isAppsError;
 
     const [updateStatus, { isLoading: isUpdating }] = useUpdateApplicationStatusMutation();
 
@@ -70,12 +80,14 @@ const ManagerDashboard = () => {
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="border-border bg-card/40 shadow-sm">
+                <Card className="border-border bg-card/40 shadow-sm border-t-2 border-t-[#1acec8]">
                     <CardHeader className="pb-1 p-4">
-                        <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total</CardTitle>
+                        <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+                            <Building className="w-3 h-3 text-[#1acec8]" /> Managed Properties
+                        </CardTitle>
                     </CardHeader>
                     <CardContent className="p-4 pt-0">
-                        <div className="text-2xl font-black text-[#1acec8]">{applications?.length || 0}</div>
+                        <div className="text-2xl font-black text-[#1acec8]">{properties?.length || 0}</div>
                     </CardContent>
                 </Card>
                 <Card className="border-border bg-card/40 shadow-sm">

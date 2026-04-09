@@ -17,6 +17,7 @@ const AppSidebar = ({ userType }: AppSidebarProps) => {
     const navlinks =
         userType === "manager" ? [
             { icon: LayoutDashboard, label: "Dashboard", href: "/manager" },
+            { icon: Building, label: "Properties", href: "/manager/properties" },
             { icon: Settings, label: "Settings", href: "/manager/settings" },
             { icon: LogOut, label: "Logout", href: "/manager/logout" }
         ] : [

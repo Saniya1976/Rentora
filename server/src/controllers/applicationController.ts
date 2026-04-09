@@ -151,7 +151,6 @@ export const updateApplicationStatus = async (
     try {
         const { id } = req.params;
         const { status } = req.body;
-        console.log("status:", status);
 
         const application = await prisma.application.findUnique({
             where: { id: Number(id) },
@@ -180,7 +179,6 @@ export const updateApplicationStatus = async (
                 },
             });
 
-            // Update the property to connect the tenant
             await prisma.property.update({
                 where: { id: application.propertyId },
                 data: {
@@ -190,25 +188,17 @@ export const updateApplicationStatus = async (
                 },
             });
 
-            // Update the application with the new lease ID
             await prisma.application.update({
                 where: { id: Number(id) },
                 data: { status, leaseId: newLease.id },
-                include: {
-                    property: true,
-                    tenant: true,
-                    lease: true,
-                },
             });
         } else {
-            // Update the application status (for both "Denied" and other statuses)
             await prisma.application.update({
                 where: { id: Number(id) },
                 data: { status },
             });
         }
 
-        // Respond with the updated application details
         const updatedApplication = await prisma.application.findUnique({
             where: { id: Number(id) },
             include: {

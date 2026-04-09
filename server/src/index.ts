@@ -4,7 +4,6 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import { authMiddleware } from "./middleware/authMiddleware";
 
 dotenv.config();
 const app = express();
@@ -14,10 +13,17 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+import fs from "fs";
 app.use(cors());
+app.use((req, res, next) => {
+  const logLine = `${new Date().toISOString()} - ${req.method} ${req.url} ${JSON.stringify(req.body)}\n`;
+  fs.appendFileSync("logs.txt", logLine);
+  console.log(logLine);
+  next();
+});
 import tenantRoutes from "./routes/tenantRoutes";
 import managerRoutes from "./routes/managerRoutes";
-import propertyRoutes from "./routes/propertyRoutes"; 
+import propertyRoutes from "./routes/propertyRoutes";
 import leaseRoutes from "./routes/leaseRoutes";
 import applicationRoutes from "./routes/applicationRoutes";
 
@@ -27,8 +33,10 @@ app.get("/", (_req, res) => {
 app.use("/applications", applicationRoutes);
 app.use("/properties", propertyRoutes);
 app.use("/leases", leaseRoutes);
-app.use("/tenants", authMiddleware(["tenant"]), tenantRoutes);
-app.use("/managers", authMiddleware(["manager"]), managerRoutes);
+// Auth middleware applied per-route (not globally) so that POST /managers
+// and POST /tenants (registration) don't require a pre-existing role in JWT
+app.use("/tenants", tenantRoutes);
+app.use("/managers", managerRoutes);
 
 
 const port = process.env.PORT || 3000;
