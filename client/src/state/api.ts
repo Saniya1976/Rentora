@@ -43,8 +43,8 @@ export const api = createApi({
   reducerPath: "api",
   tagTypes: ["Managers", "Tenants", "Properties", "Leases", "Payments", "Applications"],
   endpoints: (build) => ({
-    getAuthUser: build.query<Tenant | Manager, void>({
-      query: () => "auth/user",
+    getAuthUser: build.query<Tenant | Manager, string | void>({
+      query: (userType) => `auth/user${userType ? `?userType=${userType}` : ""}`,
       providesTags: (result) =>
         result
           ? [

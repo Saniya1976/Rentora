@@ -12,7 +12,7 @@ export default function GoogleAuthButton() {
     await signIn.authenticateWithRedirect({
       strategy: 'oauth_google',
       redirectUrl: '/sso-callback',
-      redirectUrlComplete: '/dashboard',
+      redirectUrlComplete: '/tenant', // /dashboard doesn't exist; sso-callback handles role redirect
     })
   }
 

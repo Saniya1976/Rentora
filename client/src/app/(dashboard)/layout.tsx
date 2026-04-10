@@ -12,17 +12,21 @@ import { useUser } from "@clerk/nextjs";
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const { isLoaded: isClerkLoaded, user: clerkUser } = useUser();
 
-  const { data: authUser, isLoading: authLoading } =
-    useGetAuthUserQuery(undefined, {
-      skip: !isClerkLoaded || !clerkUser,
-    });
-
   const pathname = usePathname();
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(true);
 
+  const viewType = pathname.startsWith("/manager") ? "manager" : "tenant";
+
+  const { data: authUser, isLoading: authLoading } =
+    useGetAuthUserQuery(viewType, {
+      skip: !isClerkLoaded || !clerkUser,
+    });
+
   const userRole = (
-    authUser?.userRole || (clerkUser?.publicMetadata?.userType as string)
+    authUser?.userRole ||
+    (clerkUser?.publicMetadata?.userType as string) ||
+    (clerkUser?.unsafeMetadata?.role as string)
   )?.toLowerCase() as "manager" | "tenant" | undefined;
 
   useEffect(() => {

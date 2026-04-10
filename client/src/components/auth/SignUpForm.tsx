@@ -18,6 +18,15 @@ export default function SignUpForm() {
   const { signUp, isLoaded, setActive } = useSignUp()
   const { user, isLoaded: userLoaded } = useUser()
   const router = useRouter()
+  const [role, setRole] = useState<UserRole>("tenant")
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const roleParam = params.get("role") as UserRole;
+    if (roleParam === "manager" || roleParam === "tenant") {
+      setRole(roleParam);
+    }
+  }, []);
 
   // Redirect if already signed in
   useEffect(() => {
@@ -26,8 +35,6 @@ export default function SignUpForm() {
       router.push(getRedirectPath(userType))
     }
   }, [user, userLoaded, router])
-
-  const [role, setRole] = useState<UserRole>('tenant')
   const [firstName, setFirstName] = useState<string>('')
   const [lastName, setLastName] = useState<string>('')
   const [username, setUsername] = useState<string>('')
@@ -217,8 +224,13 @@ export default function SignUpForm() {
     try {
       signUp.authenticateWithRedirect({
         strategy: 'oauth_google',
-        redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/sso-callback',
+        // redirectUrl = intermediate OAuth callback URL (must be /sso-callback)
+        redirectUrl: `${window.location.origin}/sso-callback`,
+        // redirectUrlComplete = final destination AFTER Clerk completes the callback.
+        // Previously this was also /sso-callback which caused an infinite redirect loop → Clerk hosted page.
+        // The sso-callback page's useEffect already handles role-based navigation,
+        // so we use /tenant as the safe final destination.
+        redirectUrlComplete: `${window.location.origin}/tenant`,
         unsafeMetadata: {
           role,
         },

@@ -35,7 +35,11 @@ export default function SSOCallbackPage() {
     // Once Clerk has resolved the user, redirect based on role
     useEffect(() => {
         if (isLoaded && user) {
-            const userType = user.publicMetadata?.userType as string | undefined
+            // Check publicMetadata first (assigned by backend)
+            // Then fallback to unsafeMetadata (assigned during signup process)
+            const userType = (user.publicMetadata?.userType as string) ||
+                (user.unsafeMetadata?.role as string);
+
             router.push(getRedirectPath(userType))
         }
     }, [isLoaded, user, router])

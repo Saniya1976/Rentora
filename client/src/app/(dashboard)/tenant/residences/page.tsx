@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import LoadingState from "@/components/LoadingState";
+import { useRouter } from "next/navigation";
 import {
     useGetAuthUserQuery,
     useGetCurrentResidencesQuery,
@@ -31,6 +32,7 @@ import {
 import { format } from "date-fns";
 
 const Residences = () => {
+    const router = useRouter();
     const { data: authUser } = useGetAuthUserQuery();
     const {
         data: currentResidences,
@@ -160,7 +162,10 @@ const Residences = () => {
                                                 <User className="w-4 h-4 mr-2 text-muted-foreground group-hover:text-blue-500" />
                                                 Contact Manager
                                             </Button>
-                                            <Button className="h-11 px-6 font-medium bg-foreground text-background hover:bg-foreground/90 transition-all">
+                                            <Button
+                                                className="h-11 px-6 font-medium bg-foreground text-background hover:bg-foreground/90 transition-all"
+                                                onClick={() => router.push(`/tenant/residences/${property.id}/lease`)}
+                                            >
                                                 <FileText className="w-4 h-4 mr-2" />
                                                 Lease Agreement
                                             </Button>
