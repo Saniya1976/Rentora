@@ -1,7 +1,11 @@
 "use client";
 
 import React from "react";
-import { useGetApplicationsQuery, useGetAuthUserQuery } from "@/state/api";
+import {
+    useGetApplicationsQuery,
+    useGetAuthUserQuery,
+    useCreateCheckoutSessionMutation
+} from "@/state/api";
 import { format } from "date-fns";
 import { FileText, MapPin, Calendar, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +13,19 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const ApplicationsPage = () => {
     const { data: authUser } = useGetAuthUserQuery();
+    const [createCheckoutSession] = useCreateCheckoutSessionMutation();
+
+    const handlePayment = async (paymentId: number) => {
+        try {
+            const result = await createCheckoutSession({ paymentId }).unwrap();
+            if (result.url) {
+                window.location.href = result.url;
+            }
+        } catch (err) {
+            console.error("Failed to create checkout session:", err);
+        }
+    };
+
     const {
         data: applications,
         isLoading,
@@ -111,12 +128,23 @@ const ApplicationsPage = () => {
                                     </div>
                                 )}
 
-                                <div className="pt-1 flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                                    <span>ID: #{app.id}</span>
-                                    <span className="flex items-center gap-1">
-                                        <Clock className="w-3 h-3" />
-                                        {app.status === "Pending" ? "Pending Review" : "Processed"}
-                                    </span>
+                                <div className="pt-2 flex flex-col gap-3">
+                                    <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                        <span>ID: #{app.id}</span>
+                                        <span className="flex items-center gap-1">
+                                            < Clock className="w-3 h-3" />
+                                            {app.status === "Pending" ? "Pending Review" : "Processed"}
+                                        </span>
+                                    </div>
+
+                                    {app.status === "Approved" && app.lease?.payments?.[0] && app.lease.payments[0].paymentStatus === "Pending" && (
+                                        <button
+                                            onClick={() => handlePayment(app.lease!.payments![0].id)}
+                                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl transition-all shadow-sm hover:shadow-md text-xs uppercase tracking-wider"
+                                        >
+                                            Pay Deposit to Confirm
+                                        </button>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>

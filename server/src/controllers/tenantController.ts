@@ -69,19 +69,34 @@ export const getTenantProperty = async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    const properties: Prisma.PropertyGetPayload<{ include: { location: true } }>[] =
-      await prisma.property.findMany({
-        where: {
-          tenants: {
-            some: {
-              clerkId: clerkId as string,
-            },
+    const now = new Date();
+    const properties = await prisma.property.findMany({
+      where: {
+        leases: {
+          some: {
+            tenantClerkId: clerkId as string,
+            startDate: { lte: now },
+            endDate: { gte: now },
           },
         },
-        include: {
-          location: true,
+      },
+      include: {
+        location: true,
+        leases: {
+          where: {
+            tenantClerkId: clerkId as string,
+            startDate: { lte: now },
+            endDate: { gte: now },
+          },
+          include: {
+            payments: {
+              orderBy: { dueDate: "desc" },
+            }
+          }
         },
-      });
+        manager: true,
+      },
+    });
 
     const propertiesWithFormattedLocation = await Promise.all(
       properties.map(async (property) => {

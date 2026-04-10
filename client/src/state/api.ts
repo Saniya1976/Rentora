@@ -239,11 +239,11 @@ export const api = createApi({
       providesTags: (result) => [{ type: "Properties", id: result?.id }],
     }),
     getCurrentResidences: build.query<Property[], string>({
-      query: (userId) => `tenants/${userId}/residences`,
+      query: (userId) => `tenants/${userId}/current-residences`,
       providesTags: ["Properties"],
     }),
     getManagerProperties: build.query<Property[], string>({
-      query: (userId) => `managers/${userId}/properties`,
+      query: (userId) => `managers/${userId}/properties?userType=manager`,
       providesTags: ["Properties"],
     }),
     getTenant: build.query<Tenant, string>({
@@ -263,6 +263,13 @@ export const api = createApi({
         method: "DELETE",
       }),
       invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
+    }),
+    createCheckoutSession: build.mutation<{ url: string }, { paymentId: number }>({
+      query: (data) => ({
+        url: "payments/create-checkout-session",
+        method: "POST",
+        body: data,
+      }),
     }),
   }),
 });
@@ -286,4 +293,5 @@ export const {
   useGetApplicationsQuery,
   useUpdateApplicationStatusMutation,
   useCreateApplicationMutation,
+  useCreateCheckoutSessionMutation,
 } = api;

@@ -1,3 +1,5 @@
+import { AmenityEnum, HighlightEnum, PropertyTypeEnum } from "@/lib/constants";
+
 export interface Property {
     id: number;
     name: string;
@@ -6,14 +8,14 @@ export interface Property {
     securityDeposit: number;
     applicationFee: number;
     photoUrls: string[];
-    amenities: string[];
-    highlights: string[];
+    amenities: AmenityEnum[];
+    highlights: HighlightEnum[];
     isPetsAllowed: boolean;
     isParkingIncluded: boolean;
     beds: number;
     baths: number;
     squareFeet: number;
-    propertyType: string;
+    propertyType: PropertyTypeEnum;
     postedDate: string;
     averageRating: number;
     numberOfReviews: number;
@@ -21,6 +23,7 @@ export interface Property {
     managerClerkId: string;
     location: Location;
     manager: Manager;
+    leases?: Lease[];
 }
 
 export interface Manager {
@@ -70,6 +73,7 @@ export interface Application {
     message?: string;
     property: Property;
     tenant: Tenant;
+    lease?: Lease | null;
 }
 
 export interface Lease {
@@ -82,6 +86,7 @@ export interface Lease {
     tenantClerkId: string;
     property: Property;
     tenant: Tenant;
+    payments?: Payment[];
 }
 
 export interface Payment {

@@ -114,6 +114,7 @@ export const getManagerById = async (req: Request, res: Response): Promise<void>
 export const getManagerProperty = async (req: Request, res: Response): Promise<void> => {
     try {
         const { clerkId } = req.params;
+        console.log(`[DEBUG] Fetching Manager Properties for: [${clerkId}]`);
 
         const manager = await prisma.manager.findUnique({
             where: { clerkId: clerkId as string },

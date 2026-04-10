@@ -56,6 +56,7 @@ export const listApplications = async (
                         propertyId: app.propertyId,
                     },
                     orderBy: { startDate: "desc" },
+                    include: { payments: true }
                 });
 
                 return {
@@ -207,6 +208,17 @@ export const updateApplicationStatus = async (
             await prisma.application.update({
                 where: { id: Number(id) },
                 data: { status, leaseId: newLease.id },
+            });
+
+            await prisma.payment.create({
+                data: {
+                    amountDue: application.property.pricePerMonth + application.property.securityDeposit,
+                    amountPaid: 0,
+                    dueDate: new Date(),
+                    paymentDate: new Date(),
+                    paymentStatus: "Pending",
+                    leaseId: newLease.id,
+                },
             });
         } else {
             await prisma.application.update({

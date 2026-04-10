@@ -1,9 +1,13 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AmenityIcons, HighlightIcons } from "@/lib/constants";
+import { AmenityIcons, HighlightIcons, AmenityEnum, HighlightEnum } from "@/lib/constants";
 import { formatEnumString } from "@/lib/utils";
 import { useGetPropertyQuery } from "@/state/api";
 import { HelpCircle } from "lucide-react";
 import React from "react";
+
+interface PropertyDetailsProps {
+  propertyId: number;
+}
 
 const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
   const {
