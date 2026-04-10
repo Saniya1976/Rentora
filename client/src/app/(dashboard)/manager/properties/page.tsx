@@ -17,8 +17,8 @@ const ManagerPropertiesPage = () => {
         data: properties,
         isLoading,
         isError,
-    } = useGetManagerPropertiesQuery(authUser?.clerkInfo.id || "", {
-        skip: !authUser?.clerkInfo.id,
+    } = useGetManagerPropertiesQuery(authUser?.clerkId || "", {
+        skip: !authUser?.clerkId,
     });
 
     const handleAddProperty = () => {
@@ -134,7 +134,7 @@ const ManagerPropertiesPage = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 property={selectedProperty}
-                managerClerkId={authUser?.clerkInfo.id || ""}
+                managerClerkId={authUser?.clerkId || ""}
             />
         </div>
     );

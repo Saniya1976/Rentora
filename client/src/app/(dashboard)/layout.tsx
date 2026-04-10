@@ -21,14 +21,15 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(true);
 
-  const userRole = authUser?.userRole?.toLowerCase() as
-    | "manager"
-    | "tenant"
-    | undefined;
+  const userRole = (
+    authUser?.userRole || (clerkUser?.publicMetadata?.userType as string)
+  )?.toLowerCase() as "manager" | "tenant" | undefined;
 
   useEffect(() => {
-    if (isClerkLoaded && !authLoading && userRole) {
-      if (
+    if (isClerkLoaded && !authLoading) {
+      if (!userRole) {
+        setIsRedirecting(false);
+      } else if (
         (userRole === "manager" && pathname.startsWith("/tenant")) ||
         (userRole === "tenant" && pathname.startsWith("/manager"))
       ) {
@@ -45,10 +46,30 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   }, [isClerkLoaded, authLoading, userRole, pathname, router]);
 
   if (!isClerkLoaded || authLoading || isRedirecting) {
-    return <>Loading...</>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1acec8] mx-auto mb-4"></div>
+          <p className="text-gray-500">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
-  if (!userRole) return null;
+  if (!userRole) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
+        <h1 className="text-2xl font-bold mb-2">Profile Not Found</h1>
+        <p className="text-gray-600 mb-6">We couldn't find your community profile. Please make sure you're registered.</p>
+        <button
+          onClick={() => router.push("/")}
+          className="px-6 py-2 bg-[#1acec8] text-white rounded-xl font-bold hover:bg-[#15b8b3] transition-all"
+        >
+          Go Back Home
+        </button>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider defaultOpen>

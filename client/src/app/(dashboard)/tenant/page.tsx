@@ -16,10 +16,10 @@ const DashboardPage = () => {
     });
 
     const { data: applications, isLoading: isAppsLoading } = useGetApplicationsQuery({
-        userId: authUser?.clerkInfo.id,
+        userId: authUser?.clerkId,
         userType: "tenant"
     }, {
-        skip: !authUser?.clerkInfo.id
+        skip: !authUser?.clerkId
     });
 
     const isLoading = isAuthLoading || isAppsLoading;

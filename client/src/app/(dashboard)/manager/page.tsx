@@ -17,15 +17,15 @@ const ManagerDashboard = () => {
         isLoading: isAppsLoading,
         isError: isAppsError,
     } = useGetApplicationsQuery({
-        userId: authUser?.clerkInfo.id,
+        userId: authUser?.clerkId,
         userType: "manager",
     });
 
     const {
         data: properties,
         isLoading: isPropsLoading,
-    } = useGetManagerPropertiesQuery(authUser?.clerkInfo.id || "", {
-        skip: !authUser?.clerkInfo.id,
+    } = useGetManagerPropertiesQuery(authUser?.clerkId || "", {
+        skip: !authUser?.clerkId,
     });
 
     const isLoading = isAppsLoading || isPropsLoading;

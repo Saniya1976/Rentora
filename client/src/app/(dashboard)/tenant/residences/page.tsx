@@ -13,9 +13,9 @@ import React from "react";
 const Residences = () => {
     const { data: authUser } = useGetAuthUserQuery();
     const { data: tenant } = useGetTenantQuery(
-        authUser?.clerkInfo?.id || "",
+        authUser?.clerkId || "",
         {
-            skip: !authUser?.clerkInfo?.id,
+            skip: !authUser?.clerkId,
         }
     );
 
@@ -23,8 +23,8 @@ const Residences = () => {
         data: currentResidences,
         isLoading,
         error,
-    } = useGetCurrentResidencesQuery(authUser?.clerkInfo?.id || "", {
-        skip: !authUser?.clerkInfo?.id,
+    } = useGetCurrentResidencesQuery(authUser?.clerkId || "", {
+        skip: !authUser?.clerkId,
     });
 
     if (isLoading) return <LoadingState />;
@@ -41,7 +41,7 @@ const Residences = () => {
                     <Card
                         key={property.id}
                         property={property}
-                        isFavorite={tenant?.favorites.includes(property.id) || false}
+                        isFavorite={tenant?.favorites?.some((fav) => fav.id === property.id) || false}
                         onFavoriteToggle={() => { }}
                         showFavoriteButton={false}
                         propertyLink={`/tenant/residences/${property.id}`}

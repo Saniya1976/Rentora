@@ -39,13 +39,10 @@ const ApplicationModal = ({
   });
 
   useEffect(() => {
-    if (authUser?.clerkInfo) {
-      const name = [authUser.clerkInfo.firstName, authUser.clerkInfo.lastName]
-        .filter(Boolean)
-        .join(" ");
+    if (authUser) {
       form.reset({
-        name: name || "",
-        email: authUser.clerkInfo.primaryEmailAddress?.emailAddress || "",
+        name: authUser.name || "",
+        email: authUser.email || "",
         phoneNumber: "",
         message: "",
       });
@@ -58,8 +55,7 @@ const ApplicationModal = ({
       return;
     }
 
-    const userEmail = authUser.clerkInfo.primaryEmailAddress?.emailAddress;
-    if (data.email !== userEmail) {
+    if (data.email !== authUser.email) {
       toast.error("Application email must match your account email.");
       return;
     }
@@ -70,7 +66,7 @@ const ApplicationModal = ({
         applicationDate: new Date().toISOString(),
         status: "Pending",
         propertyId: propertyId,
-        tenantClerkId: authUser.clerkInfo.id,
+        tenantClerkId: authUser.clerkId,
       }).unwrap();
       toast.success("Application submitted successfully!");
       onClose();

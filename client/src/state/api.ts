@@ -1,4 +1,6 @@
-import { cleanParams, createNewUserInDatabase, withToast } from "@/lib/utils";
+"use client";
+
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   Application,
   Lease,
@@ -6,10 +8,25 @@ import {
   Payment,
   Property,
   Tenant,
-} from "@/types/prismaTypes";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-// Removed Amplify import as we are using Clerk instead.
+} from "./types";
 import { FiltersState } from ".";
+import { toast } from "sonner";
+
+const withToast = async <T,>(
+  queryFulfilled: Promise<{ data: T }>,
+  messages: { success?: string; error?: string }
+) => {
+  try {
+    await queryFulfilled;
+    if (messages.success) {
+      toast.success(messages.success);
+    }
+  } catch (error) {
+    if (messages.error) {
+      toast.error(messages.error);
+    }
+  }
+};
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
@@ -19,150 +36,25 @@ export const api = createApi({
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
+      headers.set("Content-Type", "application/json");
       return headers;
     },
   }),
   reducerPath: "api",
-  tagTypes: [
-    "Managers",
-    "Tenants",
-    "Properties",
-    "PropertyDetails",
-    "Leases",
-    "Payments",
-    "Applications",
-  ],
+  tagTypes: ["Managers", "Tenants", "Properties", "Leases", "Payments", "Applications"],
   endpoints: (build) => ({
-    getAuthUser: build.query<User, void>({
-      queryFn: async (_, _queryApi, _extraoptions, fetchWithBQ) => {
-        try {
-          const clerkUser = (window as any).Clerk?.user;
-          const token = await (window as any).Clerk?.session?.getToken();
-
-          if (!clerkUser || !token) {
-            return { error: "User not authenticated or session not ready" };
-          }
-
-          const userRole = (clerkUser.publicMetadata?.userType as string) ||
-            (clerkUser.unsafeMetadata?.role as string) ||
-            "tenant";
-
-          const endpoint =
-            userRole.toLowerCase() === "manager"
-              ? `/managers/${clerkUser.id}?userType=manager`
-              : `/tenants/${clerkUser.id}?userType=tenant`;
-
-          let userDetailsResponse = await fetchWithBQ(endpoint);
-
-          // if user doesn't exist, create new user
-          if (
-            userDetailsResponse.error &&
-            userDetailsResponse.error.status === 404
-          ) {
-            userDetailsResponse = await createNewUserInDatabase(
-              clerkUser,
-              token,
-              userRole,
-              fetchWithBQ
-            );
-          }
-
-          return {
-            data: {
-              clerkInfo: JSON.parse(JSON.stringify(clerkUser)), // Deep clone to ensure serializability
-              userInfo: userDetailsResponse.data as Tenant | Manager,
-              userRole,
-            },
-          };
-        } catch (error: any) {
-          return { error: error.message || "Could not fetch user data" };
-        }
-      },
-    }),
-
-    // property related endpoints
-    getProperties: build.query<
-      Property[],
-      Partial<FiltersState> & { favoriteIds?: number[] }
-    >({
-      query: (filters) => {
-        const params = cleanParams({
-          location: filters.location,
-          priceMin: filters.priceRange?.[0],
-          priceMax: filters.priceRange?.[1],
-          beds: filters.beds,
-          baths: filters.baths,
-          propertyType: filters.propertyType,
-          squareFeetMin: filters.squareFeet?.[0],
-          squareFeetMax: filters.squareFeet?.[1],
-          amenities: filters.amenities?.join(","),
-          availableFrom: filters.availableFrom,
-          favoriteIds: filters.favoriteIds?.join(","),
-          latitude: filters.coordinates?.[0] !== 0 || filters.coordinates?.[1] !== 0
-            ? filters.coordinates?.[1]
-            : undefined,
-          longitude: filters.coordinates?.[0] !== 0 || filters.coordinates?.[1] !== 0
-            ? filters.coordinates?.[0]
-            : undefined,
-        });
-
-        return { url: "properties", params };
-      },
+    getAuthUser: build.query<Tenant | Manager, void>({
+      query: () => "auth/user",
       providesTags: (result) =>
         result
           ? [
-            ...result.map(({ id }) => ({ type: "Properties" as const, id })),
-            { type: "Properties", id: "LIST" },
+            { type: result.userRole === "manager" ? "Managers" : "Tenants", id: result.id },
+            "Managers",
+            "Tenants",
           ]
-          : [{ type: "Properties", id: "LIST" }],
-      async onQueryStarted(_, { queryFulfilled }) {
-        await withToast(queryFulfilled, {
-          error: "Failed to fetch properties.",
-        });
-      },
+          : ["Managers", "Tenants"],
     }),
-
-    getProperty: build.query<Property, number>({
-      query: (id) => `properties/${id}`,
-      providesTags: (result, error, id) => [{ type: "PropertyDetails", id }],
-      async onQueryStarted(_, { queryFulfilled }) {
-        await withToast(queryFulfilled, {
-          error: "Failed to load property details.",
-        });
-      },
-    }),
-
-    // tenant related endpoints
-    getTenant: build.query<Tenant, string>({
-      query: (clerkId) => `tenants/${clerkId}`,
-      providesTags: (result) => [{ type: "Tenants", id: result?.id }],
-      async onQueryStarted(_, { queryFulfilled }) {
-        await withToast(queryFulfilled, {
-          error: "Failed to load tenant profile.",
-        });
-      },
-    }),
-
-    getCurrentResidences: build.query<Property[], string>({
-      query: (clerkId) => `tenants/${clerkId}/current-residences?userType=tenant`,
-      providesTags: (result) =>
-        result
-          ? [
-            ...result.map(({ id }) => ({ type: "Properties" as const, id })),
-            { type: "Properties", id: "LIST" },
-          ]
-          : [{ type: "Properties", id: "LIST" }],
-      async onQueryStarted(_, { queryFulfilled }) {
-        await withToast(queryFulfilled, {
-          error: "Failed to fetch current residences.",
-        });
-      },
-    }),
-
-    updateTenantSettings: build.mutation<
-      Tenant,
-      { clerkId: string } & Partial<Tenant>
-    >({
+    updateTenantSettings: build.mutation<Tenant, Partial<Tenant> & { clerkId: string }>({
       query: ({ clerkId, ...updatedTenant }) => ({
         url: `tenants/${clerkId}?userType=tenant`,
         method: "PUT",
@@ -176,68 +68,7 @@ export const api = createApi({
         });
       },
     }),
-
-    addFavoriteProperty: build.mutation<
-      Tenant,
-      { clerkId: string; propertyId: number }
-    >({
-      query: ({ clerkId, propertyId }) => ({
-        url: `tenants/${clerkId}/favorites/${propertyId}?userType=tenant`,
-        method: "POST",
-      }),
-      invalidatesTags: (result) => [
-        { type: "Tenants", id: result?.id },
-        { type: "Properties", id: "LIST" },
-      ],
-      async onQueryStarted(_, { queryFulfilled }) {
-        await withToast(queryFulfilled, {
-          success: "Added to favorites!!",
-          error: "Failed to add to favorites",
-        });
-      },
-    }),
-
-    removeFavoriteProperty: build.mutation<
-      Tenant,
-      { clerkId: string; propertyId: number }
-    >({
-      query: ({ clerkId, propertyId }) => ({
-        url: `tenants/${clerkId}/favorites/${propertyId}?userType=tenant`,
-        method: "DELETE",
-      }),
-      invalidatesTags: (result) => [
-        { type: "Tenants", id: result?.id },
-        { type: "Properties", id: "LIST" },
-      ],
-      async onQueryStarted(_, { queryFulfilled }) {
-        await withToast(queryFulfilled, {
-          success: "Removed from favorites!",
-          error: "Failed to remove from favorites.",
-        });
-      },
-    }),
-
-    // manager related endpoints
-    getManagerProperties: build.query<Property[], string>({
-      query: (clerkId) => `managers/${clerkId}/properties?userType=manager`,
-      providesTags: (result) =>
-        result
-          ? [
-            ...result.map(({ id }) => ({ type: "Properties" as const, id })),
-            { type: "Properties", id: "LIST" },
-          ]
-          : [{ type: "Properties", id: "LIST" }],
-      async onQueryStarted(_, { queryFulfilled }) {
-        await withToast(queryFulfilled, {
-          error: "Failed to load manager profile.",
-        });
-      },
-    }),
-
-    updateManagerSettings: build.mutation<
-      Manager,
-      { clerkId: string } & Partial<Manager>
-    >({
+    updateManagerSettings: build.mutation<Manager, Partial<Manager> & { clerkId: string }>({
       query: ({ clerkId, ...updatedManager }) => ({
         url: `managers/${clerkId}?userType=manager`,
         method: "PUT",
@@ -323,20 +154,11 @@ export const api = createApi({
       },
     }),
 
-    // application related endpoints
-    getApplications: build.query<
-      Application[],
-      { userId?: string; userType?: string }
-    >({
+    getApplications: build.query<Application[], { userId?: string, userType?: string }>({
       query: (params) => {
         const queryParams = new URLSearchParams();
-        if (params.userId) {
-          queryParams.append("userId", params.userId.toString());
-        }
-        if (params.userType) {
-          queryParams.append("userType", params.userType);
-        }
-
+        if (params.userId) queryParams.append("userId", params.userId.toString());
+        if (params.userType) queryParams.append("userType", params.userType);
         return `applications?${queryParams.toString()}`;
       },
       providesTags: ["Applications"],
@@ -347,10 +169,7 @@ export const api = createApi({
       },
     }),
 
-    updateApplicationStatus: build.mutation<
-      Application & { lease?: Lease },
-      { id: number; status: string }
-    >({
+    updateApplicationStatus: build.mutation<Application & { lease?: Lease }, { id: number; status: string }>({
       query: ({ id, status }) => ({
         url: `applications/${id}/status?userType=manager`,
         method: "PUT",
@@ -378,6 +197,72 @@ export const api = createApi({
           error: "Failed to create applications.",
         });
       },
+    }),
+
+    getProperties: build.query<Property[], (Partial<FiltersState> & { favoriteIds?: number[] }) | void>({
+      query: (params) => {
+        const queryParams = new URLSearchParams();
+        if (params?.favoriteIds) {
+          queryParams.append("favoriteIds", params.favoriteIds.join(","));
+        }
+        if (params?.location) queryParams.append("location", params.location);
+        if (params?.beds && params.beds !== "any") queryParams.append("beds", params.beds);
+        if (params?.baths && params.baths !== "any") queryParams.append("baths", params.baths);
+        if (params?.propertyType && params.propertyType !== "any") queryParams.append("propertyType", params.propertyType);
+        if (params?.amenities && params.amenities.length > 0) queryParams.append("amenities", params.amenities.join(","));
+        if (params?.availableFrom && params.availableFrom !== "any") queryParams.append("availableFrom", params.availableFrom);
+        if (params?.priceRange) {
+          if (params.priceRange[0] !== null) queryParams.append("priceMin", params.priceRange[0].toString());
+          if (params.priceRange[1] !== null) queryParams.append("priceMax", params.priceRange[1].toString());
+        }
+        if (params?.squareFeet) {
+          if (params.squareFeet[0] !== null) queryParams.append("squareFeetMin", params.squareFeet[0].toString());
+          if (params.squareFeet[1] !== null) queryParams.append("squareFeetMax", params.squareFeet[1].toString());
+        }
+        if (params?.coordinates && (params.coordinates[0] !== 0 || params.coordinates[1] !== 0)) {
+          queryParams.append("latitude", params.coordinates[1].toString());
+          queryParams.append("longitude", params.coordinates[0].toString());
+        }
+
+        return `properties?${queryParams.toString()}`;
+      },
+      providesTags: (result) =>
+        result
+          ? [
+            ...result.map(({ id }) => ({ type: "Properties" as const, id })),
+            { type: "Properties", id: "LIST" },
+          ]
+          : [{ type: "Properties", id: "LIST" }],
+    }),
+    getProperty: build.query<Property, number>({
+      query: (id) => `properties/${id}`,
+      providesTags: (result) => [{ type: "Properties", id: result?.id }],
+    }),
+    getCurrentResidences: build.query<Property[], string>({
+      query: (userId) => `tenants/${userId}/residences`,
+      providesTags: ["Properties"],
+    }),
+    getManagerProperties: build.query<Property[], string>({
+      query: (userId) => `managers/${userId}/properties`,
+      providesTags: ["Properties"],
+    }),
+    getTenant: build.query<Tenant, string>({
+      query: (clerkId) => `tenants/${clerkId}`,
+      providesTags: (result) => [{ type: "Tenants", id: result?.id }],
+    }),
+    addFavoriteProperty: build.mutation<Tenant, { clerkId: string; propertyId: number }>({
+      query: ({ clerkId, propertyId }) => ({
+        url: `tenants/${clerkId}/favorites/${propertyId}`,
+        method: "POST",
+      }),
+      invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
+    }),
+    removeFavoriteProperty: build.mutation<Tenant, { clerkId: string; propertyId: number }>({
+      query: ({ clerkId, propertyId }) => ({
+        url: `tenants/${clerkId}/favorites/${propertyId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
     }),
   }),
 });

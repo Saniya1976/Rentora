@@ -14,9 +14,9 @@ import CardCompact from "@/components/CardCompact";
 const Listings = () => {
   const { data: authUser } = useGetAuthUserQuery();
   const { data: tenant } = useGetTenantQuery(
-    authUser?.clerkInfo?.id || "",
+    authUser?.clerkId || "",
     {
-      skip: !authUser?.clerkInfo?.id,
+      skip: !authUser?.clerkId,
     }
   );
   const [addFavorite] = useAddFavoritePropertyMutation();
@@ -31,7 +31,7 @@ const Listings = () => {
   } = useGetPropertiesQuery(filters);
 
   const handleFavoriteToggle = async (propertyId: number) => {
-    if (!authUser || !authUser.clerkInfo?.id) return;
+    if (!authUser || !authUser.clerkId) return;
 
     const isFavorite = tenant?.favorites?.some(
       (fav: Property) => fav.id === propertyId
@@ -39,12 +39,12 @@ const Listings = () => {
 
     if (isFavorite) {
       await removeFavorite({
-        clerkId: authUser.clerkInfo.id,
+        clerkId: authUser.clerkId,
         propertyId,
       });
     } else {
       await addFavorite({
-        clerkId: authUser.clerkInfo.id,
+        clerkId: authUser.clerkId,
         propertyId,
       });
     }

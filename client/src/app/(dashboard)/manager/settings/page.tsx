@@ -9,13 +9,11 @@ const SettingsPage = () => {
     const { data: authUser, isLoading: isUserLoading } = useGetAuthUserQuery();
     const [updateManager, { isLoading: isUpdating }] = useUpdateManagerSettingsMutation();
 
-    const userInfo = authUser?.userInfo;
-    const clerkId = authUser?.clerkInfo?.id;
-
+    const clerkId = authUser?.clerkId;
     const initialData = {
-        name: userInfo && 'name' in userInfo ? userInfo.name : "",
-        email: userInfo && 'email' in userInfo ? userInfo.email : "",
-        phoneNumber: userInfo && 'phoneNumber' in userInfo ? userInfo.phoneNumber : "",
+        name: authUser?.name || "",
+        email: authUser?.email || "",
+        phoneNumber: authUser?.phoneNumber || "",
     };
 
     const handleSubmit = async (data: { name: string; email: string; phoneNumber: string }) => {

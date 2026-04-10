@@ -134,11 +134,7 @@ declare global {
     userType: "manager" | "tenant";
   }
 
-  interface User {
-    clerkInfo: any;
-    userInfo: Tenant | Manager;
-    userRole: string;
-  }
+
 }
 declare module "tailwindcss-animate";
 declare module "filepond-plugin-image-preview";

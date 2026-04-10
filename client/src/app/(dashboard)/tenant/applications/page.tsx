@@ -14,7 +14,7 @@ const ApplicationsPage = () => {
         isLoading,
         isError,
     } = useGetApplicationsQuery({
-        userId: authUser?.clerkInfo.id,
+        userId: authUser?.clerkId,
         userType: "tenant",
     });
 

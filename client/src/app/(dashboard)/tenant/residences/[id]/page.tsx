@@ -235,8 +235,8 @@ const Residence = () => {
     } = useGetPropertyQuery(Number(id));
 
     const { data: leases, isLoading: leasesLoading } = useGetLeasesQuery(
-        { tenantClerkId: authUser?.clerkInfo?.id },
-        { skip: !authUser?.clerkInfo?.id }
+        { tenantClerkId: authUser?.clerkId },
+        { skip: !authUser?.clerkId }
     );
     const { data: payments, isLoading: paymentsLoading } = useGetPaymentsQuery(
         leases?.[0]?.id || 0,
