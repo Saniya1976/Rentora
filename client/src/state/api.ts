@@ -5,6 +5,7 @@ import {
   Application,
   Lease,
   Manager,
+  ManagerEarnings,
   Payment,
   Property,
   Tenant,
@@ -271,6 +272,8 @@ export const api = createApi({
         body: data,
       }),
     }),
+
+
   }),
 });
 
@@ -294,4 +297,5 @@ export const {
   useUpdateApplicationStatusMutation,
   useCreateApplicationMutation,
   useCreateCheckoutSessionMutation,
+  useGetManagerEarningsQuery,
 } = api;

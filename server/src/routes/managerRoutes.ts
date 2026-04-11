@@ -11,4 +11,5 @@ router.get("/:clerkId", authMiddleware(["manager"]), getManagerById);
 router.get("/:clerkId/properties", authMiddleware(["manager"]), getManagerProperty);
 router.put("/:clerkId", authMiddleware(["manager"]), updateManager);
 
+
 export default router;

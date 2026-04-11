@@ -206,9 +206,9 @@ const ManagerDashboard = () => {
                         {[
                             { label: "Add New Property", icon: PlusCircle, href: "/manager/properties", desc: "Create a new listing" },
                             { label: "My Properties", icon: Building, href: "/manager/properties", desc: "View managed homes" },
-                            { label: "Earnings Overview", icon: DollarSign, href: "/manager/dashboard", desc: "Track rental income" },
                             { label: "Account Settings", icon: Settings, href: "/manager/settings", desc: "Update your profile" }
                         ].map((action, i) => (
+
                             <Link href={action.href} key={i}>
                                 <Card className="border-border bg-card/40 hover:border-[#1acec8]/50 hover:bg-[#1acec8]/5 transition-all group cursor-pointer">
                                     <CardContent className="p-4 flex items-center gap-4">

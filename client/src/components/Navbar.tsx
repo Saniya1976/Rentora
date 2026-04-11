@@ -22,7 +22,9 @@ import {
 
 const Navbar = () => {
   const { isLoaded: isClerkLoaded, user: clerkUser } = useUser();
-  const { data: authUser } = useGetAuthUserQuery(undefined, {
+  const pathname = usePathname();
+  const viewType = pathname.startsWith("/manager") ? "manager" : "tenant";
+  const { data: authUser } = useGetAuthUserQuery(viewType, {
     skip: !isClerkLoaded || !clerkUser,
   });
   const userRole = authUser?.userRole;
@@ -41,7 +43,6 @@ const Navbar = () => {
     }
   }, [userRole]);
 
-  const pathname = usePathname();
   const router = useRouter();
   const { setTheme, theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
@@ -259,14 +260,14 @@ const Navbar = () => {
           </SignedIn>
           <SignedOut>
             <div className="flex items-center gap-4">
-              <Link href="/signin?role=tenant">
+              <Link href="/signin">
                 <Button variant="ghost" className="text-gray-600 dark:text-gray-300 font-bold hover:text-[#1acec8] hover:bg-[#1acec8]/5 transition-all">
                   Sign In
                 </Button>
               </Link>
-              <Link href="/signin?role=manager">
+              <Link href="/signup">
                 <Button className="bg-[#1acec8] hover:bg-[#15b8b3] text-white font-bold rounded-xl px-6 shadow-lg shadow-[#1acec8]/20 transition-all active:scale-95">
-                  Manager Portal
+                  Sign Up
                 </Button>
               </Link>
             </div>
@@ -322,27 +323,15 @@ const Navbar = () => {
               </div>
 
               <SignedOut>
-                <div className="p-2 flex flex-col gap-3">
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2 mb-1">I am a Renter</p>
-                    <Link href="/signin?role=tenant" className="w-full">
-                      <Button variant="outline" className="w-full justify-center rounded-xl font-bold border-gray-200 dark:border-white/10 dark:text-white hover:bg-[#1acec8]/5 hover:text-[#1acec8] hover:border-[#1acec8]/30 transition-all">
-                        Sign In
-                      </Button>
-                    </Link>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2 mb-1">I am a Manager</p>
-                    <Link href="/signin?role=manager" className="w-full">
-                      <Button className="w-full justify-center rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-bold hover:opacity-90 transition-all">
-                        Manager Portal
-                      </Button>
-                    </Link>
-                  </div>
-                  <DropdownMenuSeparator className="my-1 opacity-50" />
+                <div className="p-2 flex flex-col gap-2">
+                  <Link href="/signin" className="w-full">
+                    <Button variant="outline" className="w-full justify-center rounded-xl font-bold border-gray-200 dark:border-white/10 dark:text-white hover:bg-[#1acec8]/5 hover:text-[#1acec8] hover:border-[#1acec8]/30 transition-all">
+                      Sign In
+                    </Button>
+                  </Link>
                   <Link href="/signup" className="w-full">
-                    <Button variant="ghost" className="w-full justify-center rounded-xl text-[#1acec8] font-bold hover:bg-[#1acec8]/5 transition-all">
-                      Create New Account
+                    <Button className="w-full justify-center rounded-xl bg-[#1acec8] hover:bg-[#15b8b3] text-white font-bold transition-all">
+                      Sign Up
                     </Button>
                   </Link>
                 </div>

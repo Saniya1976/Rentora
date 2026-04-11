@@ -1,18 +1,19 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useClerk, useUser } from '@clerk/nextjs'
+import { useClerk } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
-function getRedirectPath(userType?: string): string {
-    if (userType === 'manager') return '/manager'
-    return '/tenant'
-}
-
+/**
+ * This page handles the OAuth callback FROM the provider (Google, etc).
+ * Clerk redirects here with OAuth params (?code=...&state=...).
+ * We call handleRedirectCallback() ONCE to complete the Clerk sign-in,
+ * then Clerk internally navigates to `redirectUrlComplete` which is /auth-redirect.
+ * The /auth-redirect page then queries our backend to determine the correct role.
+ */
 export default function SSOCallbackPage() {
     const { handleRedirectCallback } = useClerk()
-    const { user, isLoaded } = useUser()
     const router = useRouter()
     const called = useRef(false)
 
@@ -22,27 +23,19 @@ export default function SSOCallbackPage() {
 
         const handleCallback = async () => {
             try {
-                await handleRedirectCallback({})
+                await handleRedirectCallback({
+                    // After OAuth completes, go to auth-redirect for role detection
+                    afterSignInUrl: '/auth-redirect',
+                    afterSignUpUrl: '/auth-redirect',
+                })
             } catch (err) {
-                console.error('SSO callback error:', err)
+                console.error('[SSO] Callback error:', err)
                 router.push('/signin')
             }
         }
 
         handleCallback()
     }, [handleRedirectCallback, router])
-
-    // Once Clerk has resolved the user, redirect based on role
-    useEffect(() => {
-        if (isLoaded && user) {
-            // Check publicMetadata first (assigned by backend)
-            // Then fallback to unsafeMetadata (assigned during signup process)
-            const userType = (user.publicMetadata?.userType as string) ||
-                (user.unsafeMetadata?.role as string);
-
-            router.push(getRedirectPath(userType))
-        }
-    }, [isLoaded, user, router])
 
     return (
         <div
@@ -75,7 +68,7 @@ export default function SSOCallbackPage() {
                             Completing Sign In
                         </h2>
                         <p className="text-gray-500 font-medium">
-                            Please wait while we complete your authentication...
+                            Please wait a moment...
                         </p>
                     </div>
                 </div>

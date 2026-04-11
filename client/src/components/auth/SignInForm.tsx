@@ -177,13 +177,13 @@ export default function SignInForm() {
     try {
       signIn.authenticateWithRedirect({
         strategy: 'oauth_google',
-        // redirectUrl = intermediate OAuth callback URL (must be /sso-callback)
+        // redirectUrl = Clerk calls this URL with OAuth params after Google auth
+        // handleRedirectCallback() MUST be called here (only once)
         redirectUrl: `${window.location.origin}/sso-callback`,
-        // redirectUrlComplete = final destination AFTER Clerk completes the callback.
-        // Previously this was also /sso-callback which caused an infinite redirect loop → Clerk hosted page.
-        // The sso-callback page's useEffect already handles role-based navigation,
-        // so we use /tenant as the safe final destination (works for both roles via dashboard layout).
-        redirectUrlComplete: `${window.location.origin}/tenant`,
+        // redirectUrlComplete = where the user lands AFTER OAuth is fully processed.
+        // This is a DIFFERENT page from /sso-callback to avoid the double-callback loop
+        // that caused the Clerk default-redirect page to appear.
+        redirectUrlComplete: `${window.location.origin}/auth-redirect`,
         oidcPrompt: 'select_account',
       })
     } catch (err) {

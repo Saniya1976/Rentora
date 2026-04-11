@@ -21,35 +21,6 @@ export const createManager = async (req: Request, res: Response): Promise<void> 
             }
         });
 
-        // For newly created real Clerk managers (user_ prefix), auto-assign
-        // some seeded properties so they have data to work with immediately.
-        if (!existing) {
-            const ownedProperties = await prisma.property.count({ where: { managerClerkId: clerkId } });
-            if (ownedProperties === 0) {
-                // Pick up to 3 seeded properties that belong to any of the seed managers
-                const seedProperties = await prisma.property.findMany({
-                    where: {
-                        managerClerkId: { not: clerkId }
-                    },
-                    take: 3,
-                    select: { id: true, managerClerkId: true }
-                });
-
-                for (const prop of seedProperties) {
-                    // Move property ownership to the new real manager
-                    await prisma.property.update({
-                        where: { id: prop.id },
-                        data: { managerClerkId: clerkId }
-                    });
-                    // Update the manager table: remove from old seed manager, connect to new
-                    await prisma.manager.update({
-                        where: { clerkId: prop.managerClerkId },
-                        data: { managedProperties: { disconnect: { id: prop.id } } }
-                    }).catch(() => { }); // ignore if seed manager doesn't exist
-                }
-            }
-        }
-
         res.status(201).json(manager);
     }
     catch (error: any) {
@@ -77,32 +48,6 @@ export const getManagerById = async (req: Request, res: Response): Promise<void>
         if (!manager) {
             res.status(404).json({ message: "Manager not found" });
             return;
-        }
-
-        // If this manager has no properties yet, auto-assign some seeded properties
-        if (manager.managedProperties.length === 0) {
-            const seedProperties = await prisma.property.findMany({
-                where: { managerClerkId: { not: clerkId as string } },
-                take: 3,
-                select: { id: true, managerClerkId: true }
-            });
-
-            for (const prop of seedProperties) {
-                await prisma.property.update({
-                    where: { id: prop.id },
-                    data: { managerClerkId: clerkId as string }
-                });
-                await prisma.manager.update({
-                    where: { clerkId: prop.managerClerkId },
-                    data: { managedProperties: { disconnect: { id: prop.id } } }
-                }).catch(() => { });
-            }
-
-            // Refetch with updated properties
-            manager = await prisma.manager.findUnique({
-                where: { clerkId: clerkId as string },
-                include: { managedProperties: true },
-            });
         }
 
         res.status(200).json(manager);
@@ -188,3 +133,8 @@ export const updateManager = async (
             .json({ message: `Error updating manager: ${error.message}` });
     }
 };
+
+
+
+
+
