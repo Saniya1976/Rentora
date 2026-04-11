@@ -528,3 +528,5 @@
 2026-04-11T19:10:45.651Z - GET /applications?userType=manager undefined
 2026-04-11T19:10:45.691Z - GET /applications?userId=user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE&userType=manager undefined
 2026-04-11T19:10:45.701Z - GET /managers/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE/properties?userType=manager undefined
+2026-04-11T19:23:20.925Z - PUT /managers/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE?userType=manager {"name":"Saniya","email":"saniya6791@gmail.com","phoneNumber":"888234567"}
+2026-04-11T19:23:21.143Z - GET /auth/user?userType=manager undefined
