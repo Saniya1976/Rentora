@@ -5,13 +5,12 @@ import {
   Application,
   Lease,
   Manager,
-  ManagerEarnings,
   Payment,
   Property,
   Tenant,
 } from "./types";
-import { FiltersState } from ".";
 import { toast } from "sonner";
+import { FiltersState } from ".";
 
 const withToast = async <T,>(
   queryFulfilled: Promise<{ data: T }>,
@@ -296,6 +295,5 @@ export const {
   useGetApplicationsQuery,
   useUpdateApplicationStatusMutation,
   useCreateApplicationMutation,
-  useCreateCheckoutSessionMutation,
-  useGetManagerEarningsQuery,
+  useCreateCheckoutSessionMutation
 } = api;
