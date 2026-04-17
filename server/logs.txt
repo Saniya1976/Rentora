@@ -530,3 +530,9 @@
 2026-04-11T19:10:45.701Z - GET /managers/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE/properties?userType=manager undefined
 2026-04-11T19:23:20.925Z - PUT /managers/user_3A4BZqOmOeRKpp0NX0Ap0mBHiBE?userType=manager {"name":"Saniya","email":"saniya6791@gmail.com","phoneNumber":"888234567"}
 2026-04-11T19:23:21.143Z - GET /auth/user?userType=manager undefined
+2026-04-13T18:13:51.037Z - GET /auth/user?userType=tenant undefined
+2026-04-13T18:13:56.588Z - GET /auth/user undefined
+2026-04-13T18:13:56.654Z - GET /applications?userId=user_39O6gpcKdINfe9Vbmx1jGH5wPGM&userType=tenant undefined
+2026-04-13T18:14:03.066Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM undefined
+2026-04-13T18:14:03.080Z - GET /properties? undefined
+2026-04-13T18:14:10.042Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM/current-residences undefined
