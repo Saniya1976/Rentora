@@ -1,2 +1,0 @@
-2026-04-22T15:38:24.873Z - GET /applications?userId=user_39O6gpcKdINfe9Vbmx1jGH5wPGM&userType=tenant undefined
-2026-04-22T15:38:30.728Z - GET /tenants/user_39O6gpcKdINfe9Vbmx1jGH5wPGM undefined
