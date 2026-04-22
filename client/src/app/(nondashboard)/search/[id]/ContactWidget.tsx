@@ -2,10 +2,17 @@ import { Button } from "@/components/ui/button";
 import { useGetAuthUserQuery } from "@/state/api";
 import { Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import React from "react";
 
 const ContactWidget = ({ onOpenModal }: ContactWidgetProps) => {
-  const { data: authUser } = useGetAuthUserQuery();
+  const { user: clerkUser } = useUser();
+  const clerkRoleHint = (
+    (clerkUser?.publicMetadata?.userType as string) ||
+    (clerkUser?.unsafeMetadata?.role as string)
+  )?.toLowerCase();
+
+  const { data: authUser } = useGetAuthUserQuery(clerkRoleHint);
   const router = useRouter();
 
   const handleButtonClick = () => {

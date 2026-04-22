@@ -33,7 +33,7 @@ import { format } from "date-fns";
 
 const Residences = () => {
     const router = useRouter();
-    const { data: authUser } = useGetAuthUserQuery();
+    const { data: authUser } = useGetAuthUserQuery("tenant");
     const {
         data: currentResidences,
         isLoading,

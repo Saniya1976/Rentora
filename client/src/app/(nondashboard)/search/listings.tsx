@@ -8,11 +8,18 @@ import {
 import { useAppSelector } from "@/state/redux";
 import { Property } from "@/types/prismaTypes";
 import Card from "@/components/Card";
+import { useUser } from "@clerk/nextjs";
 import React from "react";
 import CardCompact from "@/components/CardCompact";
 
 const Listings = () => {
-  const { data: authUser } = useGetAuthUserQuery();
+  const { user: clerkUser } = useUser();
+  const clerkRoleHint = (
+    (clerkUser?.publicMetadata?.userType as string) ||
+    (clerkUser?.unsafeMetadata?.role as string)
+  )?.toLowerCase();
+
+  const { data: authUser } = useGetAuthUserQuery(clerkRoleHint);
   const { data: tenant } = useGetTenantQuery(
     authUser?.clerkId || "",
     {

@@ -11,7 +11,7 @@ import Link from 'next/link'
 
 const DashboardPage = () => {
     const { isLoaded: isClerkLoaded, user: clerkUser } = useUser();
-    const { data: authUser, isLoading: isAuthLoading } = useGetAuthUserQuery(undefined, {
+    const { data: authUser, isLoading: isAuthLoading } = useGetAuthUserQuery("tenant", {
         skip: !isClerkLoaded || !clerkUser,
     });
 

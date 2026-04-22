@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
 const ApplicationsPage = () => {
-    const { data: authUser } = useGetAuthUserQuery();
+    const { data: authUser } = useGetAuthUserQuery("tenant");
     const [createCheckoutSession] = useCreateCheckoutSessionMutation();
 
     const handlePayment = async (paymentId: number) => {

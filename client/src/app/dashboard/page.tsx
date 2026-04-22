@@ -16,16 +16,10 @@ export default function DashboardRedirectPage() {
             return;
         }
 
-        const role =
-            (user.publicMetadata?.role as string) ||
-            (user.unsafeMetadata?.role as string) ||
-            "tenant";
-
-        if (role.toLowerCase() === "manager") {
-            router.replace("/manager");
-        } else {
-            router.replace("/tenant");
-        }
+        // Always delegate role detection to /auth-redirect, which queries the
+        // backend. Reading publicMetadata?.userType here can be stale or missing
+        // (e.g. right after sign-up before Clerk propagates the metadata).
+        router.replace("/auth-redirect");
     }, [isLoaded, user, router]);
 
     return (

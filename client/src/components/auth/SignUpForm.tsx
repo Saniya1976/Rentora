@@ -9,10 +9,8 @@ import { cn } from '@/lib/utils'
 
 type UserRole = 'tenant' | 'manager'
 
-function getRedirectPath(userType?: string): string {
-  if (userType === 'manager') return '/manager'
-  return '/tenant'
-}
+// All auth paths merge into /auth-redirect for role detection + backend profile setup
+const ROLE_DETECT_URL = '/auth-redirect'
 
 export default function SignUpForm() {
   const { signUp, isLoaded, setActive } = useSignUp()
@@ -31,8 +29,7 @@ export default function SignUpForm() {
   // Redirect if already signed in
   useEffect(() => {
     if (userLoaded && user) {
-      const userType = user.publicMetadata?.userType as string | undefined
-      router.push(getRedirectPath(userType))
+      router.push(ROLE_DETECT_URL)
     }
   }, [user, userLoaded, router])
   const [firstName, setFirstName] = useState<string>('')
@@ -112,7 +109,7 @@ export default function SignUpForm() {
         setVerifying(true)
       } else if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
-        router.push(getRedirectPath(role))
+        router.push(ROLE_DETECT_URL)
       }
     } catch (err: unknown) {
       console.error('Sign up error:', err)
@@ -156,7 +153,7 @@ export default function SignUpForm() {
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
-        router.push(getRedirectPath(role))
+        router.push(ROLE_DETECT_URL)
       } else if (result.status === 'missing_requirements') {
         const missing = result.missingFields?.join(', ') || 'unknown'
         const unverified = result.unverifiedFields?.join(', ') || ''
@@ -179,7 +176,7 @@ export default function SignUpForm() {
         if (isAlreadyVerified) {
           if (signUp.status === 'complete') {
             await setActive({ session: signUp.createdSessionId })
-            router.push(getRedirectPath(role))
+            router.push(ROLE_DETECT_URL)
             return
           } else if (signUp.status === 'missing_requirements') {
             const missing = signUp.missingFields?.join(', ') || 'unknown'

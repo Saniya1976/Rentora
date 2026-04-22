@@ -28,19 +28,40 @@ router.get("/user", authMiddleware(["tenant", "manager"]), async (req, res) => {
             });
             if (user) user.userRole = "tenant";
         } else {
-            // No userType specified — check Tenant first to avoid false manager returns
-            user = await prisma.tenant.findUnique({
-                where: { clerkId: id },
-                include: { favorites: true, properties: true, applications: true }
-            });
-            if (user) {
-                user.userRole = "tenant";
+            // No userType specified — use the role from the JWT as a hint.
+            // If the JWT says they are a tenant, check TENANT first.
+            const hint = req.user?.role?.toLowerCase();
+
+            if (hint === "tenant") {
+                user = await prisma.tenant.findUnique({
+                    where: { clerkId: id },
+                    include: { favorites: true, properties: true, applications: true }
+                });
+                if (user) {
+                    user.userRole = "tenant";
+                } else {
+                    // Fallback to Manager if not found in Tenant
+                    user = await prisma.manager.findUnique({
+                        where: { clerkId: id },
+                        include: { managedProperties: true }
+                    });
+                    if (user) user.userRole = "manager";
+                }
             } else {
+                // Default or "manager" hint: check MANAGER first (legacy behavior for safety)
                 user = await prisma.manager.findUnique({
                     where: { clerkId: id },
                     include: { managedProperties: true }
                 });
-                if (user) user.userRole = "manager";
+                if (user) {
+                    user.userRole = "manager";
+                } else {
+                    user = await prisma.tenant.findUnique({
+                        where: { clerkId: id },
+                        include: { favorites: true, properties: true, applications: true }
+                    });
+                    if (user) user.userRole = "tenant";
+                }
             }
         }
 

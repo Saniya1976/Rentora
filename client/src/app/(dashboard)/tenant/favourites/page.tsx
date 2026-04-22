@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 const Favourites = () => {
     const dispatch = useAppDispatch();
-    const { data: authUser } = useGetAuthUserQuery();
+    const { data: authUser } = useGetAuthUserQuery("tenant");
     const { data: tenant, isLoading, isError } = useGetTenantQuery(
         authUser?.clerkId || "",
         {

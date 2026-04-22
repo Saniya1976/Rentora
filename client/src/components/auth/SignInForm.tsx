@@ -6,10 +6,10 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Mail, Lock, LogIn, ArrowRight, ShieldCheck, RefreshCw, ArrowLeft } from 'lucide-react'
 
-function getRedirectPath(userType?: string): string {
-  if (userType === 'manager') return '/manager'
-  return '/tenant'
-}
+// Always go through auth-redirect to let the backend determine the real role.
+// Reading user.publicMetadata right after setActive() is unreliable because
+// the Clerk user hook hasn't refreshed yet, causing everyone to land on /tenant.
+const ROLE_DETECT_URL = '/auth-redirect'
 
 export default function SignInForm() {
   const { signIn, isLoaded, setActive } = useSignIn()
@@ -25,8 +25,8 @@ export default function SignInForm() {
   // Redirect if already signed in
   useEffect(() => {
     if (userLoaded && user) {
-      const userType = user.publicMetadata?.userType as string | undefined
-      router.push(getRedirectPath(userType))
+      // Let auth-redirect detect the role from the backend
+      router.push(ROLE_DETECT_URL)
     }
   }, [user, userLoaded, router])
   const [verifying, setVerifying] = useState<boolean>(false)
@@ -62,8 +62,9 @@ export default function SignInForm() {
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
-        const userType = user?.publicMetadata?.userType as string | undefined
-        router.push(getRedirectPath(userType))
+        // Redirect to auth-redirect which queries the backend for the real role.
+        // Do NOT read user?.publicMetadata here — it reflects the previous session state.
+        router.push(ROLE_DETECT_URL)
         return
       }
 
@@ -128,8 +129,7 @@ export default function SignInForm() {
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
-        const userType = user?.publicMetadata?.userType as string | undefined
-        router.push(getRedirectPath(userType))
+        router.push(ROLE_DETECT_URL)
       } else {
         setError('Verification incomplete.')
       }

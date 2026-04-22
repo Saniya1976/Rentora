@@ -9,7 +9,7 @@ import LoadingState from "@/components/LoadingState";
 import PropertyModal from "@/components/PropertyModal";
 
 const ManagerPropertiesPage = () => {
-    const { data: authUser } = useGetAuthUserQuery();
+    const { data: authUser } = useGetAuthUserQuery("manager");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedProperty, setSelectedProperty] = useState<any>(null);
 

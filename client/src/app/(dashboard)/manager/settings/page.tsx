@@ -1,20 +1,22 @@
 "use client"
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import SettingsForm from '@/components/SettingsForm'
 import { useGetAuthUserQuery, useUpdateManagerSettingsMutation } from '@/state/api'
 import { toast } from 'sonner'
 
 const SettingsPage = () => {
-    const { data: authUser, isLoading: isUserLoading } = useGetAuthUserQuery();
+    const { data: authUser, isLoading: isUserLoading } = useGetAuthUserQuery("manager");
     const [updateManager, { isLoading: isUpdating }] = useUpdateManagerSettingsMutation();
 
     const clerkId = authUser?.clerkId;
-    const initialData = {
+
+    // Memoize so the SettingsForm never re-mounts when RTK refetches
+    const initialData = useMemo(() => ({
         name: authUser?.name || "",
         email: authUser?.email || "",
         phoneNumber: authUser?.phoneNumber || "",
-    };
+    }), [authUser?.name, authUser?.email, authUser?.phoneNumber]);
 
     const handleSubmit = async (data: { name: string; email: string; phoneNumber: string }) => {
         if (!clerkId) return;
@@ -43,7 +45,9 @@ const SettingsPage = () => {
             </div>
 
             <div className="mt-4">
-                {isUserLoading ? (
+                {/* Only block render on first load (no data yet). Subsequent
+                    refetches keep the form visible — no flicker. */}
+                {isUserLoading && !authUser ? (
                     <div className="flex items-center justify-center p-20">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1acec8]"></div>
                     </div>

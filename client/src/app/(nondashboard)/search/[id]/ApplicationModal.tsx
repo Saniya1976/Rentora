@@ -26,7 +26,7 @@ const ApplicationModal = ({
   propertyId,
 }: ApplicationModalProps) => {
   const [createApplication] = useCreateApplicationMutation();
-  const { data: authUser } = useGetAuthUserQuery();
+  const { data: authUser } = useGetAuthUserQuery("tenant");
 
   const form = useForm<ApplicationFormData>({
     resolver: zodResolver(applicationSchema),

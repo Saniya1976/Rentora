@@ -21,7 +21,7 @@ import { Card, CardContent } from "@/components/ui/card";
 const LeaseAgreementPage = () => {
     const { id: propertyId } = useParams();
     const router = useRouter();
-    const { data: authUser } = useGetAuthUserQuery();
+    const { data: authUser } = useGetAuthUserQuery("tenant");
     const {
         data: residences,
         isLoading

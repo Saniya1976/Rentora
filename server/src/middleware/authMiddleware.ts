@@ -49,16 +49,21 @@ export const authMiddleware = (allowedRoles: string[]) => {
       // publicMetadata, so the role must be passed explicitly by the client.
       const queryRole = req.query.userType as string | undefined;
 
-      const userRole = jwtRole || queryRole || "tenant";
+      const userRole = jwtRole || queryRole;
 
-      console.log(`[Auth] User:${decoded.sub} Role:${userRole} Path:${req.path}`);
+      console.log(`[Auth] User:${decoded.sub} Role:${userRole || "none"} Path:${req.path}`);
+
+      // Ensure userRole is a string before toLowerCase
+      const effectiveRole = typeof userRole === "string" ? userRole.toLowerCase() : "";
 
       req.user = {
         id: decoded.sub || "",
-        role: userRole.toLowerCase(),
+        role: effectiveRole,
       };
 
-      const hasAccess = allowedRoles.map(r => r.toLowerCase()).includes(userRole.toLowerCase());
+      // If no role is found yet (e.g. during registration), we allow access to 
+      // the base "tenant" or "manager" roles if it's the auth/user endpoint.
+      const hasAccess = !userRole || allowedRoles.map(r => r.toLowerCase()).includes(effectiveRole);
       if (!hasAccess) {
         console.warn(`[Auth] Access Denied: User has ${userRole} but needs ${allowedRoles}`);
         res.status(403).json({

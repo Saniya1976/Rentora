@@ -23,8 +23,13 @@ import {
 const Navbar = () => {
   const { isLoaded: isClerkLoaded, user: clerkUser } = useUser();
   const pathname = usePathname();
-  const viewType = pathname.startsWith("/manager") ? "manager" : "tenant";
-  const { data: authUser } = useGetAuthUserQuery(viewType, {
+
+  const clerkRoleHint = (
+    (clerkUser?.publicMetadata?.userType as string) ||
+    (clerkUser?.unsafeMetadata?.role as string)
+  )?.toLowerCase();
+
+  const { data: authUser } = useGetAuthUserQuery(clerkRoleHint, {
     skip: !isClerkLoaded || !clerkUser,
   });
   const userRole = authUser?.userRole;

@@ -11,7 +11,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const ManagerDashboard = () => {
-    const { data: authUser } = useGetAuthUserQuery();
+    const { data: authUser } = useGetAuthUserQuery("manager");
     const {
         data: applications,
         isLoading: isAppsLoading,

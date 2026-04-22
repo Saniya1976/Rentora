@@ -16,17 +16,22 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(true);
 
-  const viewType = pathname.startsWith("/manager") ? "manager" : "tenant";
+  // Determine the intended role from Clerk metadata to use as a hint for the backend.
+  const clerkRoleHint = (
+    (clerkUser?.publicMetadata?.userType as string) ||
+    (clerkUser?.unsafeMetadata?.role as string)
+  )?.toLowerCase();
 
+  // Use the prioritized query so the backend can perform correct
+  // role detection based on the Clerk metadata hint.
   const { data: authUser, isLoading: authLoading } =
-    useGetAuthUserQuery(viewType, {
+    useGetAuthUserQuery(clerkRoleHint, {
       skip: !isClerkLoaded || !clerkUser,
     });
 
   const userRole = (
     authUser?.userRole ||
-    (clerkUser?.publicMetadata?.userType as string) ||
-    (clerkUser?.unsafeMetadata?.role as string)
+    clerkRoleHint
   )?.toLowerCase() as "manager" | "tenant" | undefined;
 
   useEffect(() => {
@@ -37,11 +42,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         (userRole === "manager" && pathname.startsWith("/tenant")) ||
         (userRole === "tenant" && pathname.startsWith("/manager"))
       ) {
-        router.push(
-          userRole === "manager"
-            ? "/manager"
-            : "/tenant/favourites",
-          { scroll: false }
+        // Redirect to the correct dashboard for the user's actual role
+        router.replace(
+          userRole === "manager" ? "/manager" : "/tenant/favourites"
         );
       } else {
         setIsRedirecting(false);
