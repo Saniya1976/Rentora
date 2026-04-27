@@ -26,11 +26,9 @@ app.post(
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-import fs from "fs";
 app.use(cors());
 app.use((req, res, next) => {
   const logLine = `${new Date().toISOString()} - ${req.method} ${req.url} ${JSON.stringify(req.body)}\n`;
-  fs.appendFileSync("logs.txt", logLine);
   console.log(logLine);
   next();
 });
