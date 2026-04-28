@@ -15,7 +15,5 @@ yarn-error.log*
 .env.production.local       
 
 
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+
 /src/generated/prisma
