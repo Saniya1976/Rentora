@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: rentora-server
+    runtime: node
+    rootDir: server
+    buildCommand: npm install && npm run build && npx prisma generate
+    startCommand: node dist/src/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DATABASE_URL
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
