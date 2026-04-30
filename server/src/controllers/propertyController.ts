@@ -50,6 +50,79 @@ const uploadToCloudinary = (file: Express.Multer.File): Promise<string> => {
   });
 };
 
+/**
+ * Geocode an address using Nominatim.
+ * Tries structured search first, then free-form fallback with all address parts,
+ * then free-form with just postalCode + country.
+ * Returns [longitude, latitude] or [0, 0] if all attempts fail.
+ */
+const geocodeAddress = async (
+  address: string,
+  city: string,
+  state: string,
+  country: string,
+  postalCode: string
+): Promise<[number, number]> => {
+  const headers = { "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)" };
+
+  // Attempt 1: Structured search
+  try {
+    const structuredUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams({
+      street: address,
+      city,
+      state,
+      country,
+      postalcode: postalCode,
+      format: "json",
+      limit: "1",
+    }).toString()}`;
+    const res = await axios.get(structuredUrl, { headers });
+    if (res.data?.[0]?.lon && res.data?.[0]?.lat) {
+      console.log(`[geocode] Structured search succeeded for: ${address}, ${city}`);
+      return [parseFloat(res.data[0].lon), parseFloat(res.data[0].lat)];
+    }
+  } catch (e) {
+    console.warn(`[geocode] Structured search failed for: ${address}, ${city}`);
+  }
+
+  // Attempt 2: Free-form search with full address string
+  try {
+    const freeFormQuery = [address, city, state, postalCode, country].filter(Boolean).join(", ");
+    const freeFormUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams({
+      q: freeFormQuery,
+      format: "json",
+      limit: "1",
+    }).toString()}`;
+    const res = await axios.get(freeFormUrl, { headers });
+    if (res.data?.[0]?.lon && res.data?.[0]?.lat) {
+      console.log(`[geocode] Free-form search succeeded for: ${freeFormQuery}`);
+      return [parseFloat(res.data[0].lon), parseFloat(res.data[0].lat)];
+    }
+  } catch (e) {
+    console.warn(`[geocode] Free-form search failed`);
+  }
+
+  // Attempt 3: Just postal code + country
+  try {
+    const postalUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams({
+      postalcode: postalCode,
+      country,
+      format: "json",
+      limit: "1",
+    }).toString()}`;
+    const res = await axios.get(postalUrl, { headers });
+    if (res.data?.[0]?.lon && res.data?.[0]?.lat) {
+      console.log(`[geocode] Postal code search succeeded for: ${postalCode}, ${country}`);
+      return [parseFloat(res.data[0].lon), parseFloat(res.data[0].lat)];
+    }
+  } catch (e) {
+    console.warn(`[geocode] Postal code search failed`);
+  }
+
+  console.error(`[geocode] All geocoding attempts failed for: ${address}, ${city}, ${postalCode}`);
+  return [0, 0];
+};
+
 // GET /properties - list all properties with optional filters
 export const getProperties = async (
   req: Request,
@@ -256,29 +329,7 @@ export const createProperty = async (
       console.log(`[createProperty] Upload complete:`, photoUrls);
     }
 
-    const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
-      {
-        street: address,
-        city,
-        country,
-        postalcode: postalCode,
-        format: "json",
-        limit: "1",
-      }
-    ).toString()}`;
-    const geocodingResponse = await axios.get(geocodingUrl, {
-      headers: {
-        "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)",
-      },
-    }).catch(e => ({ data: [] }));
-
-    const [longitude, latitude] =
-      geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
-        ? [
-          parseFloat(geocodingResponse.data[0]?.lon),
-          parseFloat(geocodingResponse.data[0]?.lat),
-        ]
-        : [0, 0];
+    const [longitude, latitude] = await geocodeAddress(address, city, state, country, postalCode);
 
     // create location
     const [location] = await prisma.$queryRaw<Location[]>`
@@ -375,29 +426,7 @@ export const updateProperty = async (
       postalCode !== existingProperty.location.postalCode;
 
     if (addressChanged) {
-      const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
-        {
-          street: address,
-          city,
-          country,
-          postalcode: postalCode,
-          format: "json",
-          limit: "1",
-        }
-      ).toString()}`;
-      const geocodingResponse = await axios.get(geocodingUrl, {
-        headers: {
-          "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)",
-        },
-      }).catch(e => ({ data: [] }));
-
-      const [longitude, latitude] =
-        geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
-          ? [
-            parseFloat(geocodingResponse.data[0]?.lon),
-            parseFloat(geocodingResponse.data[0]?.lat),
-          ]
-          : [0, 0];
+      const [longitude, latitude] = await geocodeAddress(address, city, state, country, postalCode);
 
       const [location] = await prisma.$queryRaw<Location[]>`
         INSERT INTO "Location" (address, city, state, country, "postalCode", coordinates)
