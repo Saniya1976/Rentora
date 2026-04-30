@@ -42,7 +42,7 @@ const propertySchema = z.object({
     pricePerMonth: z.coerce.number().min(0, "Price must be positive"),
     securityDeposit: z.coerce.number().min(0, "Deposit must be positive"),
     applicationFee: z.coerce.number().min(0, "Fee must be positive"),
-    beds: z.coerce.number().min(0, "Beds must be at least 0"),
+    beds: z.coerce.number().int("Beds must be a whole number").min(0, "Beds must be at least 0"),
     baths: z.coerce.number().min(0, "Baths must be at least 0"),
     squareFeet: z.coerce.number().min(0, "Square feet must be positive"),
     propertyType: z.enum(["Rooms", "Tinyhouse", "Apartment", "Villa", "Townhouse", "Cottage"]),
@@ -277,19 +277,6 @@ const PropertyModal = ({ isOpen, onClose, property, managerClerkId }: PropertyMo
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField
-                                        control={form.control}
-                                        name="squareFeet"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="font-bold">Square Feet</FormLabel>
-                                                <FormControl>
-                                                    <Input type="number" className="rounded-xl border-border bg-muted/20" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
                                 </div>
 
                                 <FormField
@@ -321,19 +308,19 @@ const PropertyModal = ({ isOpen, onClose, property, managerClerkId }: PropertyMo
                                 />
                             </div>
 
-                            {/* Pricing & Amenities */}
+                            {/* Pricing & Details */}
                             <div className="space-y-6">
                                 <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-widest border-b border-border pb-2">Pricing & Details</h3>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-3 gap-4">
                                     <FormField
                                         control={form.control}
                                         name="pricePerMonth"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="font-bold">Rent (₹)</FormLabel>
+                                                <FormLabel className="font-bold text-xs uppercase">Rent (₹)</FormLabel>
                                                 <FormControl>
-                                                    <Input type="number" className="rounded-xl border-border bg-muted/20 font-bold text-[#1acec8]" {...field} />
+                                                    <Input type="number" step="500" className="rounded-xl border-border bg-muted/20 font-bold text-[#1acec8]" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -344,9 +331,22 @@ const PropertyModal = ({ isOpen, onClose, property, managerClerkId }: PropertyMo
                                         name="securityDeposit"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="font-bold">Deposit (₹)</FormLabel>
+                                                <FormLabel className="font-bold text-xs uppercase">Deposit (₹)</FormLabel>
                                                 <FormControl>
-                                                    <Input type="number" className="rounded-xl border-border bg-muted/20" {...field} />
+                                                    <Input type="number" step="500" className="rounded-xl border-border bg-muted/20" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="applicationFee"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="font-bold text-xs uppercase">App Fee</FormLabel>
+                                                <FormControl>
+                                                    <Input type="number" step="500" className="rounded-xl border-border bg-muted/20" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -362,7 +362,7 @@ const PropertyModal = ({ isOpen, onClose, property, managerClerkId }: PropertyMo
                                             <FormItem>
                                                 <FormLabel className="font-bold text-xs uppercase">Beds</FormLabel>
                                                 <FormControl>
-                                                    <Input type="number" className="rounded-xl border-border bg-muted/20" {...field} />
+                                                    <Input type="number" step="1" className="rounded-xl border-border bg-muted/20" {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -383,10 +383,10 @@ const PropertyModal = ({ isOpen, onClose, property, managerClerkId }: PropertyMo
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="applicationFee"
+                                        name="squareFeet"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="font-bold text-xs uppercase">App Fee</FormLabel>
+                                                <FormLabel className="font-bold text-xs uppercase">Sq Feet</FormLabel>
                                                 <FormControl>
                                                     <Input type="number" className="rounded-xl border-border bg-muted/20" {...field} />
                                                 </FormControl>

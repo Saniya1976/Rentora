@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { useGetManagerPropertiesQuery, useGetAuthUserQuery } from "@/state/api";
-import { MapPin, Home, Plus } from "lucide-react";
+import { useGetManagerPropertiesQuery, useGetAuthUserQuery, useDeletePropertyMutation } from "@/state/api";
+import { MapPin, Home, Plus, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import LoadingState from "@/components/LoadingState";
@@ -21,6 +21,8 @@ const ManagerPropertiesPage = () => {
         skip: !authUser?.clerkId,
     });
 
+    const [deleteProperty] = useDeletePropertyMutation();
+
     const handleAddProperty = () => {
         setSelectedProperty(null);
         setIsModalOpen(true);
@@ -29,6 +31,12 @@ const ManagerPropertiesPage = () => {
     const handleEditProperty = (property: any) => {
         setSelectedProperty(property);
         setIsModalOpen(true);
+    };
+
+    const handleDeleteProperty = async (id: number) => {
+        if (window.confirm("Are you sure you want to delete this property? This action cannot be undone.")) {
+            await deleteProperty(id);
+        }
     };
 
     if (isLoading) return <LoadingState />;
@@ -115,14 +123,25 @@ const ManagerPropertiesPage = () => {
                                         <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Monthly Rent</div>
                                         <div className="text-2xl font-black text-[#1acec8]">₹{property.pricePerMonth.toLocaleString()}</div>
                                     </div>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => handleEditProperty(property)}
-                                        className="rounded-xl font-bold text-xs uppercase hover:bg-muted transition-colors px-4 border-border"
-                                    >
-                                        EDIT
-                                    </Button>
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => handleDeleteProperty(property.id)}
+                                            className="rounded-xl font-bold hover:bg-destructive hover:text-white transition-colors px-3 border-border h-9"
+                                            title="Delete Property"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => handleEditProperty(property)}
+                                            className="rounded-xl font-bold text-xs uppercase hover:bg-muted transition-colors px-4 border-border h-9"
+                                        >
+                                            EDIT
+                                        </Button>
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>

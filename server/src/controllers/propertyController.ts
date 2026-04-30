@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma, Amenity, Highlight } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
-import { Bucket$, S3Client } from "@aws-sdk/client-s3";
+import { S3Client } from "@aws-sdk/client-s3";
 import { Location } from "@prisma/client";
 import { Upload } from "@aws-sdk/lib-storage";
 import axios from "axios";
@@ -9,8 +9,20 @@ import axios from "axios";
 const prisma = new PrismaClient();
 
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
+  region: process.env.AWS_REGION || "us-east-1",
 });
+
+const formatEnum = (input: any, enumObj: any): string[] => {
+  const validValues = Object.values(enumObj) as string[];
+  if (!input) return [];
+  const parsed = typeof input === "string" ? input.split(",") : input;
+  if (!Array.isArray(parsed)) return [];
+  return parsed.map((s: string) => {
+    const trimmed = s.trim();
+    const match = validValues.find(v => v.toLowerCase() === trimmed.toLowerCase());
+    return match || null;
+  }).filter(Boolean) as string[];
+};
 
 // GET /properties - list all properties with optional filters
 export const getProperties = async (
@@ -180,7 +192,7 @@ export const createProperty = async (
   res: Response
 ): Promise<void> => {
   try {
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as Express.Multer.File[] || [];
     const {
       address,
       city,
@@ -190,19 +202,22 @@ export const createProperty = async (
       managerClerkId,
       ...propertyData
     } = req.body;
-    const photoUrls = await Promise.all(files.map(async (file) => {
-      const uploadParams = {
-        Bucket: process.env.S3_BUCKET_NAME!,
-        Key: `properties/${Date.now()}-${file.originalname}`,
-        Body: file.buffer,
-        ContentType: file.mimetype,
-      }
-      const uploadResult = await new Upload({
-        client: s3Client,
-        params: uploadParams,
-      }).done();
-      return uploadResult.Location;
-    }))
+    let photoUrls: string[] = [];
+    if (files.length > 0) {
+      photoUrls = await Promise.all(files.map(async (file) => {
+        const uploadParams = {
+          Bucket: process.env.S3_BUCKET_NAME || "rentora-bucket",
+          Key: `properties/${Date.now()}-${file.originalname}`,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        }
+        const uploadResult = await new Upload({
+          client: s3Client,
+          params: uploadParams,
+        }).done();
+        return uploadResult.Location as string;
+      }));
+    }
     const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
         street: address,
@@ -215,9 +230,10 @@ export const createProperty = async (
     ).toString()}`;
     const geocodingResponse = await axios.get(geocodingUrl, {
       headers: {
-        "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com",
+        "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)",
       },
-    });
+    }).catch(e => ({ data: [] })); // fallback if geocoding fails
+
     const [longitude, latitude] =
       geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
         ? [
@@ -240,14 +256,8 @@ export const createProperty = async (
         photoUrls,
         locationId: location.id,
         managerClerkId,
-        amenities:
-          typeof propertyData.amenities === "string"
-            ? propertyData.amenities.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "")
-            : [],
-        highlights:
-          typeof propertyData.highlights === "string"
-            ? propertyData.highlights.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "")
-            : [],
+        amenities: formatEnum(propertyData.amenities, Amenity) as any,
+        highlights: formatEnum(propertyData.highlights, Highlight) as any,
         isPetsAllowed: propertyData.isPetsAllowed === "true",
         isParkingIncluded: propertyData.isParkingIncluded === "true",
         pricePerMonth: parseFloat(propertyData.pricePerMonth),
@@ -265,6 +275,7 @@ export const createProperty = async (
 
     res.status(201).json(newProperty);
   } catch (error: any) {
+    console.error("Error creating property:", error);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 }
@@ -275,7 +286,7 @@ export const updateProperty = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const files = req.files as Express.Multer.File[];
+    const files = req.files as Express.Multer.File[] || [];
     const {
       address,
       city,
@@ -314,7 +325,7 @@ export const updateProperty = async (
       const newPhotoUrls = await Promise.all(
         files.map(async (file) => {
           const uploadParams = {
-            Bucket: process.env.S3_BUCKET_NAME!,
+            Bucket: process.env.S3_BUCKET_NAME || "rentora-bucket",
             Key: `properties/${Date.now()}-${file.originalname}`,
             Body: file.buffer,
             ContentType: file.mimetype,
@@ -352,7 +363,8 @@ export const updateProperty = async (
         headers: {
           "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)",
         },
-      });
+      }).catch(e => ({ data: [] }));
+
       const [longitude, latitude] =
         geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
           ? [
@@ -375,14 +387,8 @@ export const updateProperty = async (
         ...propertyData,
         photoUrls,
         locationId,
-        amenities:
-          typeof propertyData.amenities === "string"
-            ? propertyData.amenities.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "")
-            : propertyData.amenities,
-        highlights:
-          typeof propertyData.highlights === "string"
-            ? propertyData.highlights.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "")
-            : propertyData.highlights,
+        amenities: formatEnum(propertyData.amenities, Amenity) as any,
+        highlights: formatEnum(propertyData.highlights, Highlight) as any,
         isPetsAllowed: propertyData.isPetsAllowed === "true" || propertyData.isPetsAllowed === true,
         isParkingIncluded: propertyData.isParkingIncluded === "true" || propertyData.isParkingIncluded === true,
         pricePerMonth: parseFloat(propertyData.pricePerMonth),
@@ -401,6 +407,30 @@ export const updateProperty = async (
     res.json(updatedProperty);
   } catch (error: any) {
     console.error("Error updating property:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+export const deleteProperty = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const propertyId = Number(id);
+
+    const existingProperty = await prisma.property.findUnique({
+      where: { id: propertyId }
+    });
+
+    if (!existingProperty) {
+      res.status(404).json({ message: "Property not found" });
+      return;
+    }
+
+    await prisma.property.delete({
+      where: { id: propertyId }
+    });
+
+    res.json({ message: "Property deleted successfully" });
+  } catch (error: any) {
+    console.error("Error deleting property:", error);
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
