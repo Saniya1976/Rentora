@@ -1,15 +1,17 @@
 import { Request, Response } from "express";
 import { PrismaClient, Prisma, Amenity, Highlight } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
-import { S3Client } from "@aws-sdk/client-s3";
 import { Location } from "@prisma/client";
-import { Upload } from "@aws-sdk/lib-storage";
+import { v2 as cloudinary } from "cloudinary";
 import axios from "axios";
 
 const prisma = new PrismaClient();
 
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION || "us-east-1",
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 const formatEnum = (input: any, enumObj: any): string[] => {
@@ -22,6 +24,30 @@ const formatEnum = (input: any, enumObj: any): string[] => {
     const match = validValues.find(v => v.toLowerCase() === trimmed.toLowerCase());
     return match || null;
   }).filter(Boolean) as string[];
+};
+
+/**
+ * Upload a single multer file buffer to Cloudinary.
+ * Returns the secure URL of the uploaded image.
+ */
+const uploadToCloudinary = (file: Express.Multer.File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: "rentora/properties",
+        resource_type: "image",
+        transformation: [{ quality: "auto", fetch_format: "auto" }],
+      },
+      (error, result) => {
+        if (error || !result) {
+          reject(error || new Error("Cloudinary upload failed"));
+        } else {
+          resolve(result.secure_url);
+        }
+      }
+    );
+    stream.end(file.buffer);
+  });
 };
 
 // GET /properties - list all properties with optional filters
@@ -81,8 +107,6 @@ export const getProperties = async (
     }
 
     if (amenities && amenities !== "any") {
-      // Assuming amenities is a string array in the database, we handle it as needed.
-      // If it's a single value filter:
       whereConditions.push(Prisma.sql`${amenities} = ANY(p.amenities)`);
     }
 
@@ -104,7 +128,7 @@ export const getProperties = async (
       const lat = parseFloat(latitude as string);
       const lng = parseFloat(longitude as string);
       if (!isNaN(lat) && !isNaN(lng) && (lat !== 0 || lng !== 0)) {
-        const radiusInMeters = 5000; // 5km radius
+        const radiusInMeters = 5000;
         whereConditions.push(
           Prisma.sql`ST_DWithin(l.coordinates, ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326)::geography, ${radiusInMeters})`
         );
@@ -152,6 +176,7 @@ export const getProperties = async (
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
 export const getProperty = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -187,6 +212,7 @@ export const getProperty = async (req: Request, res: Response): Promise<void> =>
       .json({ message: `Error retrieving property: ${err.message}` });
   }
 };
+
 export const createProperty = async (
   req: Request,
   res: Response
@@ -202,22 +228,15 @@ export const createProperty = async (
       managerClerkId,
       ...propertyData
     } = req.body;
+
+    // Upload images to Cloudinary
     let photoUrls: string[] = [];
     if (files.length > 0) {
-      photoUrls = await Promise.all(files.map(async (file) => {
-        const uploadParams = {
-          Bucket: process.env.S3_BUCKET_NAME || "rentora-bucket",
-          Key: `properties/${Date.now()}-${file.originalname}`,
-          Body: file.buffer,
-          ContentType: file.mimetype,
-        }
-        const uploadResult = await new Upload({
-          client: s3Client,
-          params: uploadParams,
-        }).done();
-        return uploadResult.Location as string;
-      }));
+      console.log(`[createProperty] Uploading ${files.length} image(s) to Cloudinary...`);
+      photoUrls = await Promise.all(files.map((file) => uploadToCloudinary(file)));
+      console.log(`[createProperty] Upload complete:`, photoUrls);
     }
+
     const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
         street: address,
@@ -232,7 +251,7 @@ export const createProperty = async (
       headers: {
         "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)",
       },
-    }).catch(e => ({ data: [] })); // fallback if geocoding fails
+    }).catch(e => ({ data: [] }));
 
     const [longitude, latitude] =
       geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
@@ -321,23 +340,11 @@ export const updateProperty = async (
       photoUrls = existingProperty.photoUrls;
     }
 
+    // Upload new images to Cloudinary
     if (files && files.length > 0) {
-      const newPhotoUrls = await Promise.all(
-        files.map(async (file) => {
-          const uploadParams = {
-            Bucket: process.env.S3_BUCKET_NAME || "rentora-bucket",
-            Key: `properties/${Date.now()}-${file.originalname}`,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-          };
-          const uploadResult = await new Upload({
-            client: s3Client,
-            params: uploadParams,
-          }).done();
-          return uploadResult.Location;
-        })
-      );
-      photoUrls = [...photoUrls, ...newPhotoUrls as string[]];
+      console.log(`[updateProperty] Uploading ${files.length} image(s) to Cloudinary...`);
+      const newPhotoUrls = await Promise.all(files.map((file) => uploadToCloudinary(file)));
+      photoUrls = [...photoUrls, ...newPhotoUrls];
     }
 
     let locationId = existingProperty.locationId;
@@ -410,6 +417,7 @@ export const updateProperty = async (
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
 export const deleteProperty = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;

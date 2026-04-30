@@ -31,12 +31,16 @@ const withToast = async <T,>(
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
-    prepareHeaders: async (headers) => {
+    prepareHeaders: async (headers, { getState, endpoint }) => {
       const token = await (window as any).Clerk?.session?.getToken();
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
-      headers.set("Content-Type", "application/json");
+      // Do NOT set Content-Type for FormData — the browser must set multipart boundary automatically
+      if (!headers.has("Content-Type")) {
+        // Only set JSON content type if not already set and not a FormData request
+        // fetchBaseQuery handles this automatically for non-FormData bodies
+      }
       return headers;
     },
   }),
@@ -109,6 +113,7 @@ export const api = createApi({
       invalidatesTags: (result) => [
         { type: "Properties", id: result?.id },
         { type: "Properties", id: "LIST" },
+        "Managers",
       ],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
@@ -125,6 +130,7 @@ export const api = createApi({
       invalidatesTags: (result, error, id) => [
         { type: "Properties", id },
         { type: "Properties", id: "LIST" },
+        "Managers",
       ],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
