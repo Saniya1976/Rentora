@@ -7,15 +7,22 @@ import { useRouter } from 'next/navigation'
 /**
  * Central post-login role detector.
  *
- * Strategy: explicitly probe MANAGER table first, then TENANT.
- * Never rely on the ambiguous "check both" backend path because DB can
- * have stray rows from seed data that cause wrong role detection.
+ * Strategy: fire BOTH manager + tenant checks in parallel to halve cold-start
+ * latency, then pick the winner based on intended role from metadata.
  *
  * All auth paths (email/password sign-in, Google OAuth) land here.
  */
 export default function AuthRedirectPage() {
     const { user, isLoaded } = useUser()
     const router = useRouter()
+
+    // ── Wake up Render backend immediately on page load ──────────
+    useEffect(() => {
+        const base = process.env.NEXT_PUBLIC_API_BASE_URL
+        if (base) {
+            fetch(`${base}/properties?limit=1`).catch(() => { })
+        }
+    }, [])
 
     useEffect(() => {
         if (!isLoaded || !user) return
@@ -36,7 +43,7 @@ export default function AuthRedirectPage() {
                     'Content-Type': 'application/json',
                 }
 
-                // ── Step 0: Determine intended role from metadata ────────────
+                // ── Determine intended role from metadata ────────────
                 const intendedRole =
                     (user.unsafeMetadata?.role as string)?.toLowerCase() ||
                     (user.publicMetadata?.userType as string)?.toLowerCase() ||
@@ -44,51 +51,50 @@ export default function AuthRedirectPage() {
 
                 console.log(`[AuthRedirect] Intended role from metadata: ${intendedRole}`)
 
-                const checkManager = async () => {
-                    const res = await fetch(`${base}/auth/user?userType=manager`, { headers })
-                    if (res.ok) {
-                        const data = await res.json()
-                        if (data?.userRole === 'manager') return true
-                    }
-                    return false
+                // ── Fire BOTH checks in parallel to halve cold-start wait ──
+                const [managerRes, tenantRes] = await Promise.allSettled([
+                    fetch(`${base}/auth/user?userType=manager`, { headers }),
+                    fetch(`${base}/auth/user?userType=tenant`, { headers }),
+                ])
+
+                let isManager = false
+                let isTenant = false
+
+                if (managerRes.status === 'fulfilled' && managerRes.value.ok) {
+                    const data = await managerRes.value.json()
+                    isManager = data?.userRole === 'manager'
+                }
+                if (tenantRes.status === 'fulfilled' && tenantRes.value.ok) {
+                    const data = await tenantRes.value.json()
+                    isTenant = data?.userRole === 'tenant'
                 }
 
-                const checkTenant = async () => {
-                    const res = await fetch(`${base}/auth/user?userType=tenant`, { headers })
-                    if (res.ok) {
-                        const data = await res.json()
-                        if (data?.userRole === 'tenant') return true
-                    }
-                    return false
-                }
-
-                // ── Step 1 & 2: Check tables based on intended role priority ──
+                // ── Route based on intended role + what exists ──
                 if (intendedRole === 'manager') {
-                    if (await checkManager()) {
+                    if (isManager) {
                         console.log('[AuthRedirect] ✅ Role confirmed = manager → /manager')
                         router.replace('/manager')
                         return
                     }
-                    if (await checkTenant()) {
+                    if (isTenant) {
                         console.log('[AuthRedirect] ✅ Role confirmed (fallback) = tenant → /tenant/favourites')
                         router.replace('/tenant/favourites')
                         return
                     }
                 } else {
-                    if (await checkTenant()) {
+                    if (isTenant) {
                         console.log('[AuthRedirect] ✅ Role confirmed = tenant → /tenant/favourites')
                         router.replace('/tenant/favourites')
                         return
                     }
-                    if (await checkManager()) {
+                    if (isManager) {
                         console.log('[AuthRedirect] ✅ Role confirmed (fallback) = manager → /manager')
                         router.replace('/manager')
                         return
                     }
                 }
 
-                // ── Step 3: User not in DB at all (new Google OAuth user) ─────
-                // Read intended role from sign-up metadata
+                // ── User not in DB at all (new Google OAuth user) ─────
                 console.log(`[AuthRedirect] 🆕 New user — creating ${intendedRole} profile...`)
 
                 const profileEndpoint = intendedRole === 'manager' ? 'managers' : 'tenants'
@@ -139,3 +145,4 @@ export default function AuthRedirectPage() {
         </div>
     )
 }
+
