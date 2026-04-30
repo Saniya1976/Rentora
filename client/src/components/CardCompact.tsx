@@ -81,10 +81,10 @@ const CardCompact = ({
                     <div className="flex text-xs items-center">
                         <Star className="w-3 h-3 text-yellow-500 mr-1 fill-yellow-500" />
                         <span className="font-semibold text-foreground">
-                            {property.averageRating.toFixed(1)}
+                            {(property.averageRating ?? 0).toFixed(1)}
                         </span>
                         <span className="text-muted-foreground ml-1">
-                            ({property.numberOfReviews})
+                            ({property.numberOfReviews ?? 0})
                         </span>
                     </div>
                 </div>
@@ -105,7 +105,7 @@ const CardCompact = ({
                     </div>
 
                     <p className="text-base font-bold text-foreground">
-                        ₹{property.pricePerMonth.toLocaleString()}
+                        ₹{(property.pricePerMonth ?? 0).toLocaleString()}
                         <span className="text-muted-foreground text-[10px] font-normal"> /mo</span>
                     </p>
                 </div>

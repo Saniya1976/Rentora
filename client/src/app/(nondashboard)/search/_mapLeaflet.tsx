@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useRef } from "react";
 import {
     MapContainer,
     TileLayer,
@@ -37,7 +37,8 @@ const searchMarkerIcon = new L.Icon({
     shadowSize: [41, 41],
 });
 
-// This component lives INSIDE MapContainer so useMap() always works
+// This component lives INSIDE MapContainer so useMap() always works.
+// Uses a ref to prevent flyTo from triggering on every re-render.
 const ChangeView = ({
     center,
     zoom,
@@ -46,10 +47,35 @@ const ChangeView = ({
     zoom: number;
 }) => {
     const map = useMap();
+    const prevCenter = useRef<[number, number] | null>(null);
+    const prevZoom = useRef<number | null>(null);
+    const isFirstRender = useRef(true);
+
     useEffect(() => {
-        map.flyTo(center, zoom, { duration: 1.2 });
+        const prev = prevCenter.current;
+        const prevZ = prevZoom.current;
+
+        // Check if center or zoom actually changed (with tolerance for floating point)
+        const centerChanged =
+            !prev ||
+            Math.abs(prev[0] - center[0]) > 0.0001 ||
+            Math.abs(prev[1] - center[1]) > 0.0001;
+        const zoomChanged = prevZ === null || prevZ !== zoom;
+
+        if (centerChanged || zoomChanged) {
+            if (isFirstRender.current) {
+                // On first render, just set the view without animation
+                map.setView(center, zoom);
+                isFirstRender.current = false;
+            } else {
+                map.flyTo(center, zoom, { duration: 1.2 });
+            }
+            prevCenter.current = center;
+            prevZoom.current = zoom;
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [center[0], center[1], zoom]);
+
     return null;
 };
 
@@ -67,25 +93,31 @@ const MapLeaflet = () => {
             return [filters.coordinates[1], filters.coordinates[0]];
         }
         return [28.6139, 77.209]; // Default: Delhi
-    }, [filters.coordinates]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filters.coordinates?.[0], filters.coordinates?.[1]]);
 
     const zoom = isSearching ? 13 : 9;
 
-    if (isLoading)
-        return (
-            <div className="flex items-center justify-center h-full text-muted-foreground">
-                Loading map...
-            </div>
-        );
-    if (isError || !properties)
-        return (
-            <div className="flex items-center justify-center h-full text-destructive">
-                Failed to fetch properties
-            </div>
-        );
+    // Get the properties to render (empty array during loading/error)
+    const propertiesToRender = (!isLoading && !isError && properties) ? properties : [];
 
     return (
         <div className="basis-5/12 grow relative rounded-xl overflow-hidden border border-border shadow-sm transition-colors duration-300">
+            {/* Overlay loading/error states ON TOP of the map instead of replacing it */}
+            {isLoading && (
+                <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-background/50 backdrop-blur-sm pointer-events-none">
+                    <div className="text-muted-foreground text-sm font-medium">
+                        Loading properties...
+                    </div>
+                </div>
+            )}
+            {isError && (
+                <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-background/50 backdrop-blur-sm pointer-events-none">
+                    <div className="text-destructive text-sm font-medium">
+                        Failed to fetch properties
+                    </div>
+                </div>
+            )}
             <MapContainer
                 center={center}
                 zoom={zoom}
@@ -113,12 +145,12 @@ const MapLeaflet = () => {
                     </Marker>
                 )}
 
-                {properties.map((property) => (
+                {propertiesToRender.map((property) => (
                     <Marker
                         key={property.id}
                         position={[
-                            property.location.coordinates.latitude,
-                            property.location.coordinates.longitude,
+                            property.location?.coordinates?.latitude ?? 0,
+                            property.location?.coordinates?.longitude ?? 0,
                         ]}
                     >
                         <Popup>
@@ -145,11 +177,11 @@ const MapLeaflet = () => {
                                     </a>
                                 </h4>
                                 <p className="text-xs text-gray-500 mb-2">
-                                    {property.location.city}, {property.location.state}
+                                    {property.location?.city}, {property.location?.state}
                                 </p>
                                 <div className="flex justify-between items-center border-t pt-2 mt-1">
                                     <span className="font-bold text-blue-600">
-                                        ₹{property.pricePerMonth.toLocaleString()}/mo
+                                        ₹{property.pricePerMonth?.toLocaleString()}/mo
                                     </span>
                                     <span className="text-[10px] text-gray-400">
                                         {property.beds}bd | {property.baths}ba

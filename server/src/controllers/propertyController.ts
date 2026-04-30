@@ -145,7 +145,26 @@ export const getProperties = async (
 
     const completeQuery = Prisma.sql`
       SELECT 
-        p.*,
+        p.id,
+        p.name,
+        p.description,
+        p."pricePerMonth",
+        p."securityDeposit",
+        p."applicationFee",
+        COALESCE(array_to_json(p."photoUrls"), '[]'::json) as "photoUrls",
+        COALESCE(array_to_json(p.amenities::text[]), '[]'::json) as amenities,
+        COALESCE(array_to_json(p.highlights::text[]), '[]'::json) as highlights,
+        p."isPetsAllowed",
+        p."isParkingIncluded",
+        p.beds,
+        p.baths,
+        p."squareFeet",
+        p."propertyType",
+        p."postedDate",
+        COALESCE(p."averageRating", 0) as "averageRating",
+        COALESCE(p."numberOfReviews", 0) as "numberOfReviews",
+        p."locationId",
+        p."managerClerkId",
         json_build_object(
           'id', l.id,
           'address', l.address,

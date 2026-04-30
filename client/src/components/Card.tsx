@@ -72,14 +72,14 @@ const Card = ({
           <div className="flex items-center mb-2">
             <Star className="w-4 h-4 text-yellow-500 mr-1 fill-yellow-500" />
             <span className="font-semibold">
-              {property.averageRating.toFixed(1)}
+              {(property.averageRating ?? 0).toFixed(1)}
             </span>
             <span className="text-muted-foreground ml-1">
-              ({property.numberOfReviews} Reviews)
+              ({property.numberOfReviews ?? 0} Reviews)
             </span>
           </div>
           <p className="text-lg font-bold mb-3">
-            ₹{property.pricePerMonth.toLocaleString()}{" "}
+            ₹{(property.pricePerMonth ?? 0).toLocaleString()}{" "}
             <span className="text-muted-foreground text-base font-normal"> /month</span>
           </p>
         </div>
