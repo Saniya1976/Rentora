@@ -262,11 +262,23 @@ export const api = createApi({
     }),
     getCurrentResidences: build.query<Property[], string>({
       query: (userId) => `tenants/${userId}/current-residences`,
-      providesTags: ["Properties"],
+      providesTags: (result) =>
+        result
+          ? [
+            ...result.map(({ id }) => ({ type: "Properties" as const, id })),
+            { type: "Properties", id: "LIST" },
+          ]
+          : [{ type: "Properties", id: "LIST" }],
     }),
     getManagerProperties: build.query<Property[], string>({
       query: (userId) => `managers/${userId}/properties?userType=manager`,
-      providesTags: ["Properties"],
+      providesTags: (result) =>
+        result
+          ? [
+            ...result.map(({ id }) => ({ type: "Properties" as const, id })),
+            { type: "Properties", id: "LIST" },
+          ]
+          : [{ type: "Properties", id: "LIST" }],
     }),
     getTenant: build.query<Tenant, string>({
       query: (clerkId) => `tenants/${clerkId}`,

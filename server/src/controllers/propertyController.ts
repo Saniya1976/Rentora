@@ -63,19 +63,19 @@ const geocodeAddress = async (
   country: string,
   postalCode: string
 ): Promise<[number, number]> => {
-  const headers = { "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)" };
+  const headers = { "User-Agent": "RentoraApp/1.0" };
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   // Attempt 1: Structured search
   try {
-    const structuredUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams({
-      street: address,
-      city,
-      state,
-      country,
-      postalcode: postalCode,
-      format: "json",
-      limit: "1",
-    }).toString()}`;
+    const structuredParams = new URLSearchParams({ format: "json", limit: "1" });
+    if (address) structuredParams.append("street", address);
+    if (city) structuredParams.append("city", city);
+    if (state) structuredParams.append("state", state);
+    if (country) structuredParams.append("country", country);
+    if (postalCode) structuredParams.append("postalcode", postalCode);
+
+    const structuredUrl = `https://nominatim.openstreetmap.org/search?${structuredParams.toString()}`;
     const res = await axios.get(structuredUrl, { headers });
     if (res.data?.[0]?.lon && res.data?.[0]?.lat) {
       console.log(`[geocode] Structured search succeeded for: ${address}, ${city}`);
@@ -84,6 +84,8 @@ const geocodeAddress = async (
   } catch (e) {
     console.warn(`[geocode] Structured search failed for: ${address}, ${city}`);
   }
+
+  await sleep(1200);
 
   // Attempt 2: Free-form search with full address string
   try {
@@ -102,14 +104,16 @@ const geocodeAddress = async (
     console.warn(`[geocode] Free-form search failed`);
   }
 
+  await sleep(1200);
+
   // Attempt 3: Just postal code + country
   try {
-    const postalUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams({
-      postalcode: postalCode,
-      country,
-      format: "json",
-      limit: "1",
-    }).toString()}`;
+    const postalParams = new URLSearchParams({ format: "json", limit: "1" });
+    if (postalCode) postalParams.append("postalcode", postalCode);
+    if (country) postalParams.append("country", country);
+    else postalParams.append("country", "India"); // default fallback if empty
+
+    const postalUrl = `https://nominatim.openstreetmap.org/search?${postalParams.toString()}`;
     const res = await axios.get(postalUrl, { headers });
     if (res.data?.[0]?.lon && res.data?.[0]?.lat) {
       console.log(`[geocode] Postal code search succeeded for: ${postalCode}, ${country}`);
@@ -117,6 +121,26 @@ const geocodeAddress = async (
     }
   } catch (e) {
     console.warn(`[geocode] Postal code search failed`);
+  }
+
+  // Attempt 4: City-level fallback
+  await sleep(1200);
+  try {
+    const cityQuery = [city, state, country].filter(Boolean).join(", ");
+    if (cityQuery) {
+      const cityUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams({
+        q: cityQuery,
+        format: "json",
+        limit: "1",
+      }).toString()}`;
+      const res = await axios.get(cityUrl, { headers });
+      if (res.data?.[0]?.lon && res.data?.[0]?.lat) {
+        console.log(`[geocode] City fallback search succeeded for: ${cityQuery}`);
+        return [parseFloat(res.data[0].lon), parseFloat(res.data[0].lat)];
+      }
+    }
+  } catch (e) {
+    console.warn(`[geocode] City fallback search failed`);
   }
 
   console.error(`[geocode] All geocoding attempts failed for: ${address}, ${city}, ${postalCode}`);

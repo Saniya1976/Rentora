@@ -87,19 +87,24 @@ const MapLeaflet = () => {
         filters.coordinates &&
         (filters.coordinates[0] !== 0 || filters.coordinates[1] !== 0);
 
+    const propertiesToRender = (!isLoading && !isError && properties) ? properties : [];
+
     const center = useMemo<[number, number]>(() => {
         if (isSearching) {
             // Leaflet uses [lat, lng]; coordinates are stored as [lng, lat]
             return [filters.coordinates[1], filters.coordinates[0]];
         }
+        if (propertiesToRender.length > 0) {
+            return [
+                propertiesToRender[0].location?.coordinates?.latitude ?? 28.6139,
+                propertiesToRender[0].location?.coordinates?.longitude ?? 77.209
+            ];
+        }
         return [28.6139, 77.209]; // Default: Delhi
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filters.coordinates?.[0], filters.coordinates?.[1]]);
+    }, [filters.coordinates?.[0], filters.coordinates?.[1], propertiesToRender.length > 0 ? propertiesToRender[0].id : null]);
 
-    const zoom = isSearching ? 13 : 9;
-
-    // Get the properties to render (empty array during loading/error)
-    const propertiesToRender = (!isLoading && !isError && properties) ? properties : [];
+    const zoom = isSearching ? 13 : propertiesToRender.length > 0 ? 11 : 9;
 
     return (
         <div className="basis-5/12 grow relative rounded-xl overflow-hidden border border-border shadow-sm transition-colors duration-300">

@@ -1,137 +1,812 @@
 [
-  {
-    "id": 1,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Sector 6, Dwarka",
-    "postalCode": "110075",
-    "coordinates": "POINT(77.0583 28.5912)"
-  },
-  {
-    "id": 2,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Saket, South Delhi",
-    "postalCode": "110017",
-    "coordinates": "POINT(77.2100 28.5275)"
-  },
-  {
-    "id": 3,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Connaught Place",
-    "postalCode": "110001",
-    "coordinates": "POINT(77.2167 28.6333)"
-  },
-  {
-    "id": 4,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Karol Bagh, Central Delhi",
-    "postalCode": "110005",
-    "coordinates": "POINT(77.1888 28.6550)"
-  },
-  {
-    "id": 5,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Lajpat Nagar, South East Delhi",
-    "postalCode": "110024",
-    "coordinates": "POINT(77.2425 28.5675)"
-  },
-  {
-    "id": 6,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Rohini",
-    "postalCode": "110085",
-    "coordinates": "POINT(77.0822 28.7383)"
-  },
-  {
-    "id": 7,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Janakpuri",
-    "postalCode": "110058",
-    "coordinates": "POINT(77.0878 28.6219)"
-  },
-  {
-    "id": 8,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Pitampura",
-    "postalCode": "110034",
-    "coordinates": "POINT(77.1387 28.6990)"
-  },
-  {
-    "id": 9,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Vasant Kunj",
-    "postalCode": "110070",
-    "coordinates": "POINT(77.1484 28.5293)"
-  },
-  {
-    "id": 10,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Mayur Vihar",
-    "postalCode": "110091",
-    "coordinates": "POINT(77.2931 28.6084)"
-  },
-  {
-    "id": 11,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Preet Vihar",
-    "postalCode": "110092",
-    "coordinates": "POINT(77.2928 28.6364)"
-  },
-  {
-    "id": 12,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Nehru Place",
-    "postalCode": "110019",
-    "coordinates": "POINT(77.2502 28.5503)"
-  },
-  {
-    "id": 13,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Rajouri Garden",
-    "postalCode": "110027",
-    "coordinates": "POINT(77.1225 28.6417)"
-  },
-  {
-    "id": 14,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Paschim Vihar",
-    "postalCode": "110063",
-    "coordinates": "POINT(77.0929 28.6691)"
-  },
-  {
-    "id": 15,
-    "country": "India",
-    "city": "New Delhi",
-    "state": "Delhi",
-    "address": "Hauz Khas",
-    "postalCode": "110016",
-    "coordinates": "POINT(77.2031 28.5479)"
-  }
+    {
+        "id": 1,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Sector 6, Dwarka",
+        "postalCode": "110075",
+        "coordinates": "POINT(77.0583 28.5912)"
+    },
+    {
+        "id": 2,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Connaught Place",
+        "postalCode": "110001",
+        "coordinates": "POINT(77.2167 28.6328)"
+    },
+    {
+        "id": 3,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Karol Bagh",
+        "postalCode": "110005",
+        "coordinates": "POINT(77.1907 28.6514)"
+    },
+    {
+        "id": 4,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Lajpat Nagar",
+        "postalCode": "110024",
+        "coordinates": "POINT(77.2373 28.5700)"
+    },
+    {
+        "id": 5,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Saket",
+        "postalCode": "110017",
+        "coordinates": "POINT(77.2090 28.5244)"
+    },
+    {
+        "id": 6,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Rohini",
+        "postalCode": "110085",
+        "coordinates": "POINT(77.1068 28.7286)"
+    },
+    {
+        "id": 7,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Janakpuri",
+        "postalCode": "110058",
+        "coordinates": "POINT(77.0732 28.6289)"
+    },
+    {
+        "id": 8,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Pitampura",
+        "postalCode": "110034",
+        "coordinates": "POINT(77.1302 28.7013)"
+    },
+    {
+        "id": 9,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Preet Vihar",
+        "postalCode": "110092",
+        "coordinates": "POINT(77.2945 28.6407)"
+    },
+    {
+        "id": 10,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Mayur Vihar Phase 1",
+        "postalCode": "110091",
+        "coordinates": "POINT(77.2953 28.6069)"
+    },
+    {
+        "id": 11,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Vasant Kunj",
+        "postalCode": "110070",
+        "coordinates": "POINT(77.1578 28.5249)"
+    },
+    {
+        "id": 12,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Greater Kailash",
+        "postalCode": "110048",
+        "coordinates": "POINT(77.2441 28.5445)"
+    },
+    {
+        "id": 13,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Hauz Khas",
+        "postalCode": "110016",
+        "coordinates": "POINT(77.2021 28.5494)"
+    },
+    {
+        "id": 14,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Malviya Nagar",
+        "postalCode": "110017",
+        "coordinates": "POINT(77.2086 28.5298)"
+    },
+    {
+        "id": 15,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Uttam Nagar",
+        "postalCode": "110059",
+        "coordinates": "POINT(77.0532 28.6211)"
+    },
+    {
+        "id": 16,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Vikaspuri",
+        "postalCode": "110018",
+        "coordinates": "POINT(77.0710 28.6389)"
+    },
+    {
+        "id": 17,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Tilak Nagar",
+        "postalCode": "110018",
+        "coordinates": "POINT(77.0969 28.6378)"
+    },
+    {
+        "id": 18,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Paschim Vihar",
+        "postalCode": "110063",
+        "coordinates": "POINT(77.1026 28.6736)"
+    },
+    {
+        "id": 19,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Shalimar Bagh",
+        "postalCode": "110088",
+        "coordinates": "POINT(77.1610 28.7172)"
+    },
+    {
+        "id": 20,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Narela",
+        "postalCode": "110040",
+        "coordinates": "POINT(77.0930 28.8520)"
+    },
+    {
+        "id": 21,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Burari",
+        "postalCode": "110084",
+        "coordinates": "POINT(77.2040 28.7527)"
+    },
+    {
+        "id": 22,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Seemapuri",
+        "postalCode": "110095",
+        "coordinates": "POINT(77.3196 28.6840)"
+    },
+    {
+        "id": 23,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Shahdara",
+        "postalCode": "110032",
+        "coordinates": "POINT(77.2900 28.6710)"
+    },
+    {
+        "id": 24,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Geeta Colony",
+        "postalCode": "110031",
+        "coordinates": "POINT(77.2780 28.6560)"
+    },
+    {
+        "id": 25,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Krishna Nagar",
+        "postalCode": "110051",
+        "coordinates": "POINT(77.2850 28.6610)"
+    },
+    {
+        "id": 26,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Patparganj",
+        "postalCode": "110092",
+        "coordinates": "POINT(77.3090 28.6210)"
+    },
+    {
+        "id": 27,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Okhla Industrial Area",
+        "postalCode": "110020",
+        "coordinates": "POINT(77.2723 28.5370)"
+    },
+    {
+        "id": 28,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Mehrauli",
+        "postalCode": "110030",
+        "coordinates": "POINT(77.1799 28.5219)"
+    },
+    {
+        "id": 29,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Palam",
+        "postalCode": "110045",
+        "coordinates": "POINT(77.0748 28.5917)"
+    },
+    {
+        "id": 30,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Dwarka Mor",
+        "postalCode": "110059",
+        "coordinates": "POINT(77.0442 28.6107)"
+    },
+    {
+        "id": 31,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Sector 10, Dwarka",
+        "postalCode": "110075",
+        "coordinates": "POINT(77.0396 28.5842)"
+    },
+    {
+        "id": 32,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Sector 14, Dwarka",
+        "postalCode": "110078",
+        "coordinates": "POINT(77.0266 28.5733)"
+    },
+    {
+        "id": 33,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Rajouri Garden",
+        "postalCode": "110027",
+        "coordinates": "POINT(77.1175 28.6485)"
+    },
+    {
+        "id": 34,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Patel Nagar",
+        "postalCode": "110008",
+        "coordinates": "POINT(77.1630 28.6505)"
+    },
+    {
+        "id": 35,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Moti Bagh",
+        "postalCode": "110021",
+        "coordinates": "POINT(77.1751 28.5890)"
+    },
+    {
+        "id": 36,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Dhaula Kuan",
+        "postalCode": "110010",
+        "coordinates": "POINT(77.1605 28.5928)"
+    },
+    {
+        "id": 37,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "RK Puram",
+        "postalCode": "110022",
+        "coordinates": "POINT(77.1730 28.5679)"
+    },
+    {
+        "id": 38,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Munirka",
+        "postalCode": "110067",
+        "coordinates": "POINT(77.1695 28.5504)"
+    },
+    {
+        "id": 39,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Andrews Ganj",
+        "postalCode": "110049",
+        "coordinates": "POINT(77.2226 28.5593)"
+    },
+    {
+        "id": 40,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Nehru Place",
+        "postalCode": "110019",
+        "coordinates": "POINT(77.2510 28.5479)"
+    },
+    {
+        "id": 41,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Civil Lines",
+        "postalCode": "110054",
+        "coordinates": "POINT(77.2273 28.6849)"
+    },
+    {
+        "id": 42,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Model Town",
+        "postalCode": "110009",
+        "coordinates": "POINT(77.1919 28.7162)"
+    },
+    {
+        "id": 43,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Wazirpur",
+        "postalCode": "110052",
+        "coordinates": "POINT(77.1687 28.7015)"
+    },
+    {
+        "id": 44,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Ashok Vihar",
+        "postalCode": "110052",
+        "coordinates": "POINT(77.1716 28.6952)"
+    },
+    {
+        "id": 45,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Mukherjee Nagar",
+        "postalCode": "110009",
+        "coordinates": "POINT(77.2043 28.7043)"
+    },
+    {
+        "id": 46,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Adarsh Nagar",
+        "postalCode": "110033",
+        "coordinates": "POINT(77.1860 28.7117)"
+    },
+    {
+        "id": 47,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Azadpur",
+        "postalCode": "110033",
+        "coordinates": "POINT(77.1864 28.7224)"
+    },
+    {
+        "id": 48,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Rani Bagh",
+        "postalCode": "110034",
+        "coordinates": "POINT(77.1421 28.7027)"
+    },
+    {
+        "id": 49,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Bawana",
+        "postalCode": "110039",
+        "coordinates": "POINT(77.0425 28.7889)"
+    },
+    {
+        "id": 50,
+        "country": "India",
+        "city": "New Delhi",
+        "state": "Delhi",
+        "address": "Alipur",
+        "postalCode": "110036",
+        "coordinates": "POINT(77.1452 28.7969)"
+    },
+    {
+        "id": 51,
+        "country": "India",
+        "city": "Gurgaon",
+        "state": "Haryana",
+        "address": "DLF Phase 1",
+        "postalCode": "122002",
+        "coordinates": "POINT(77.0892 28.4760)"
+    },
+    {
+        "id": 52,
+        "country": "India",
+        "city": "Gurgaon",
+        "state": "Haryana",
+        "address": "DLF Phase 2",
+        "postalCode": "122002",
+        "coordinates": "POINT(77.0964 28.4697)"
+    },
+    {
+        "id": 53,
+        "country": "India",
+        "city": "Gurgaon",
+        "state": "Haryana",
+        "address": "DLF Phase 3",
+        "postalCode": "122010",
+        "coordinates": "POINT(77.1022 28.4607)"
+    },
+    {
+        "id": 54,
+        "country": "India",
+        "city": "Gurgaon",
+        "state": "Haryana",
+        "address": "Sector 14, Gurgaon",
+        "postalCode": "122001",
+        "coordinates": "POINT(77.0268 28.4760)"
+    },
+    {
+        "id": 55,
+        "country": "India",
+        "city": "Gurgaon",
+        "state": "Haryana",
+        "address": "Sector 29, Gurgaon",
+        "postalCode": "122022",
+        "coordinates": "POINT(77.0614 28.4670)"
+    },
+    {
+        "id": 56,
+        "country": "India",
+        "city": "Gurgaon",
+        "state": "Haryana",
+        "address": "Sector 49, Gurgaon",
+        "postalCode": "122018",
+        "coordinates": "POINT(77.0538 28.4241)"
+    },
+    {
+        "id": 57,
+        "country": "India",
+        "city": "Gurgaon",
+        "state": "Haryana",
+        "address": "Sohna Road",
+        "postalCode": "122003",
+        "coordinates": "POINT(77.0595 28.4290)"
+    },
+    {
+        "id": 58,
+        "country": "India",
+        "city": "Gurgaon",
+        "state": "Haryana",
+        "address": "Golf Course Road",
+        "postalCode": "122002",
+        "coordinates": "POINT(77.1093 28.4565)"
+    },
+    {
+        "id": 59,
+        "country": "India",
+        "city": "Gurgaon",
+        "state": "Haryana",
+        "address": "Cyber City",
+        "postalCode": "122002",
+        "coordinates": "POINT(77.0888 28.4950)"
+    },
+    {
+        "id": 60,
+        "country": "India",
+        "city": "Gurgaon",
+        "state": "Haryana",
+        "address": "Manesar",
+        "postalCode": "122050",
+        "coordinates": "POINT(76.9381 28.3580)"
+    },
+    {
+        "id": 61,
+        "country": "India",
+        "city": "Faridabad",
+        "state": "Haryana",
+        "address": "NIT Faridabad",
+        "postalCode": "121001",
+        "coordinates": "POINT(77.3140 28.3830)"
+    },
+    {
+        "id": 62,
+        "country": "India",
+        "city": "Faridabad",
+        "state": "Haryana",
+        "address": "Sector 15, Faridabad",
+        "postalCode": "121007",
+        "coordinates": "POINT(77.3174 28.4111)"
+    },
+    {
+        "id": 63,
+        "country": "India",
+        "city": "Faridabad",
+        "state": "Haryana",
+        "address": "Sector 21, Faridabad",
+        "postalCode": "121001",
+        "coordinates": "POINT(77.3210 28.3780)"
+    },
+    {
+        "id": 64,
+        "country": "India",
+        "city": "Faridabad",
+        "state": "Haryana",
+        "address": "Old Faridabad",
+        "postalCode": "121002",
+        "coordinates": "POINT(77.3176 28.4089)"
+    },
+    {
+        "id": 65,
+        "country": "India",
+        "city": "Faridabad",
+        "state": "Haryana",
+        "address": "Neharpar, Faridabad",
+        "postalCode": "121010",
+        "coordinates": "POINT(77.3490 28.3490)"
+    },
+    {
+        "id": 66,
+        "country": "India",
+        "city": "Noida",
+        "state": "Uttar Pradesh",
+        "address": "Sector 18, Noida",
+        "postalCode": "201301",
+        "coordinates": "POINT(77.3261 28.5706)"
+    },
+    {
+        "id": 67,
+        "country": "India",
+        "city": "Noida",
+        "state": "Uttar Pradesh",
+        "address": "Sector 62, Noida",
+        "postalCode": "201309",
+        "coordinates": "POINT(77.3693 28.6272)"
+    },
+    {
+        "id": 68,
+        "country": "India",
+        "city": "Noida",
+        "state": "Uttar Pradesh",
+        "address": "Sector 63, Noida",
+        "postalCode": "201307",
+        "coordinates": "POINT(77.3808 28.6258)"
+    },
+    {
+        "id": 69,
+        "country": "India",
+        "city": "Noida",
+        "state": "Uttar Pradesh",
+        "address": "Sector 137, Noida",
+        "postalCode": "201304",
+        "coordinates": "POINT(77.3467 28.5069)"
+    },
+    {
+        "id": 70,
+        "country": "India",
+        "city": "Noida",
+        "state": "Uttar Pradesh",
+        "address": "Sector 100, Noida",
+        "postalCode": "201303",
+        "coordinates": "POINT(77.3785 28.5480)"
+    },
+    {
+        "id": 71,
+        "country": "India",
+        "city": "Noida",
+        "state": "Uttar Pradesh",
+        "address": "Sector 22, Noida",
+        "postalCode": "201301",
+        "coordinates": "POINT(77.3352 28.5839)"
+    },
+    {
+        "id": 72,
+        "country": "India",
+        "city": "Noida",
+        "state": "Uttar Pradesh",
+        "address": "Sector 44, Noida",
+        "postalCode": "201303",
+        "coordinates": "POINT(77.3570 28.5601)"
+    },
+    {
+        "id": 73,
+        "country": "India",
+        "city": "Greater Noida",
+        "state": "Uttar Pradesh",
+        "address": "Alpha 1, Greater Noida",
+        "postalCode": "201310",
+        "coordinates": "POINT(77.4330 28.4744)"
+    },
+    {
+        "id": 74,
+        "country": "India",
+        "city": "Greater Noida",
+        "state": "Uttar Pradesh",
+        "address": "Sector Omega 1, Greater Noida",
+        "postalCode": "201308",
+        "coordinates": "POINT(77.4452 28.4641)"
+    },
+    {
+        "id": 75,
+        "country": "India",
+        "city": "Greater Noida",
+        "state": "Uttar Pradesh",
+        "address": "Knowledge Park 3, Greater Noida",
+        "postalCode": "201306",
+        "coordinates": "POINT(77.4677 28.4713)"
+    },
+    {
+        "id": 76,
+        "country": "India",
+        "city": "Greater Noida",
+        "state": "Uttar Pradesh",
+        "address": "Sector Chi 5, Greater Noida",
+        "postalCode": "201308",
+        "coordinates": "POINT(77.4512 28.4786)"
+    },
+    {
+        "id": 77,
+        "country": "India",
+        "city": "Ghaziabad",
+        "state": "Uttar Pradesh",
+        "address": "Indirapuram",
+        "postalCode": "201014",
+        "coordinates": "POINT(77.3542 28.6418)"
+    },
+    {
+        "id": 78,
+        "country": "India",
+        "city": "Ghaziabad",
+        "state": "Uttar Pradesh",
+        "address": "Vaishali",
+        "postalCode": "201012",
+        "coordinates": "POINT(77.3378 28.6456)"
+    },
+    {
+        "id": 79,
+        "country": "India",
+        "city": "Ghaziabad",
+        "state": "Uttar Pradesh",
+        "address": "Raj Nagar Extension",
+        "postalCode": "201003",
+        "coordinates": "POINT(77.3821 28.6890)"
+    },
+    {
+        "id": 80,
+        "country": "India",
+        "city": "Ghaziabad",
+        "state": "Uttar Pradesh",
+        "address": "Kaushambi",
+        "postalCode": "201010",
+        "coordinates": "POINT(77.3298 28.6478)"
+    },
+    {
+        "id": 81,
+        "country": "India",
+        "city": "Ghaziabad",
+        "state": "Uttar Pradesh",
+        "address": "Sanjay Nagar, Ghaziabad",
+        "postalCode": "201002",
+        "coordinates": "POINT(77.4335 28.6764)"
+    },
+    {
+        "id": 82,
+        "country": "India",
+        "city": "Ghaziabad",
+        "state": "Uttar Pradesh",
+        "address": "Mohan Nagar, Ghaziabad",
+        "postalCode": "201007",
+        "coordinates": "POINT(77.4059 28.6958)"
+    },
+    {
+        "id": 83,
+        "country": "India",
+        "city": "Bahadurgarh",
+        "state": "Haryana",
+        "address": "Bahadurgarh",
+        "postalCode": "124507",
+        "coordinates": "POINT(76.9267 28.6893)"
+    },
+    {
+        "id": 84,
+        "country": "India",
+        "city": "Sonipat",
+        "state": "Haryana",
+        "address": "Kundli Industrial Area",
+        "postalCode": "131028",
+        "coordinates": "POINT(77.0695 28.8680)"
+    },
+    {
+        "id": 85,
+        "country": "India",
+        "city": "Sonipat",
+        "state": "Haryana",
+        "address": "Sector 14, Sonipat",
+        "postalCode": "131001",
+        "coordinates": "POINT(77.0116 28.9930)"
+    },
+    {
+        "id": 86,
+        "country": "India",
+        "city": "Palwal",
+        "state": "Haryana",
+        "address": "Palwal",
+        "postalCode": "121102",
+        "coordinates": "POINT(77.3310 28.1430)"
+    },
+    {
+        "id": 87,
+        "country": "India",
+        "city": "Alwar",
+        "state": "Rajasthan",
+        "address": "Alwar",
+        "postalCode": "301001",
+        "coordinates": "POINT(76.6346 27.5530)"
+    },
+    {
+        "id": 88,
+        "country": "India",
+        "city": "Meerut",
+        "state": "Uttar Pradesh",
+        "address": "Meerut Cantonment",
+        "postalCode": "250001",
+        "coordinates": "POINT(77.7063 28.9845)"
+    },
+    {
+        "id": 89,
+        "country": "India",
+        "city": "Bulandshahr",
+        "state": "Uttar Pradesh",
+        "address": "Bulandshahr",
+        "postalCode": "203001",
+        "coordinates": "POINT(77.8498 28.4069)"
+    },
+    {
+        "id": 90,
+        "country": "India",
+        "city": "Hapur",
+        "state": "Uttar Pradesh",
+        "address": "Hapur",
+        "postalCode": "245101",
+        "coordinates": "POINT(77.7763 28.7300)"
+    }
 ]
