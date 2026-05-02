@@ -365,7 +365,7 @@ export const api = createApi({
     }),
     createCheckoutSession: build.mutation<{ url: string }, { paymentId: number }>({
       query: (data) => ({
-        url: "payments/create-checkout-session",
+        url: "payments/create-checkout-session?userType=tenant",
         method: "POST",
         body: data,
       }),

@@ -52,7 +52,8 @@ export const createCheckoutSession = async (req: Request, res: Response): Promis
 
         res.json({ url: session.url });
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        console.error("[Checkout] Error creating checkout session:", error);
+        res.status(500).json({ message: error.message || "Failed to create checkout session" });
     }
 };
 

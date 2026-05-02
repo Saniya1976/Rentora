@@ -48,8 +48,9 @@ const ApplicationsPage = () => {
                 setPayingId(null);
             }
         } catch (err) {
-            console.error("Failed to create checkout session:", err);
-            toast.error("Payment failed. Please try again.");
+            console.error("Failed to create checkout session:", JSON.stringify(err, null, 2));
+            const errMsg = (err as any)?.data?.message || "Payment failed. Please try again.";
+            toast.error(errMsg);
             setPayingId(null);
         }
     };
