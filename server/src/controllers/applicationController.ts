@@ -35,7 +35,35 @@ export const listApplications = async (
                 },
                 tenant: true,
             },
+            orderBy: { applicationDate: "desc" },
         });
+
+        if (applications.length === 0) {
+            res.json([]);
+            return;
+        }
+
+        // Batch-fetch all leases+payments in one query (avoids N+1)
+        const tenantClerkIds = [...new Set(applications.map((a) => a.tenant.clerkId))];
+        const propertyIds = [...new Set(applications.map((a) => a.propertyId))];
+
+        const leases = await prisma.lease.findMany({
+            where: {
+                tenantClerkId: { in: tenantClerkIds },
+                propertyId: { in: propertyIds },
+            },
+            include: { payments: true },
+            orderBy: { startDate: "desc" },
+        });
+
+        // Build a lookup map: "tenantClerkId-propertyId" -> most-recent lease
+        const leaseMap = new Map<string, typeof leases[0]>();
+        for (const lease of leases) {
+            const key = `${lease.tenantClerkId}-${lease.propertyId}`;
+            if (!leaseMap.has(key)) {
+                leaseMap.set(key, lease); // already sorted desc, so first wins
+            }
+        }
 
         function calculateNextPaymentDate(startDate: Date): Date {
             const today = new Date();
@@ -46,35 +74,25 @@ export const listApplications = async (
             return nextPaymentDate;
         }
 
-        const formattedApplications = await Promise.all(
-            applications.map(async (app) => {
-                const lease = await prisma.lease.findFirst({
-                    where: {
-                        tenant: {
-                            clerkId: app.tenant.clerkId,
-                        },
-                        propertyId: app.propertyId,
-                    },
-                    orderBy: { startDate: "desc" },
-                    include: { payments: true }
-                });
+        const formattedApplications = applications.map((app) => {
+            const key = `${app.tenant.clerkId}-${app.propertyId}`;
+            const lease = leaseMap.get(key) ?? null;
 
-                return {
-                    ...app,
-                    property: {
-                        ...app.property,
-                        address: app.property.location.address,
-                    },
-                    manager: app.property.manager,
-                    lease: lease
-                        ? {
-                            ...lease,
-                            nextPaymentDate: calculateNextPaymentDate(lease.startDate),
-                        }
-                        : null,
-                };
-            })
-        );
+            return {
+                ...app,
+                property: {
+                    ...app.property,
+                    address: app.property.location.address,
+                },
+                manager: app.property.manager,
+                lease: lease
+                    ? {
+                        ...lease,
+                        nextPaymentDate: calculateNextPaymentDate(lease.startDate),
+                    }
+                    : null,
+            };
+        });
 
         res.json(formattedApplications);
     } catch (error: any) {
@@ -83,6 +101,7 @@ export const listApplications = async (
             .json({ message: `Error retrieving applications: ${error.message}` });
     }
 };
+
 
 export const createApplication = async (
     req: Request,

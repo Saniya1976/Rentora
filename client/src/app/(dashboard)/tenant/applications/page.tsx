@@ -1,30 +1,22 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
     useGetApplicationsQuery,
     useGetAuthUserQuery,
     useCreateCheckoutSessionMutation
 } from "@/state/api";
 import { format } from "date-fns";
-import { FileText, MapPin, Calendar, Clock } from "lucide-react";
+import { FileText, MapPin, Calendar, Clock, Loader2, CreditCard } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
 
 const ApplicationsPage = () => {
     const { data: authUser } = useGetAuthUserQuery("tenant");
     const [createCheckoutSession] = useCreateCheckoutSessionMutation();
-
-    const handlePayment = async (paymentId: number) => {
-        try {
-            const result = await createCheckoutSession({ paymentId }).unwrap();
-            if (result.url) {
-                window.location.href = result.url;
-            }
-        } catch (err) {
-            console.error("Failed to create checkout session:", err);
-        }
-    };
+    // Track which paymentId is currently being processed (-1 = none)
+    const [payingId, setPayingId] = useState<number | null>(null);
 
     const {
         data: applications,
@@ -37,9 +29,30 @@ const ApplicationsPage = () => {
         },
         {
             skip: !authUser?.clerkId,
-            pollingInterval: 3000,
+            // Pause polling while a payment redirect is in progress so re-renders
+            // don't fight with the button click / page navigation
+            pollingInterval: payingId !== null ? 0 : 3000,
         }
     );
+
+    const handlePayment = async (paymentId: number) => {
+        if (payingId !== null) return; // prevent double-click
+        setPayingId(paymentId);
+        try {
+            const result = await createCheckoutSession({ paymentId }).unwrap();
+            if (result.url) {
+                window.location.href = result.url;
+                // Don't reset payingId here — keep spinner while redirecting
+            } else {
+                toast.error("Could not create checkout session. Please try again.");
+                setPayingId(null);
+            }
+        } catch (err) {
+            console.error("Failed to create checkout session:", err);
+            toast.error("Payment failed. Please try again.");
+            setPayingId(null);
+        }
+    };
 
     if (isLoading) {
         return (
@@ -63,7 +76,7 @@ const ApplicationsPage = () => {
                 return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200";
             case "Denied":
                 return "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400 border-rose-200";
-            default: // Pending
+            default:
                 return "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200";
         }
     };
@@ -91,70 +104,92 @@ const ApplicationsPage = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 transition-all">
-                    {applications.map((app) => (
-                        <Card key={app.id} className="overflow-hidden border-border bg-card shadow-sm hover:shadow-md transition-all duration-300 group">
-                            <CardContent className="p-6 space-y-4">
-                                <div className="flex justify-between items-center gap-4">
-                                    <div className="space-y-1">
-                                        <h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                                            {app.property.name}
-                                        </h2>
-                                        <div className="flex items-center text-muted-foreground text-xs font-medium">
-                                            <MapPin className="w-3 h-3 mr-1 shrink-0" />
-                                            <span className="line-clamp-1">{app.property.location.city}, {app.property.location.state}</span>
-                                        </div>
-                                    </div>
-                                    <Badge variant="outline" className={`${getStatusColor(app.status)} px-3 py-1 rounded-lg font-bold text-[10px] uppercase tracking-wider shrink-0 border`}>
-                                        {app.status}
-                                    </Badge>
-                                </div>
+                    {applications.map((app) => {
+                        const pendingPayment =
+                            app.status === "Approved" &&
+                                app.lease?.payments?.[0] &&
+                                app.lease.payments[0].paymentStatus === "Pending"
+                                ? app.lease.payments[0]
+                                : null;
 
-                                <div className="grid grid-cols-2 gap-4 py-3 border-y border-border/50">
-                                    <div className="space-y-0.5">
-                                        <div className="flex items-center text-muted-foreground text-[10px] font-bold uppercase tracking-widest">
-                                            <Calendar className="w-3 h-3 mr-1" /> Applied
-                                        </div>
-                                        <div className="font-semibold text-sm text-foreground">
-                                            {format(new Date(app.applicationDate), "MMM dd, yyyy")}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-0.5">
-                                        <div className="flex items-center text-muted-foreground text-[10px] font-bold uppercase tracking-widest">
-                                            Rent
-                                        </div>
-                                        <div className="font-bold text-sm text-primary">
-                                            ₹{app.property.pricePerMonth.toLocaleString()}
-                                        </div>
-                                    </div>
-                                </div>
+                        const isThisPaying = payingId === pendingPayment?.id;
 
-                                {app.message && (
-                                    <div className="p-3 bg-muted/40 rounded-lg text-xs italic text-muted-foreground line-clamp-2">
-                                        &ldquo;{app.message}&rdquo;
-                                    </div>
-                                )}
-
-                                <div className="pt-2 flex flex-col gap-3">
-                                    <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                                        <span>ID: #{app.id}</span>
-                                        <span className="flex items-center gap-1">
-                                            < Clock className="w-3 h-3" />
-                                            {app.status === "Pending" ? "Pending Review" : "Processed"}
-                                        </span>
+                        return (
+                            <Card key={app.id} className="overflow-hidden border-border bg-card shadow-sm hover:shadow-md transition-all duration-300 group">
+                                <CardContent className="p-6 space-y-4">
+                                    <div className="flex justify-between items-center gap-4">
+                                        <div className="space-y-1">
+                                            <h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                                                {app.property.name}
+                                            </h2>
+                                            <div className="flex items-center text-muted-foreground text-xs font-medium">
+                                                <MapPin className="w-3 h-3 mr-1 shrink-0" />
+                                                <span className="line-clamp-1">{app.property.location.city}, {app.property.location.state}</span>
+                                            </div>
+                                        </div>
+                                        <Badge variant="outline" className={`${getStatusColor(app.status)} px-3 py-1 rounded-lg font-bold text-[10px] uppercase tracking-wider shrink-0 border`}>
+                                            {app.status}
+                                        </Badge>
                                     </div>
 
-                                    {app.status === "Approved" && app.lease?.payments?.[0] && app.lease.payments[0].paymentStatus === "Pending" && (
-                                        <button
-                                            onClick={() => handlePayment(app.lease!.payments![0].id)}
-                                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl transition-all shadow-sm hover:shadow-md text-xs uppercase tracking-wider"
-                                        >
-                                            Pay Deposit to Confirm
-                                        </button>
+                                    <div className="grid grid-cols-2 gap-4 py-3 border-y border-border/50">
+                                        <div className="space-y-0.5">
+                                            <div className="flex items-center text-muted-foreground text-[10px] font-bold uppercase tracking-widest">
+                                                <Calendar className="w-3 h-3 mr-1" /> Applied
+                                            </div>
+                                            <div className="font-semibold text-sm text-foreground">
+                                                {format(new Date(app.applicationDate), "MMM dd, yyyy")}
+                                            </div>
+                                        </div>
+                                        <div className="space-y-0.5">
+                                            <div className="flex items-center text-muted-foreground text-[10px] font-bold uppercase tracking-widest">
+                                                Rent
+                                            </div>
+                                            <div className="font-bold text-sm text-primary">
+                                                ₹{app.property.pricePerMonth.toLocaleString()}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {app.message && (
+                                        <div className="p-3 bg-muted/40 rounded-lg text-xs italic text-muted-foreground line-clamp-2">
+                                            &ldquo;{app.message}&rdquo;
+                                        </div>
                                     )}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
+
+                                    <div className="pt-2 flex flex-col gap-3">
+                                        <div className="flex items-center justify-between text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                            <span>ID: #{app.id}</span>
+                                            <span className="flex items-center gap-1">
+                                                <Clock className="w-3 h-3" />
+                                                {app.status === "Pending" ? "Pending Review" : "Processed"}
+                                            </span>
+                                        </div>
+
+                                        {pendingPayment && (
+                                            <button
+                                                onClick={() => handlePayment(pendingPayment.id)}
+                                                disabled={payingId !== null}
+                                                className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-2.5 rounded-xl transition-all shadow-sm hover:shadow-md text-xs uppercase tracking-wider"
+                                            >
+                                                {isThisPaying ? (
+                                                    <>
+                                                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                                        Redirecting to Payment...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <CreditCard className="w-3.5 h-3.5" />
+                                                        Pay Deposit to Confirm
+                                                    </>
+                                                )}
+                                            </button>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
                 </div>
             )}
         </div>
