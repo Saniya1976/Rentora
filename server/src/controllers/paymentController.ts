@@ -9,6 +9,17 @@ export const createCheckoutSession = async (req: Request, res: Response): Promis
     try {
         const { paymentId } = req.body;
 
+        // Derive client URL: prefer env var, fall back to request Origin/Referer
+        const clientUrl =
+            process.env.CLIENT_URL?.replace(/^["']|["']$/g, "").replace(/\/+$/, "") ||
+            req.headers.origin ||
+            (req.headers.referer ? new URL(req.headers.referer).origin : null);
+
+        if (!clientUrl) {
+            res.status(500).json({ message: "CLIENT_URL is not configured on the server." });
+            return;
+        }
+
         const payment = await prisma.payment.findUnique({
             where: { id: Number(paymentId) },
             include: {
@@ -42,8 +53,8 @@ export const createCheckoutSession = async (req: Request, res: Response): Promis
                 },
             ],
             mode: "payment",
-            success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
+            success_url: `${clientUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${clientUrl}/payment-cancel`,
             client_reference_id: paymentId.toString(),
             metadata: {
                 paymentId: paymentId.toString(),
