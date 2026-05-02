@@ -119,7 +119,8 @@ export default function SignUpForm() {
         const firstError = clerkErr.errors?.[0]
 
         if (firstError?.code === 'form_identifier_exists') {
-          setError('Email or username already exists. Try signing in.')
+          const paramName = firstError?.meta?.paramName || 'Email or username';
+          setError(`${paramName} already exists. Please choose another.`);
         } else if (firstError?.code === 'rate_limit_exceeded') {
           setError('Too many attempts. Please wait a few minutes.')
         } else if (firstError?.code === 'form_parameter_unknown' || firstError?.message?.includes('is unknown')) {
