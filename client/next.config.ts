@@ -40,8 +40,8 @@ const nextConfig: NextConfig = {
               "connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://rentora-mija.onrender.com https://api.stripe.com wss://*.clerk.accounts.dev",
               // Allow frames for Clerk and Stripe
               "frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://js.stripe.com https://hooks.stripe.com https://challenges.cloudflare.com",
-              // Allow images
-              "img-src 'self' data: blob: https://*.clerk.com https://img.clerk.com https://images.unsplash.com https://res.cloudinary.com https://*.amazonaws.com",
+              // Allow images including maps and markers
+              "img-src 'self' data: blob: https://*.clerk.com https://img.clerk.com https://images.unsplash.com https://res.cloudinary.com https://*.amazonaws.com https://*.tile.openstreetmap.org https://cdnjs.cloudflare.com https://raw.githubusercontent.com",
               // Allow fonts
               "font-src 'self' https://fonts.gstatic.com",
               // Allow workers
