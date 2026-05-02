@@ -252,7 +252,6 @@ export default function SignUpForm() {
 
   return (
     <div className="w-full max-w-[340px] backdrop-blur-3xl bg-white/70 dark:bg-zinc-700/80 rounded-[28px] p-6 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border border-white/40 dark:border-white/5 relative overflow-hidden animate-in fade-in zoom-in-95 duration-500 transition-colors">
-      <div id="clerk-captcha" />
       <div className="absolute -top-16 -right-16 w-32 h-32 bg-[#1acec8]/10 rounded-full blur-xl pointer-events-none" />
 
       <div className="relative z-10">
