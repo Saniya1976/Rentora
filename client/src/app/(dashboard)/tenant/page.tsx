@@ -19,7 +19,8 @@ const DashboardPage = () => {
         userId: authUser?.clerkId,
         userType: "tenant"
     }, {
-        skip: !authUser?.clerkId
+        skip: !authUser?.clerkId,
+        pollingInterval: 3000
     });
 
     const isLoading = isAuthLoading || isAppsLoading;

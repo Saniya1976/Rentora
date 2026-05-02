@@ -197,13 +197,35 @@ export const api = createApi({
         method: "PUT",
         body: { status },
       }),
-      invalidatesTags: ["Applications", "Leases"],
-      async onQueryStarted(_, { queryFulfilled }) {
-        await withToast(queryFulfilled, {
-          success: "Application status updated successfully!",
-          error: "Failed to update application settings.",
+      // Optimistic update: patch every active getApplications cache entry immediately
+      async onQueryStarted({ id, status }, { dispatch, getState, queryFulfilled }) {
+        // Grab all cached args for getApplications and patch each one
+        const state = getState() as any;
+        const cachedQueries = state?.api?.queries ?? {};
+        const patchResults: any[] = [];
+
+        Object.values(cachedQueries).forEach((entry: any) => {
+          if (entry?.endpointName === "getApplications" && entry?.data) {
+            const patch = dispatch(
+              api.util.updateQueryData("getApplications", entry.originalArgs, (draft) => {
+                const app = draft?.find((a: Application) => a.id === id);
+                if (app) app.status = status;
+              })
+            );
+            patchResults.push(patch);
+          }
         });
+
+        try {
+          await withToast(queryFulfilled, {
+            success: "Application status updated successfully!",
+            error: "Failed to update application settings.",
+          });
+        } catch {
+          patchResults.forEach((p) => p.undo());
+        }
       },
+      invalidatesTags: ["Applications", "Leases"],
     }),
 
     createApplication: build.mutation<Application, Partial<Application>>({
@@ -289,6 +311,23 @@ export const api = createApi({
         url: `tenants/${clerkId}/favorites/${propertyId}`,
         method: "POST",
       }),
+      // Optimistic update: add to favorites immediately, revert on failure
+      async onQueryStarted({ clerkId, propertyId }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          api.util.updateQueryData("getTenant", clerkId, (draft) => {
+            if (!draft.favorites) draft.favorites = [];
+            const alreadyExists = draft.favorites.some((p: any) => p.id === propertyId);
+            if (!alreadyExists) {
+              draft.favorites.push({ id: propertyId } as any);
+            }
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
       invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
     }),
     removeFavoriteProperty: build.mutation<Tenant, { clerkId: string; propertyId: number }>({
@@ -296,6 +335,21 @@ export const api = createApi({
         url: `tenants/${clerkId}/favorites/${propertyId}`,
         method: "DELETE",
       }),
+      // Optimistic update: remove from favorites immediately, revert on failure
+      async onQueryStarted({ clerkId, propertyId }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          api.util.updateQueryData("getTenant", clerkId, (draft) => {
+            if (draft.favorites) {
+              draft.favorites = draft.favorites.filter((p: any) => p.id !== propertyId);
+            }
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
       invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
     }),
     createCheckoutSession: build.mutation<{ url: string }, { paymentId: number }>({

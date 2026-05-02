@@ -30,10 +30,16 @@ const ApplicationsPage = () => {
         data: applications,
         isLoading,
         isError,
-    } = useGetApplicationsQuery({
-        userId: authUser?.clerkId,
-        userType: "tenant",
-    });
+    } = useGetApplicationsQuery(
+        {
+            userId: authUser?.clerkId,
+            userType: "tenant",
+        },
+        {
+            skip: !authUser?.clerkId,
+            pollingInterval: 3000,
+        }
+    );
 
     if (isLoading) {
         return (

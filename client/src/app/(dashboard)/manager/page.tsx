@@ -16,10 +16,16 @@ const ManagerDashboard = () => {
         data: applications,
         isLoading: isAppsLoading,
         isError: isAppsError,
-    } = useGetApplicationsQuery({
-        userId: authUser?.clerkId,
-        userType: "manager",
-    });
+    } = useGetApplicationsQuery(
+        {
+            userId: authUser?.clerkId,
+            userType: "manager",
+        },
+        {
+            skip: !authUser?.clerkId,
+            pollingInterval: 3000,
+        }
+    );
 
     const {
         data: properties,
