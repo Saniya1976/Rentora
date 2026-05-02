@@ -5,11 +5,21 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
+import { useDispatch } from "react-redux";
+import { api } from "@/state/api";
 
 const PaymentSuccess = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const sessionId = searchParams.get("session_id");
+    const dispatch = useDispatch();
+
+    // When this page mounts (i.e. Stripe just redirected back), invalidate
+    // the Payments and Leases cache so the residences page is up-to-date
+    // the moment the user navigates back.
+    useEffect(() => {
+        dispatch(api.util.invalidateTags(["Payments", "Leases", "Applications"]));
+    }, [dispatch]);
 
     return (
         <div className="dashboard-container flex flex-col items-center justify-center min-h-[70vh] space-y-6">
@@ -18,7 +28,7 @@ const PaymentSuccess = () => {
             </div>
             <Header
                 title="Payment Successful!"
-                subtitle={sessionId ? `Transcation ID: ${sessionId.slice(0, 20)}...` : "Your payment has been processed successfully."}
+                subtitle={sessionId ? `Transaction ID: ${sessionId.slice(0, 20)}...` : "Your payment has been processed successfully."}
             />
             <div className="max-w-md text-center text-muted-foreground">
                 Thank you for your payment. Your lease information has been updated. You can now view your updated billing history in the residences dashboard.

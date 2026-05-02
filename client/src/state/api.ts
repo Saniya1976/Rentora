@@ -31,20 +31,20 @@ const withToast = async <T,>(
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
-    prepareHeaders: async (headers, { getState, endpoint }) => {
+    prepareHeaders: async (headers) => {
       const token = await (window as any).Clerk?.session?.getToken();
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
-      }
-      // Do NOT set Content-Type for FormData — the browser must set multipart boundary automatically
-      if (!headers.has("Content-Type")) {
-        // Only set JSON content type if not already set and not a FormData request
-        // fetchBaseQuery handles this automatically for non-FormData bodies
       }
       return headers;
     },
   }),
   reducerPath: "api",
+  // Re-fetch when a component mounts if the cached data is >30s old
+  // This prevents stale data after navigation without hammering the server
+  refetchOnMountOrArgChange: 30,
+  // Keep cached data alive for 5 minutes after last subscriber unmounts
+  keepUnusedDataFor: 300,
   tagTypes: ["Managers", "Tenants", "Properties", "Leases", "Payments", "Applications"],
   endpoints: (build) => ({
     getAuthUser: build.query<Tenant | Manager, string | void>({
@@ -64,7 +64,11 @@ export const api = createApi({
         method: "PUT",
         body: updatedTenant,
       }),
-      invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
+      // Invalidate specific tenant + the list tag so getAuthUser also re-fetches
+      invalidatesTags: (result) => [
+        { type: "Tenants", id: result?.id },
+        { type: "Tenants", id: "LIST" },
+      ],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
           success: "Settings updated successfully!",
@@ -78,7 +82,11 @@ export const api = createApi({
         method: "PUT",
         body: updatedManager,
       }),
-      invalidatesTags: (result) => [{ type: "Managers", id: result?.id }],
+      // Invalidate specific manager + the list tag so getAuthUser also re-fetches
+      invalidatesTags: (result) => [
+        { type: "Managers", id: result?.id },
+        { type: "Managers", id: "LIST" },
+      ],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
           success: "Settings updated successfully!",
@@ -304,7 +312,10 @@ export const api = createApi({
     }),
     getTenant: build.query<Tenant, string>({
       query: (clerkId) => `tenants/${clerkId}`,
-      providesTags: (result) => [{ type: "Tenants", id: result?.id }],
+      providesTags: (result) => [
+        { type: "Tenants", id: result?.id },
+        { type: "Tenants", id: "LIST" },
+      ],
     }),
     addFavoriteProperty: build.mutation<Tenant, { clerkId: string; propertyId: number }>({
       query: ({ clerkId, propertyId }) => ({
@@ -358,6 +369,8 @@ export const api = createApi({
         method: "POST",
         body: data,
       }),
+      // After payment is initiated, bust Payments + Leases so balances update
+      invalidatesTags: ["Payments", "Leases"],
     }),
 
 

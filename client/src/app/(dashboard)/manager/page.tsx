@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useGetApplicationsQuery, useGetAuthUserQuery, useUpdateApplicationStatusMutation, useGetManagerPropertiesQuery } from "@/state/api";
 import { format } from "date-fns";
-import { FileText, MapPin, Calendar, User, Phone, Mail, CheckCircle, XCircle, Building, ArrowRight, PlusCircle, DollarSign, Settings } from "lucide-react";
+import { FileText, MapPin, Calendar, User, Phone, Mail, CheckCircle, XCircle, Building, ArrowRight, PlusCircle, DollarSign, Settings, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,13 +37,19 @@ const ManagerDashboard = () => {
     const isLoading = isAppsLoading || isPropsLoading;
     const isError = isAppsError;
 
-    const [updateStatus, { isLoading: isUpdating }] = useUpdateApplicationStatusMutation();
+    const [updateStatus] = useUpdateApplicationStatusMutation();
+    // Track which application is being approved/denied (null = none in flight)
+    const [updatingId, setUpdatingId] = useState<number | null>(null);
 
     const handleStatusUpdate = async (id: number, status: "Approved" | "Denied") => {
+        if (updatingId !== null) return;
+        setUpdatingId(id);
         try {
             await updateStatus({ id, status }).unwrap();
         } catch (error) {
             console.error("Failed to update status:", error);
+        } finally {
+            setUpdatingId(null);
         }
     };
 
@@ -182,18 +188,22 @@ const ManagerDashboard = () => {
                                                 <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border/50">
                                                     <Button
                                                         onClick={() => handleStatusUpdate(app.id, "Approved")}
-                                                        disabled={isUpdating}
-                                                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] h-8 shadow-sm"
+                                                        disabled={updatingId !== null}
+                                                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] h-8 shadow-sm disabled:opacity-60"
                                                     >
-                                                        APPROVE
+                                                        {updatingId === app.id ? (
+                                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                                        ) : "APPROVE"}
                                                     </Button>
                                                     <Button
                                                         variant="ghost"
                                                         onClick={() => handleStatusUpdate(app.id, "Denied")}
-                                                        disabled={isUpdating}
-                                                        className="flex-1 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold text-[10px] h-8 border border-rose-100 dark:border-rose-900/30"
+                                                        disabled={updatingId !== null}
+                                                        className="flex-1 text-rose-600 hover:bg-rose-50 hover:text-rose-700 font-bold text-[10px] h-8 border border-rose-100 dark:border-rose-900/30 disabled:opacity-60"
                                                     >
-                                                        REJECT
+                                                        {updatingId === app.id ? (
+                                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                                        ) : "REJECT"}
                                                     </Button>
                                                 </div>
                                             )}

@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import Header from "@/components/Header";
 import LoadingState from "@/components/LoadingState";
 import { useRouter } from "next/navigation";
@@ -16,6 +17,7 @@ import {
     MapPin,
     User,
     Info,
+    Loader2,
     CreditCard as CardIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,18 +45,25 @@ const Residences = () => {
     });
 
     const [createCheckoutSession] = useCreateCheckoutSessionMutation();
+    const [payingId, setPayingId] = useState<number | null>(null);
 
     if (isLoading) return <LoadingState />;
     if (error) return <div className="p-10 text-destructive">Error loading current residences</div>;
 
     const handlePayment = async (paymentId: number) => {
+        if (payingId !== null) return;
+        setPayingId(paymentId);
         try {
             const result = await createCheckoutSession({ paymentId }).unwrap();
             if (result.url) {
                 window.location.href = result.url;
+                // keep spinner while redirecting
+            } else {
+                setPayingId(null);
             }
         } catch (err) {
             console.error("Failed to create checkout session:", err);
+            setPayingId(null);
         }
     };
 
@@ -147,10 +156,13 @@ const Residences = () => {
                                                     {nextPayment && (
                                                         <Button
                                                             variant="link"
-                                                            className="h-auto p-0 text-blue-600 font-bold text-xs"
+                                                            className="h-auto p-0 text-blue-600 font-bold text-xs disabled:opacity-50"
                                                             onClick={() => handlePayment(nextPayment.id)}
+                                                            disabled={payingId !== null}
                                                         >
-                                                            Pay Now
+                                                            {payingId === nextPayment.id ? (
+                                                                <><Loader2 className="w-3 h-3 animate-spin mr-1" />Redirecting...</>
+                                                            ) : "Pay Now"}
                                                         </Button>
                                                     )}
                                                 </div>
@@ -264,10 +276,13 @@ const Residences = () => {
                                                                 <Button
                                                                     variant="outline"
                                                                     size="sm"
-                                                                    className="h-8 px-3 text-[10px] font-bold bg-blue-600 text-white hover:bg-blue-700 border-none shadow-sm transition-all"
+                                                                    className="h-8 px-3 text-[10px] font-bold bg-blue-600 text-white hover:bg-blue-700 border-none shadow-sm transition-all disabled:opacity-50"
                                                                     onClick={() => handlePayment(payment.id)}
+                                                                    disabled={payingId !== null}
                                                                 >
-                                                                    Pay Now
+                                                                    {payingId === payment.id ? (
+                                                                        <Loader2 className="w-3 h-3 animate-spin" />
+                                                                    ) : "Pay Now"}
                                                                 </Button>
                                                             ) : (
                                                                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full hover:bg-accent/10 hover:text-blue-600 transition-colors">
