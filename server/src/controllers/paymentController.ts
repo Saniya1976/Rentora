@@ -5,18 +5,42 @@ import Stripe from "stripe";
 const prisma = new PrismaClient();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
+/** Returns true only if the string is a valid http/https URL */
+function isValidHttpUrl(value: unknown): value is string {
+    if (typeof value !== "string" || !value) return false;
+    try {
+        const { protocol } = new URL(value);
+        return protocol === "http:" || protocol === "https:";
+    } catch {
+        return false;
+    }
+}
+
 export const createCheckoutSession = async (req: Request, res: Response): Promise<void> => {
     try {
         const { paymentId } = req.body;
 
-        // Derive client URL: prefer env var, fall back to request Origin/Referer
+        // Build candidate list in priority order and pick the first valid one
+        const envUrl = process.env.CLIENT_URL?.replace(/^["']|["']$/g, "").replace(/\/+$/, "");
+        const originHeader = req.headers.origin;
+        const refererOrigin = req.headers.referer
+            ? (() => { try { return new URL(req.headers.referer as string).origin; } catch { return undefined; } })()
+            : undefined;
+
+        console.log("[Checkout] CLIENT_URL env:", envUrl);
+        console.log("[Checkout] Origin header:", originHeader);
+        console.log("[Checkout] Referer origin:", refererOrigin);
+
         const clientUrl =
-            process.env.CLIENT_URL?.replace(/^["']|["']$/g, "").replace(/\/+$/, "") ||
-            req.headers.origin ||
-            (req.headers.referer ? new URL(req.headers.referer).origin : null);
+            isValidHttpUrl(envUrl) ? envUrl :
+                isValidHttpUrl(originHeader) ? originHeader :
+                    isValidHttpUrl(refererOrigin) ? refererOrigin : null;
+
+        console.log("[Checkout] Resolved clientUrl:", clientUrl);
 
         if (!clientUrl) {
-            res.status(500).json({ message: "CLIENT_URL is not configured on the server." });
+            console.error("[Checkout] Could not derive a valid CLIENT_URL. Set the CLIENT_URL environment variable on the server.");
+            res.status(500).json({ message: "CLIENT_URL is not configured on the server. Please contact support." });
             return;
         }
 
@@ -67,6 +91,7 @@ export const createCheckoutSession = async (req: Request, res: Response): Promis
         res.status(500).json({ message: error.message || "Failed to create checkout session" });
     }
 };
+
 
 export const stripeWebhook = async (req: Request, res: Response): Promise<void> => {
     const sig = req.headers["stripe-signature"];
